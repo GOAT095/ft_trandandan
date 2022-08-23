@@ -12,8 +12,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASS,
     entities: ['dist/**/*.entity.{ts,js}'],
-    migrations: ['dist/migrations/*.{ts,js}'],
-    migrationsTableName: 'typeorm_migrations',
     logger: 'file',
     synchronize: true, // never use TRUE in productio
   })],
