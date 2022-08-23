@@ -16,6 +16,15 @@ export class User{
   @Column({type: 'varchar', length: 254})
   public avatar: string;
 
+  @Column()
+  public wins:number;
+
+  @Column()
+  public losses:number;
+
+  @Column()
+  public lvl:number;
+
   @Column({type: 'varchar', length:20})
   public status: string;
   /*
