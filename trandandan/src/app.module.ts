@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './api/user/user.entity';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -11,7 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     database: process.env.POSTGRES_DB,
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASS,
-    entities: ['dist/**/*.entity.{ts,js}'],
+    entities: [User],
     logger: 'file',
     synchronize: true, // never use TRUE in productio
   })],

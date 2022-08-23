@@ -9,12 +9,15 @@ export class User{
   @Column({ type: 'varchar', length: 120 })
   public name: string;
 
-  @Column({ type: 'varchar', length: 120 })
-  public email: string;
 
   @Column({ type: 'boolean', default: false })
   public isDeleted: boolean;
 
+  @Column({type: 'varchar', length: 254})
+  public avatar: string;
+
+  @Column({type: 'varchar', length:20})
+  public status: string;
   /*
    * Create and Update Date Columns
    */
