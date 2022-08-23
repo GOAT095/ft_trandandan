@@ -1,39 +1,36 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn  } from "typeorm";
+import { UserStatus } from "./user.status.enum";
 
 @Entity()
 export class User{
 
   @PrimaryGeneratedColumn()
-  public id!: number;
+  public id: number;
 
   @Column({ type: 'varchar', length: 120 })
   public name: string;
 
-
-  @Column({ type: 'boolean', default: false })
-  public isDeleted: boolean;
-
   @Column({type: 'varchar', length: 254})
   public avatar: string;
 
-  @Column()
+  @Column({default:0})
   public wins:number;
 
-  @Column()
+  @Column({default:0})
   public losses:number;
 
-  @Column()
+  @Column({default:0})
   public lvl:number;
 
-  @Column({type: 'varchar', length:20})
-  public status: string;
+  @Column()
+  status: UserStatus;
   /*
    * Create and Update Date Columns
    */
 
   @CreateDateColumn({ type: 'timestamp' })
-  public createdAt!: Date;
+  public createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  public updatedAt!: Date;
+  public updatedAt: Date;
 }

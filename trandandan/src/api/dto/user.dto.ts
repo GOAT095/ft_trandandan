@@ -12,4 +12,6 @@ export class CreateUserDto{
     @IsString()
     @IsNotEmpty()
     public avatar:string;
+    
+
 }
