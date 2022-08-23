@@ -11,11 +11,13 @@ export class UserController {
 
   @Get(':id')
   public getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    return this.service.getUser(id);
+    
+     return this.service.getUser(id);
   }
 
   @Post()
   public createUser(@Body() body: CreateUserDto): Promise<User> {
+    
     return this.service.createUser(body);
   }
 }
