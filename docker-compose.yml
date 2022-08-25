@@ -1,0 +1,56 @@
+version: '3.1'
+
+volumes:
+  db-data:
+    driver: local
+
+services:
+  users:
+    build: ./trt/
+    container_name: auth
+    restart: always
+    ports:
+      - '3000:3000' # expose ports - HOST:CONTAINER
+    volumes:
+      - ./trt:/usr/src/app
+    environment:
+      clientID: $clientID
+      clientSecret: $clientSecret
+      callbackURL: $callbackURL
+      JWT_SECRET: $JWT_SECRET
+      JWT_EXP_H: $JWT_EXP_H
+      RFH_SECRET: $RFH_SECRET
+      RFH_EXP_D: $RFH_EXP_D
+      POSTGRES_HOST: $POSTGRES_HOST
+      POSTGRES_PORT: $POSTGRES_PORT
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASS: $POSTGRES_PASS
+      POSTGRES_DB: $POSTGRES_DB
+    depends_on:
+      - db
+
+
+  db:
+    image: postgres
+    container_name: trans_db
+    restart: always
+    environment:
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASS
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+# phpMyAdmin just for development in case we need a look up to database
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: $PGADMIN_DEFAULT_EMAIL
+      PGADMIN_DEFAULT_PASSWORD: $PGADMIN_DEFAULT_PASSWORD
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
