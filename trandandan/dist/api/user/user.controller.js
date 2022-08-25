@@ -22,15 +22,13 @@ let UserController = class UserController {
         var app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
         console.log("CHECK :" + code + "      ");
         var data = await app.get_Access_token(code);
-        console.log("CHECK " + JSON.stringify(data));
         console.log("======================== auth user Data =========================");
-        console.log(data);
         console.log("========================= 42 user data ==========================");
-        app.get_user_data(data.access_token).then((data) => {
+        await app.get_user_data(data.access_token).then((data) => {
             console.log(data);
             console.log("=============================================================");
         });
-        return `hello ${code['code']}`;
+        return 'hello' + JSON.stringify(data);
     }
     getUser(id) {
         return this.service.getUser(id);

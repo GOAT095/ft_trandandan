@@ -5,6 +5,7 @@ import { User } from './user.entity';
 import { UserService } from './user.service';
 import Authenticator from "api42client";
 import { Code } from 'typeorm';
+import { json } from 'stream/consumers';
 
 @Controller('user')
 export class UserController {
@@ -16,19 +17,19 @@ export class UserController {
     var app = new Authenticator(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
   console.log("CHECK :" + code  + "      " )
     var data =  await app.get_Access_token(code);
-    console.log("CHECK " + JSON.stringify(data));
+    // console.log("CHECK " + JSON.stringify(data));
     // token.then((data) => {
       // get the acces token of the user
       console.log("======================== auth user Data =========================");
-      console.log(data);
+      // console.log(data);
       console.log("========================= 42 user data ==========================");
       // get the user info from 42 api
-      app.get_user_data(data.access_token).then((data) => {
+      await app.get_user_data(data.access_token).then((data) => {
         console.log(data);
         console.log("=============================================================");
       });
     // });
-     return `hello ${code ['code']}`;
+     return 'hello' + JSON.stringify(data);
   }
   @Get(':id')
   public getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
