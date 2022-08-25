@@ -18,17 +18,17 @@ const user_dto_1 = require("../dto/user.dto");
 const user_service_1 = require("./user.service");
 const api42client_1 = require("api42client");
 let UserController = class UserController {
-    getauthedUser(code) {
+    async getauthedUser(code) {
         var app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
-        var token = app.get_Access_token(code);
-        token.then((data) => {
-            console.log("======================== auth user Data =========================");
+        console.log("CHECK :" + code + "      ");
+        var data = await app.get_Access_token(code);
+        console.log("CHECK " + JSON.stringify(data));
+        console.log("======================== auth user Data =========================");
+        console.log(data);
+        console.log("========================= 42 user data ==========================");
+        app.get_user_data(data.access_token).then((data) => {
             console.log(data);
-            console.log("========================= 42 user data ==========================");
-            app.get_user_data(data.access_token).then((data) => {
-                console.log(data);
-                console.log("=============================================================");
-            });
+            console.log("=============================================================");
         });
         return `hello ${code['code']}`;
     }
@@ -48,10 +48,10 @@ __decorate([
 ], UserController.prototype, "service", void 0);
 __decorate([
     (0, common_1.Get)('redirect'),
-    __param(0, (0, common_1.Query)()),
+    __param(0, (0, common_1.Query)('code')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "getauthedUser", null);
 __decorate([
     (0, common_1.Get)(':id'),

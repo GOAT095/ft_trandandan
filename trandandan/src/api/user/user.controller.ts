@@ -12,13 +12,12 @@ export class UserController {
   private readonly service: UserService;
 
   @Get('redirect')
-  public getauthedUser(@Query() code){
+ async getauthedUser(@Query('code') code : string){
     var app = new Authenticator(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
-
-    var token = app.get_Access_token(code);
-
-    // console.log('was here', code['code']);
-    token.then((data) => {
+  console.log("CHECK :" + code  + "      " )
+    var data =  await app.get_Access_token(code);
+    console.log("CHECK " + JSON.stringify(data));
+    // token.then((data) => {
       // get the acces token of the user
       console.log("======================== auth user Data =========================");
       console.log(data);
@@ -28,7 +27,7 @@ export class UserController {
         console.log(data);
         console.log("=============================================================");
       });
-    });
+    // });
      return `hello ${code ['code']}`;
   }
   @Get(':id')
