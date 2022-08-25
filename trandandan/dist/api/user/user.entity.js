@@ -42,14 +42,6 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], User.prototype, "status", void 0);
-__decorate([
-    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
-    __metadata("design:type", Date)
-], User.prototype, "createdAt", void 0);
-__decorate([
-    (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp' }),
-    __metadata("design:type", Date)
-], User.prototype, "updatedAt", void 0);
 User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

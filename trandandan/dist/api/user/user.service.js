@@ -19,12 +19,15 @@ let UserService = class UserService {
     async getUser(id) {
         return await this.repository.findOne({ where: { id } });
     }
-    createUser(body) {
+    async getAllUser() {
+        return await this.repository.find();
+    }
+    async createUser(body) {
         const user = new user_entity_1.User();
         user.name = body.name;
         user.avatar = body.avatar;
         user.status = user_status_enum_1.UserStatus.online;
-        return this.repository.save(user);
+        return await this.repository.save(user);
     }
 };
 __decorate([

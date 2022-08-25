@@ -16,9 +16,27 @@ exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const user_dto_1 = require("../dto/user.dto");
 const user_service_1 = require("./user.service");
+const api42client_1 = require("api42client");
 let UserController = class UserController {
+    getauthedUser(code) {
+        var app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
+        var token = app.get_Access_token(code);
+        token.then((data) => {
+            console.log("======================== auth user Data =========================");
+            console.log(data);
+            console.log("========================= 42 user data ==========================");
+            app.get_user_data(data.access_token).then((data) => {
+                console.log(data);
+                console.log("=============================================================");
+            });
+        });
+        return `hello ${code['code']}`;
+    }
     getUser(id) {
         return this.service.getUser(id);
+    }
+    getAllUsers() {
+        return this.service.getAllUser();
     }
     createUser(body) {
         return this.service.createUser(body);
@@ -29,12 +47,25 @@ __decorate([
     __metadata("design:type", user_service_1.UserService)
 ], UserController.prototype, "service", void 0);
 __decorate([
+    (0, common_1.Get)('redirect'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "getauthedUser", null);
+__decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUser", null);
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getAllUsers", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),

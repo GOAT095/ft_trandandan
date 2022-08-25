@@ -14,16 +14,16 @@ export class UserService {
     {
         return await this.repository.findOne({where:{id}});
     }
-    // public async getAllUser():Promise<User[]>
-    // {
-    //     return await this.repository.
-    // }
-    public createUser(body: CreateUserDto): Promise<User> {
+    public async getAllUser():Promise<User[]>
+    {
+        return await this.repository.find();
+    }
+    public async createUser(body: CreateUserDto): Promise<User> {
         const user: User = new User();
     
         user.name = body.name;
         user.avatar = body.avatar;
         user.status = UserStatus.online;
-        return this.repository.save(user);
+        return await this.repository.save(user);
       }
 }

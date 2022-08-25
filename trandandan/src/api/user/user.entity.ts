@@ -28,9 +28,9 @@ export class User{
    * Create and Update Date Columns
    */
 
-  @CreateDateColumn({ type: 'timestamp' })
-  public createdAt: Date;
+//   @CreateDateColumn({ type: 'timestamp' })
+//   public createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
-  public updatedAt: Date;
+//   @UpdateDateColumn({ type: 'timestamp' })
+//   public updatedAt: Date;
 }

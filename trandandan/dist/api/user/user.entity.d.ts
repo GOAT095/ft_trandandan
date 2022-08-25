@@ -7,6 +7,4 @@ export declare class User {
     losses: number;
     lvl: number;
     status: UserStatus;
-    createdAt: Date;
-    updatedAt: Date;
 }
