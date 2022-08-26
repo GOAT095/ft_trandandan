@@ -20,15 +20,11 @@ const api42client_1 = require("api42client");
 let UserController = class UserController {
     async getauthedUser(code) {
         var app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
-        console.log("CHECK :" + code + "      ");
         var data = await app.get_Access_token(code);
         console.log("======================== auth user Data =========================");
         console.log("========================= 42 user data ==========================");
-        await app.get_user_data(data.access_token).then((data) => {
-            console.log(data);
-            console.log("=============================================================");
-        });
-        return 'hello' + JSON.stringify(data);
+        const d = await app.get_user_data(data.access_token).then((data));
+        return "Hello " + d.login;
     }
     getUser(id) {
         return this.service.getUser(id);

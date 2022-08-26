@@ -1,5 +1,5 @@
 
-import { Body, Controller, Get, Inject, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Inject, NotFoundException, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { CreateUserDto } from '../dto/user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -15,7 +15,7 @@ export class UserController {
   @Get('redirect')
  async getauthedUser(@Query('code') code : string){
     var app = new Authenticator(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
-  console.log("CHECK :" + code  + "      " )
+  // console.log("CHECK :" + code  + "      " )
     var data =  await app.get_Access_token(code);
     // console.log("CHECK " + JSON.stringify(data));
     // token.then((data) => {
@@ -24,12 +24,10 @@ export class UserController {
       // console.log(data);
       console.log("========================= 42 user data ==========================");
       // get the user info from 42 api
-      await app.get_user_data(data.access_token).then((data) => {
-        console.log(data);
-        console.log("=============================================================");
-      });
+     
+        const d = await app.get_user_data(data.access_token).then((data));
     // });
-     return 'hello' + JSON.stringify(data);
+    return "Hello "+ d.login;
   }
   @Get(':id')
   public getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
@@ -38,7 +36,6 @@ export class UserController {
   }
   @Get()
   public getAllUsers(): Promise<User[]> {
-    
      return this.service.getAllUser();
   }
 
