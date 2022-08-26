@@ -15,7 +15,7 @@ const user_status_enum_1 = require("./user.status.enum");
 let User = class User {
 };
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    (0, typeorm_1.PrimaryColumn)(),
     __metadata("design:type", Number)
 ], User.prototype, "id", void 0);
 __decorate([
@@ -39,7 +39,7 @@ __decorate([
     __metadata("design:type", Number)
 ], User.prototype, "lvl", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ default: "online" }),
     __metadata("design:type", String)
 ], User.prototype, "status", void 0);
 User = __decorate([

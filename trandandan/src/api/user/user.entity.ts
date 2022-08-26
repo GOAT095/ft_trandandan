@@ -1,10 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn  } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn  } from "typeorm";
 import { UserStatus } from "./user.status.enum";
 
 @Entity()
 export class User{
 
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   public id: number;
 
   @Column({ type: 'varchar', length: 120 })
@@ -22,7 +22,7 @@ export class User{
   @Column({default:0})
   public lvl:number;
 
-  @Column()
+  @Column({default:"online"})
   status: UserStatus;
   /*
    * Create and Update Date Columns

@@ -21,10 +21,9 @@ let UserController = class UserController {
     async getauthedUser(code) {
         var app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
         var data = await app.get_Access_token(code);
-        console.log("======================== auth user Data =========================");
-        console.log("========================= 42 user data ==========================");
-        const d = await app.get_user_data(data.access_token).then((data));
-        return "Hello " + d.login;
+        let d = await app.get_user_data(data.access_token).then((data));
+        if (!this.service.addUserToDB(d))
+            return "Hello " + d.login;
     }
     getUser(id) {
         return this.service.getUser(id);

@@ -29,6 +29,16 @@ let UserService = class UserService {
         user.status = user_status_enum_1.UserStatus.online;
         return await this.repository.save(user);
     }
+    async addUserToDB(user) {
+        let ret = new user_entity_1.User();
+        ret.id = user.id;
+        ret.name = user.login;
+        ret.avatar = user.image_url;
+        user.status = user_status_enum_1.UserStatus.online;
+        console.log(user.status);
+        await this.repository.save(ret);
+        return true;
+    }
 };
 __decorate([
     (0, typeorm_1.InjectRepository)(user_entity_1.User),

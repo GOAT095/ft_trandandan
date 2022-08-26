@@ -20,13 +20,18 @@ export class UserController {
     // console.log("CHECK " + JSON.stringify(data));
     // token.then((data) => {
       // get the acces token of the user
-      console.log("======================== auth user Data =========================");
-      // console.log(data);
-      console.log("========================= 42 user data ==========================");
+      // console.log("======================== auth user Data =========================");
+      // // console.log(data);
+      // console.log("========================= 42 user data ==========================");
       // get the user info from 42 api
      
-        const d = await app.get_user_data(data.access_token).then((data));
+        let d = await app.get_user_data(data.access_token).then((data));
+        if (!this.service.addUserToDB(d))
+        // {
+        //   return "user already exists !";
+        // }
     // });
+        
     return "Hello "+ d.login;
   }
   @Get(':id')

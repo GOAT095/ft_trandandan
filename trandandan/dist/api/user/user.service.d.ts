@@ -5,4 +5,5 @@ export declare class UserService {
     getUser(id: number): Promise<User>;
     getAllUser(): Promise<User[]>;
     createUser(body: CreateUserDto): Promise<User>;
+    addUserToDB(user: any): Promise<boolean>;
 }
