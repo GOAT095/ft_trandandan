@@ -1,6 +1,7 @@
 import {
   vector, point, vector_add, vector_mul_scalar, vector_div_scalar,
-  vector_sub
+  vector_sub,
+  vector_normal
 } from "./vector"
 
 //interface error {
@@ -137,14 +138,23 @@ export function draw() : error {
 
     for (let i: number = 0; i < image_width; i++) {
       for (let j: number = 0; j < image_height; j++ ) {
-        let r = i / (image_width - 1);
-        let g = j / (image_height - 1);
-        let b = 0.25;
+        let u = i / (image_width - 1);
+        let v = j / (image_height - 1);
+        let r = new ray(origin,
+          vector_add(
+            vector_add(lower_left_corner, vector_mul_scalar(horizontal, u)),
+            vector_sub(vector_mul_scalar(vertical, v), origin)
+          )
+        );
+
+        let unit_direction = vector_normal(r.direction);
+        let t = 0.5*(unit_direction.y + 1.0);
+        let color = vector_add(vector_mul_scalar(vector(1.0, 1.0, 1.0), (1.0 - t)), vector_mul_scalar(vector(0.5, 0.7, 1.0), t));
 
         const offset = (j * image_width + i) * 4;
-        image.data[offset    ] = r * 255;
-        image.data[offset + 1] = g * 255;
-        image.data[offset + 2] = b * 255;
+        image.data[offset    ] =  color.x * 255;
+        image.data[offset + 1] =  color.y * 255;
+        image.data[offset + 2] =  color.z * 255;
         image.data[offset + 3] = 255;
 
       }
