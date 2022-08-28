@@ -86,19 +86,17 @@ export function vector_magnitude(x: vector) : number {
     return Math.sqrt(
         x.x * x.x +
         x.y * x.y +
-        x.z * x.z +
-        x.w * x.w
+        x.z * x.z
         )
 }
 
 export function vector_normal(x: vector) : vector {
     let mag : number = vector_magnitude(x);
-    return  {
-        x: x.x / mag,
-        y: x.y / mag,
-        z: x.z / mag,
-        w: x.w / mag
-    };
+    return vector(
+        x.x / mag,
+        x.y / mag,
+        x.z / mag
+    );
 }
 
 export function vector_cross_product(x: vector, y: vector) : vector {
@@ -131,4 +129,17 @@ export function equal(x: vector, y: vector) : boolean {
 
 export function dot(x: vector, y: vector) : number {
     return (x.x * y.x + x.y * y.y + x.z * y.z);
+}
+
+export function orthonormal(v: vector) {
+   const x = Math.abs(v.x);
+   const y = Math.abs(v.y);
+   const z = Math.abs(v.z);
+   if (x <= y && y <= z) {
+    return vector(1, y, z);
+   }
+   if (y <= x && x <= z) {
+    return vector(x, 1, z);
+   }
+   return vector(x, y, 1);
 }
