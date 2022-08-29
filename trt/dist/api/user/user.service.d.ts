@@ -6,6 +6,6 @@ export declare class UserService {
     getAllUser(): Promise<User[]>;
     createUser(body: CreateUserDto): Promise<User>;
     addUserToDB(user: any): Promise<boolean>;
-    updateUsername(id: number, username: string): Promise<User>;
+    updateUsername(id: number, username: string, avatar: string): Promise<User>;
     removeUser(id: number): Promise<boolean>;
 }

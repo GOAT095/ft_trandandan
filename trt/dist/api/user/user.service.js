@@ -38,12 +38,15 @@ let UserService = class UserService {
         await this.repository.save(ret);
         return true;
     }
-    async updateUsername(id, username) {
+    async updateUsername(id, username, avatar) {
         let user = await this.getUserByid(id);
         if (!user)
             throw new common_1.NotFoundException(`user with id ${id} not found`);
         if (username) {
             user.name = username;
+        }
+        if (avatar) {
+            user.avatar = avatar;
         }
         await this.repository.save(user);
         return await this.getUserByid(id);

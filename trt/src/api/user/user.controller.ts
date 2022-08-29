@@ -49,18 +49,19 @@ export class UserController {
     
     return this.service.createUser(body);
   }
-  // @Patch(':id/avatar')
+  @Patch(':id/update')
+  async updateUsername(@Param('id', ParseIntPipe) id: number, @Body('name') name: string, @Body('avatar') avatar: string): Promise <User>
+  {
+    const username = name;
+    return await this.service.updateUsername(id, username, avatar);
+  }
+  @Patch(':id/avatar')
   // async updateUseravatar(@Param('id', ParseIntPipe) id: number, @Body('avatar') avatar: string): Promise <User>
   // {
   //   const av = avatar;
   //   return await this.service.updateUsername(id, av);
   // }
-  @Patch(':id/name')
-  async updateUsername(@Param('id', ParseIntPipe) id: number, @Body('name') name: string): Promise <User>
-  {
-    const username = name;
-    return await this.service.updateUsername(id, username);
-  }
+  
   @Delete(':id')
   async removeUser(@Param('id', ParseIntPipe) id: number) : Promise <Boolean>
   {

@@ -42,12 +42,14 @@ export class UserService {
         await this.repository.save(ret);
         return true;
     }
-    async updateUsername(id: number, username: string): Promise<User>{
+    async updateUsername(id: number, username: string, avatar: string): Promise<User>{
         let user = await this.getUserByid(id);
         if(!user)
             throw new NotFoundException(`user with id ${id} not found`);
         if(username)
         {user.name = username;}
+        if(avatar)
+        {user.avatar = avatar;}
         await this.repository.save(user);
         return await this.getUserByid(id);
     }

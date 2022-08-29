@@ -36,9 +36,9 @@ let UserController = class UserController {
     createUser(body) {
         return this.service.createUser(body);
     }
-    async updateUsername(id, name) {
+    async updateUsername(id, name, avatar) {
         const username = name;
-        return await this.service.updateUsername(id, username);
+        return await this.service.updateUsername(id, username, avatar);
     }
     async removeUser(id) {
         return this.service.removeUser(id);
@@ -76,14 +76,16 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "createUser", null);
 __decorate([
-    (0, common_1.Patch)(':id/name'),
+    (0, common_1.Patch)(':id/update'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)('name')),
+    __param(2, (0, common_1.Body)('avatar')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String]),
+    __metadata("design:paramtypes", [Number, String, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUsername", null);
 __decorate([
+    (0, common_1.Patch)(':id/avatar'),
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
