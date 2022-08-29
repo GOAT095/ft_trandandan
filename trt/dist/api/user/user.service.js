@@ -16,7 +16,7 @@ const user_entity_1 = require("./user.entity");
 const typeorm_2 = require("typeorm");
 const user_status_enum_1 = require("./user.status.enum");
 let UserService = class UserService {
-    async getUser(id) {
+    async getUserByid(id) {
         return await this.repository.findOne({ where: { id } });
     }
     async getAllUser() {
@@ -35,9 +35,22 @@ let UserService = class UserService {
         ret.name = user.login;
         ret.avatar = user.image_url;
         user.status = user_status_enum_1.UserStatus.online;
-        console.log(user.status);
         await this.repository.save(ret);
         return true;
+    }
+    async updateUsername(id, username) {
+        let user = await this.getUserByid(id);
+        if (!user)
+            throw new common_1.NotFoundException(`user with id ${id} not found`);
+        if (username) {
+            user.name = username;
+        }
+        await this.repository.save(user);
+        return await this.getUserByid(id);
+    }
+    async removeUser(id) {
+        const res = await this.repository.delete(id);
+        return (res.affected === 1);
     }
 };
 __decorate([

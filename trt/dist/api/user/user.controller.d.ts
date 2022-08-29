@@ -6,4 +6,6 @@ export declare class UserController {
     getUser(id: number): Promise<User>;
     getAllUsers(): Promise<User[]>;
     createUser(body: CreateUserDto): Promise<User>;
+    updateUsername(id: number, name: string): Promise<User>;
+    removeUser(id: number): Promise<Boolean>;
 }

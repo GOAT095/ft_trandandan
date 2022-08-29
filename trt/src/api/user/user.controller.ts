@@ -1,5 +1,5 @@
 
-import { Body, Controller, Get, Inject, NotFoundException, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, NotFoundException, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CreateUserDto } from '../dto/user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -24,20 +24,20 @@ export class UserController {
       // // console.log(data);
       // console.log("========================= 42 user data ==========================");
       // get the user info from 42 api
-     
+        // console.log(await app.get_user_data(data.access_token));
         let d = await app.get_user_data(data.access_token).then((data));
         if (!this.service.addUserToDB(d))
-        // {
-        //   return "user already exists !";
-        // }
+        {
+          return "user already exists !";
+        }
     // });
         
-    return "Hello "+ d.login;
+    return "Hello "+ JSON.stringify(d.login);
   }
   @Get(':id')
   public getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
     
-     return this.service.getUser(id);
+     return this.service.getUserByid(id);
   }
   @Get()
   public getAllUsers(): Promise<User[]> {
@@ -49,6 +49,21 @@ export class UserController {
     
     return this.service.createUser(body);
   }
-  
-  
+  // @Patch(':id/avatar')
+  // async updateUseravatar(@Param('id', ParseIntPipe) id: number, @Body('avatar') avatar: string): Promise <User>
+  // {
+  //   const av = avatar;
+  //   return await this.service.updateUsername(id, av);
+  // }
+  @Patch(':id/name')
+  async updateUsername(@Param('id', ParseIntPipe) id: number, @Body('name') name: string): Promise <User>
+  {
+    const username = name;
+    return await this.service.updateUsername(id, username);
+  }
+  @Delete(':id')
+  async removeUser(@Param('id', ParseIntPipe) id: number) : Promise <Boolean>
+  {
+    return  this.service.removeUser(id);
+  }
 }

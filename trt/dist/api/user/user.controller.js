@@ -22,17 +22,26 @@ let UserController = class UserController {
         var app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
         var data = await app.get_Access_token(code);
         let d = await app.get_user_data(data.access_token).then((data));
-        if (!this.service.addUserToDB(d))
-            return "Hello " + d.login;
+        if (!this.service.addUserToDB(d)) {
+            return "user already exists !";
+        }
+        return "Hello " + JSON.stringify(d.login);
     }
     getUser(id) {
-        return this.service.getUser(id);
+        return this.service.getUserByid(id);
     }
     getAllUsers() {
         return this.service.getAllUser();
     }
     createUser(body) {
         return this.service.createUser(body);
+    }
+    async updateUsername(id, name) {
+        const username = name;
+        return await this.service.updateUsername(id, username);
+    }
+    async removeUser(id) {
+        return this.service.removeUser(id);
     }
 };
 __decorate([
@@ -66,6 +75,21 @@ __decorate([
     __metadata("design:paramtypes", [user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "createUser", null);
+__decorate([
+    (0, common_1.Patch)(':id/name'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)('name')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateUsername", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "removeUser", null);
 UserController = __decorate([
     (0, common_1.Controller)('user')
 ], UserController);
