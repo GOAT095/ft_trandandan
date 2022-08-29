@@ -22,7 +22,7 @@ let UserController = class UserController {
         var app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
         var data = await app.get_Access_token(code);
         let d = await app.get_user_data(data.access_token).then((data));
-        if (!this.service.addUserToDB(d)) {
+        if (!(await this.service.addUserToDB(d))) {
             return "user already exists !";
         }
         return "Hello " + JSON.stringify(d.login);

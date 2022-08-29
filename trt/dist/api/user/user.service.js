@@ -30,6 +30,10 @@ let UserService = class UserService {
         return await this.repository.save(user);
     }
     async addUserToDB(user) {
+        let x = await this.getUserByid(user.id);
+        if (x.id) {
+            return false;
+        }
         let ret = new user_entity_1.User();
         ret.id = user.id;
         ret.name = user.login;

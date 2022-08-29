@@ -29,11 +29,12 @@ export class UserService {
       }
     async addUserToDB(user: any): Promise <boolean>
     {
-        // let x  = await this.getUserByid(user.id);
-        // if(!x.id)
-        // {
-        //     return false;
-        // }
+        let x  = await this.getUserByid(user.id);
+        // console.log(x);
+        if(x.id)
+        {
+            return false;
+        }
         let ret : User = new User();
         ret.id = user.id;
         ret.name = user.login;

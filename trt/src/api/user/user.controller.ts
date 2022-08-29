@@ -26,11 +26,10 @@ export class UserController {
       // get the user info from 42 api
         // console.log(await app.get_user_data(data.access_token));
         let d = await app.get_user_data(data.access_token).then((data));
-        if (!this.service.addUserToDB(d))
+        if (!(await this.service.addUserToDB(d)))
         {
           return "user already exists !";
         }
-    // });
         
     return "Hello "+ JSON.stringify(d.login);
   }
