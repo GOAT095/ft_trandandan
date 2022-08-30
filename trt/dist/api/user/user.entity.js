@@ -10,12 +10,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
+const class_validator_1 = require("class-validator");
 const typeorm_1 = require("typeorm");
 const user_status_enum_1 = require("./user.status.enum");
 let User = class User {
 };
 __decorate([
     (0, typeorm_1.PrimaryColumn)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Number)
 ], User.prototype, "id", void 0);
 __decorate([

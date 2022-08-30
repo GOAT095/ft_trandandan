@@ -21,7 +21,7 @@ let UserController = class UserController {
     async getauthedUser(code) {
         var app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
         var data = await app.get_Access_token(code);
-        console.log("CHECK " + data);
+        console.log("CHECK " + JSON.stringify(data));
         if (data.access_token) {
             let d = await app.get_user_data(data.access_token);
             if (!(await this.service.addUserToDB(d))) {
@@ -91,9 +91,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUsername", null);
 __decorate([
-    (0, common_1.Patch)(':id/avatar'),
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, common_1.Delete)('/:id/delete'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)

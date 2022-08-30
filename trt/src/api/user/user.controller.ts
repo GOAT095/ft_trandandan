@@ -15,7 +15,7 @@ export class UserController {
     var app = new Authenticator(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
     
     var data =  await app.get_Access_token(code);
-    console.log("CHECK " + data); //token, refresh_token,
+    console.log("CHECK " + JSON.stringify(data)); //token, refresh_token,
     // token.then((data) => {
       // get the acces token of the user
       // console.log("======================== auth user Data =========================");
@@ -57,15 +57,15 @@ export class UserController {
     const username = name;
     return await this.service.updateUsername(id, username, avatar);
   }
-  @Patch(':id/avatar')
+  // @Patch(':id/avatar')
   // async updateUseravatar(@Param('id', ParseIntPipe) id: number, @Body('avatar') avatar: string): Promise <User>
   // {
   //   const av = avatar;
   //   return await this.service.updateUsername(id, av);
   // }
   
-  @Delete(':id')
-  async removeUser(@Param('id', ParseIntPipe) id: number) : Promise <Boolean>
+  @Delete('/:id/delete')
+  async removeUser(@Param('id') id : number) : Promise <Boolean>
   {
     return  this.service.removeUser(id);
   }
