@@ -21,11 +21,17 @@ let UserController = class UserController {
     async getauthedUser(code) {
         var app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
         var data = await app.get_Access_token(code);
-        let d = await app.get_user_data(data.access_token).then((data));
-        if (!(await this.service.addUserToDB(d))) {
-            return "user already exists !";
+        console.log("CHECK " + data);
+        if (data.access_token) {
+            let d = await app.get_user_data(data.access_token);
+            if (!(await this.service.addUserToDB(d))) {
+                return `user ${d.login} already exists !`;
+            }
+            return "Hello " + d.login;
         }
-        return "Hello " + JSON.stringify(d.login);
+        else {
+            throw new common_1.HttpException('Forbidden', common_1.HttpStatus.FORBIDDEN);
+        }
     }
     getUser(id) {
         return this.service.getUserByid(id);

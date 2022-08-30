@@ -31,7 +31,7 @@ export class UserService {
     {
         let x  = await this.getUserByid(user.id);
         // console.log(x);
-        if(x.id)
+        if(x)
         {
             return false;
         }

@@ -1,3 +1,4 @@
+import { IsNotEmpty } from "class-validator";
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn  } from "typeorm";
 import { UserStatus } from "./user.status.enum";
 
@@ -5,6 +6,7 @@ import { UserStatus } from "./user.status.enum";
 export class User{
 
   @PrimaryColumn()
+  // @IsNotEmpty()
   public id: number;
 
   @Column({ type: 'varchar', length: 120 })

@@ -31,7 +31,7 @@ let UserService = class UserService {
     }
     async addUserToDB(user) {
         let x = await this.getUserByid(user.id);
-        if (x.id) {
+        if (x) {
             return false;
         }
         let ret = new user_entity_1.User();

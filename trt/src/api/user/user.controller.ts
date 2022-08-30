@@ -1,11 +1,9 @@
 
-import { Body, Controller, Delete, Get, Inject, NotFoundException, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Inject, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CreateUserDto } from '../dto/user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import Authenticator from "api42client";
-import { Code } from 'typeorm';
-import { json } from 'stream/consumers';
 
 @Controller('user')
 export class UserController {
@@ -13,11 +11,11 @@ export class UserController {
   private readonly service: UserService;
 
   @Get('redirect')
- async getauthedUser(@Query('code') code : string){
+  async getauthedUser(@Query('code') code : string){
     var app = new Authenticator(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
-  // console.log("CHECK :" + code  + "      " )
+    
     var data =  await app.get_Access_token(code);
-    // console.log("CHECK " + JSON.stringify(data));
+    console.log("CHECK " + data); //token, refresh_token,
     // token.then((data) => {
       // get the acces token of the user
       // console.log("======================== auth user Data =========================");
@@ -25,13 +23,18 @@ export class UserController {
       // console.log("========================= 42 user data ==========================");
       // get the user info from 42 api
         // console.log(await app.get_user_data(data.access_token));
-        let d = await app.get_user_data(data.access_token).then((data));
-        if (!(await this.service.addUserToDB(d)))
-        {
-          return "user already exists !";
-        }
-        
-    return "Hello "+ JSON.stringify(d.login);
+ 
+          if(data.access_token)
+          {let d = await app.get_user_data(data.access_token);
+          if (!(await this.service.addUserToDB(d)))
+              {
+                return `user ${d.login} already exists !`;
+              }
+          
+          return "Hello "+ d.login;
+          }
+          else
+          {throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);}
   }
   @Get(':id')
   public getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
