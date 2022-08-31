@@ -17,17 +17,25 @@ const common_1 = require("@nestjs/common");
 const user_dto_1 = require("../dto/user.dto");
 const user_service_1 = require("./user.service");
 const api42client_1 = require("api42client");
+const jwt_1 = require("@nestjs/jwt");
 let UserController = class UserController {
     async getauthedUser(code) {
         var app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
         var data = await app.get_Access_token(code);
-        console.log("CHECK " + JSON.stringify(data));
         if (data.access_token) {
-            let d = await app.get_user_data(data.access_token);
+            const d = await app.get_user_data(data.access_token);
             if (!(await this.service.addUserToDB(d))) {
-                return `user ${d.login} already exists !`;
+                const id = await (await this.getUser(d.id)).id;
+                const payload = { id };
+                const accesToken = await this.JwtService.sign(payload);
+                return accesToken;
             }
-            return "Hello " + d.login;
+            else {
+                const id = await (await this.getUser(d.id)).id;
+                const payload = { id };
+                const accesToken = await this.JwtService.sign(payload);
+                return accesToken;
+            }
         }
         else {
             throw new common_1.HttpException('Forbidden', common_1.HttpStatus.FORBIDDEN);
@@ -54,6 +62,10 @@ __decorate([
     (0, common_1.Inject)(user_service_1.UserService),
     __metadata("design:type", user_service_1.UserService)
 ], UserController.prototype, "service", void 0);
+__decorate([
+    (0, common_1.Inject)(jwt_1.JwtService),
+    __metadata("design:type", jwt_1.JwtService)
+], UserController.prototype, "JwtService", void 0);
 __decorate([
     (0, common_1.Get)('redirect'),
     __param(0, (0, common_1.Query)('code')),

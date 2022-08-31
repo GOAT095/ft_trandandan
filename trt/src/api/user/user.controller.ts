@@ -1,21 +1,26 @@
 
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Inject, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CreateUserDto } from '../dto/user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import Authenticator from "api42client";
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from './jwt.payload.interface';
+import { response } from 'express';
 
 @Controller('user')
 export class UserController {
   @Inject(UserService)
   private readonly service: UserService;
+  @Inject(JwtService)
+  private readonly JwtService: JwtService;
 
   @Get('redirect')
   async getauthedUser(@Query('code') code : string){
     var app = new Authenticator(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
     
     var data =  await app.get_Access_token(code);
-    console.log("CHECK " + JSON.stringify(data)); //token, refresh_token,
+    // console.log("CHECK " + JSON.stringify(data)); //token, refresh_token,
     // token.then((data) => {
       // get the acces token of the user
       // console.log("======================== auth user Data =========================");
@@ -25,13 +30,26 @@ export class UserController {
         // console.log(await app.get_user_data(data.access_token));
  
           if(data.access_token)
-          {let d = await app.get_user_data(data.access_token);
+          { 
+            const d = await app.get_user_data(data.access_token);
+            
+            // console.log(id + "dawdawdawdawdada")
           if (!(await this.service.addUserToDB(d)))
               {
-                return `user ${d.login} already exists !`;
+                const id =  await (await this.getUser(d.id)).id;
+                const payload: JwtPayload = {id};
+                const accesToken = await this.JwtService.sign(payload);
+                // response.cookie('jwt', accesToken);
+                return accesToken;
               }
-          
-          return "Hello "+ d.login;
+          else{
+            // console.log(user);
+            const id =  await (await this.getUser(d.id)).id;
+            const payload: JwtPayload = {id};
+            const accesToken = await this.JwtService.sign(payload);
+            return accesToken;
+          }
+          // console.log("Hello "+ d.login);
           }
           else
           {throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);}

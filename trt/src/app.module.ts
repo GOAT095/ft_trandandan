@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './api/user/user.entity';
 import { UserModule } from './api/user/user.module';
-
 @Module({
   imports: [UserModule, TypeOrmModule.forRoot({
     type: 'postgres',
@@ -16,6 +15,7 @@ import { UserModule } from './api/user/user.module';
     entities: [User],
     logger: 'file',
     synchronize: true, // never use TRUE in productio
+
   })],
   controllers: [AppController],
   providers: [AppService],

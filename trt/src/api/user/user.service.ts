@@ -10,7 +10,7 @@ import { userInfo } from 'os';
 export class UserService {
     @InjectRepository(User)
     private readonly repository: Repository<User>;
-
+    private readonly 
      async getUserByid(id: number):Promise<User>
     {
         return await this.repository.findOne({where:{id}});
@@ -68,4 +68,5 @@ export class UserService {
         const res = await this.repository.delete(id);
         return (res.affected === 1);
       }
+    
 }
