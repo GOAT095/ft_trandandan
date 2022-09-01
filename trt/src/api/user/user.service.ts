@@ -10,8 +10,7 @@ import { userInfo } from 'os';
 export class UserService {
     @InjectRepository(User)
     private readonly repository: Repository<User>;
-    private readonly 
-     async getUserByid(id: number):Promise<User>
+    async getUserByid(id: number):Promise<User>
     {
         return await this.repository.findOne({where:{id}});
     }

@@ -22,14 +22,13 @@ const typeorm_2 = require("typeorm");
 let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
     constructor(userRepository) {
         super({
-            jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken,
+            jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
             secretOrKey: process.env.JWT_SECRET,
         });
         this.userRepository = userRepository;
     }
     async validate(payload) {
         const { id } = payload;
-        console.log("id =" + id);
         const user = await this.userRepository.findOne({ where: { id } });
         if (!user) {
             throw new common_1.UnauthorizedException();

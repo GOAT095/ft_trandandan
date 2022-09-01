@@ -1,4 +1,4 @@
-import { JwtPayload } from "../user/jwt.payload.interface";
+import { JwtPayload } from "./jwt.payload.interface";
 import { User } from "../user/user.entity";
 import { Repository } from "typeorm";
 declare const JwtStrategy_base: new (...args: any[]) => any;

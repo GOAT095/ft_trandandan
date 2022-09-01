@@ -18,6 +18,7 @@ const user_dto_1 = require("../dto/user.dto");
 const user_service_1 = require("./user.service");
 const api42client_1 = require("api42client");
 const jwt_1 = require("@nestjs/jwt");
+const passport_1 = require("@nestjs/passport");
 let UserController = class UserController {
     async getauthedUser(code) {
         var app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
@@ -103,6 +104,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUsername", null);
 __decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Delete)('/:id/delete'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),

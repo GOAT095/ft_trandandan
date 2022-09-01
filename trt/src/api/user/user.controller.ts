@@ -1,12 +1,12 @@
 
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from '../dto/user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import Authenticator from "api42client";
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from './jwt.payload.interface';
-import { response } from 'express';
+import { JwtPayload } from '../auth/jwt.payload.interface';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
@@ -42,7 +42,7 @@ export class UserController {
                 // response.cookie('jwt', accesToken);
                 return accesToken;
               }
-          else{
+          else {
             // console.log(user);
             const id =  await (await this.getUser(d.id)).id;
             const payload: JwtPayload = {id};
@@ -56,7 +56,6 @@ export class UserController {
   }
   @Get(':id')
   public getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    
      return this.service.getUserByid(id);
   }
   @Get()
@@ -81,10 +80,11 @@ export class UserController {
   //   const av = avatar;
   //   return await this.service.updateUsername(id, av);
   // }
-  
+  @UseGuards(AuthGuard())
   @Delete('/:id/delete')
-  async removeUser(@Param('id') id : number) : Promise <Boolean>
+  async removeUser(@Param('id') id : number,) : Promise <Boolean>
   {
+    // console.log(req);
     return  this.service.removeUser(id);
   }
 }
