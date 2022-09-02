@@ -1,5 +1,5 @@
 
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from '../dto/user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -7,6 +7,7 @@ import Authenticator from "api42client";
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../auth/jwt.payload.interface';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from '../auth/get-user.decorator';
 
 @Controller('user')
 export class UserController {
@@ -58,8 +59,10 @@ export class UserController {
   public getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
      return this.service.getUserByid(id);
   }
+  @UseGuards(AuthGuard())
   @Get()
   public getAllUsers(): Promise<User[]> {
+    //  console.log(req.user);
      return this.service.getAllUser();
   }
 
@@ -68,11 +71,16 @@ export class UserController {
     
     return this.service.createUser(body);
   }
+  @UseGuards(AuthGuard())
   @Patch(':id/update')
-  async updateUsername(@Param('id', ParseIntPipe) id: number, @Body('name') name: string, @Body('avatar') avatar: string): Promise <User>
+  async updateUsernameAvatar(@Param('id', ParseIntPipe) id: number, @Body('name') name: string, @Body('avatar') avatar: string
+  , @GetUser() user: User): Promise <User>
   {
-    const username = name;
-    return await this.service.updateUsername(id, username, avatar);
+    if(id === user.id)
+    {
+    return await this.service.updateUsernameAvatar(id, name, avatar);}
+    else
+      throw new UnauthorizedException('this user doesnt have the rights to edit');
   }
   // @Patch(':id/avatar')
   // async updateUseravatar(@Param('id', ParseIntPipe) id: number, @Body('avatar') avatar: string): Promise <User>
@@ -82,9 +90,14 @@ export class UserController {
   // }
   @UseGuards(AuthGuard())
   @Delete('/:id/delete')
-  async removeUser(@Param('id') id : number,) : Promise <Boolean>
+  async removeUser(@Param('id') id : number, @GetUser() user: User) : Promise <Boolean>
   {
-    // console.log(req);
-    return  this.service.removeUser(id);
+
+    // console.log(user);
+    if(id === user.id)
+    {
+    return  this.service.removeUser(id);}
+    else
+    throw new UnauthorizedException('this user doesnt have the rights to remove the user');
   }
 }

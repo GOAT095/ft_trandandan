@@ -15,10 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const user_dto_1 = require("../dto/user.dto");
+const user_entity_1 = require("./user.entity");
 const user_service_1 = require("./user.service");
 const api42client_1 = require("api42client");
 const jwt_1 = require("@nestjs/jwt");
 const passport_1 = require("@nestjs/passport");
+const get_user_decorator_1 = require("../auth/get-user.decorator");
 let UserController = class UserController {
     async getauthedUser(code) {
         var app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
@@ -51,12 +53,19 @@ let UserController = class UserController {
     createUser(body) {
         return this.service.createUser(body);
     }
-    async updateUsername(id, name, avatar) {
-        const username = name;
-        return await this.service.updateUsername(id, username, avatar);
+    async updateUsernameAvatar(id, name, avatar, user) {
+        if (id === user.id) {
+            return await this.service.updateUsernameAvatar(id, name, avatar);
+        }
+        else
+            throw new common_1.UnauthorizedException('this user doesnt have the rights to edit');
     }
-    async removeUser(id) {
-        return this.service.removeUser(id);
+    async removeUser(id, user) {
+        if (id === user.id) {
+            return this.service.removeUser(id);
+        }
+        else
+            throw new common_1.UnauthorizedException('this user doesnt have the rights to remove the user');
     }
 };
 __decorate([
@@ -82,6 +91,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUser", null);
 __decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -95,20 +105,23 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "createUser", null);
 __decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Patch)(':id/update'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)('name')),
     __param(2, (0, common_1.Body)('avatar')),
+    __param(3, (0, get_user_decorator_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String, String]),
+    __metadata("design:paramtypes", [Number, String, String, user_entity_1.User]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "updateUsername", null);
+], UserController.prototype, "updateUsernameAvatar", null);
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Delete)('/:id/delete'),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, get_user_decorator_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [Number, user_entity_1.User]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "removeUser", null);
 UserController = __decorate([
