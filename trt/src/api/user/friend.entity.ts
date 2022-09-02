@@ -5,15 +5,18 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 @Entity()
 export class Friends{
 
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
+  requestId: number;
+
   @IsNotEmpty()
   public sender: number;
 
 
   @IsNotEmpty()
+  @Column()
   public receiver: number;
 
   @Column({default: "pending"})
   public FriendStatus: string;
-
+  
 }

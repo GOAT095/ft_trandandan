@@ -15,12 +15,16 @@ const typeorm_1 = require("typeorm");
 let Friends = class Friends {
 };
 __decorate([
-    (0, typeorm_1.PrimaryColumn)(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    __metadata("design:type", Number)
+], Friends.prototype, "requestId", void 0);
+__decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Number)
 ], Friends.prototype, "sender", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Friends.prototype, "receiver", void 0);
 __decorate([

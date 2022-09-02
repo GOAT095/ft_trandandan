@@ -27,18 +27,11 @@ let UserController = class UserController {
         var data = await app.get_Access_token(code);
         if (data.access_token) {
             const d = await app.get_user_data(data.access_token);
-            if (!(await this.service.addUserToDB(d))) {
-                const id = await (await this.getUser(d.id)).id;
-                const payload = { id };
-                const accesToken = await this.JwtService.sign(payload);
-                return accesToken;
-            }
-            else {
-                const id = await (await this.getUser(d.id)).id;
-                const payload = { id };
-                const accesToken = await this.JwtService.sign(payload);
-                return accesToken;
-            }
+            await this.service.addUserToDB(d);
+            const id = await (await this.getUser(d.id)).id;
+            const payload = { id };
+            const accesToken = await this.JwtService.sign(payload);
+            return accesToken;
         }
         else {
             throw new common_1.HttpException('Forbidden', common_1.HttpStatus.FORBIDDEN);

@@ -1,5 +1,6 @@
 import { IsNotEmpty } from "class-validator";
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn  } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn, OneToMany  } from "typeorm";
+import { Friends } from "./friend.entity";
 import { UserStatus } from "./user.status.enum";
 
 @Entity()
@@ -26,6 +27,9 @@ export class User{
 
   @Column({default:"online"})
   status: UserStatus;
+
+  // @OneToMany(() => Friends, (friends) => friends.requestId)
+  // sentFriendrequests: Friends[];
   /*
    * Create and Update Date Columns
    */

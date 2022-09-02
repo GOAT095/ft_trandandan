@@ -35,22 +35,13 @@ export class UserController {
             const d = await app.get_user_data(data.access_token);
             
             // console.log(id + "dawdawdawdawdada")
-          if (!(await this.service.addUserToDB(d)))
-              {
-                const id =  await (await this.getUser(d.id)).id;
-                const payload: JwtPayload = {id};
-                const accesToken = await this.JwtService.sign(payload);
-                // response.cookie('jwt', accesToken);
-                return accesToken;
-              }
-          else {
-            // console.log(user);
+            await this.service.addUserToDB(d);
+            // console.log("Hello "+ d.login);
+            // console.log(d);
             const id =  await (await this.getUser(d.id)).id;
             const payload: JwtPayload = {id};
             const accesToken = await this.JwtService.sign(payload);
             return accesToken;
-          }
-          // console.log("Hello "+ d.login);
           }
           else
           {throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);}
