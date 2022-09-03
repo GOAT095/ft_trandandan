@@ -10,29 +10,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Friends = void 0;
-const class_validator_1 = require("class-validator");
 const typeorm_1 = require("typeorm");
+const user_entity_1 = require("./user.entity");
 let Friends = class Friends {
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Friends.prototype, "requestId", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", Number)
-], Friends.prototype, "sender", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Friends.prototype, "receiver", void 0);
+], Friends.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: "pending" }),
     __metadata("design:type", String)
 ], Friends.prototype, "FriendStatus", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (User) => User.sentFriendrequests),
+    __metadata("design:type", user_entity_1.User)
+], Friends.prototype, "requestSender", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (User) => User.receivedFriendrequests),
+    __metadata("design:type", user_entity_1.User)
+], Friends.prototype, "requestReceiver", void 0);
 Friends = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)('User')
 ], Friends);
 exports.Friends = Friends;
 //# sourceMappingURL=friend.entity.js.map

@@ -1,6 +1,7 @@
+import { User } from "./user.entity";
 export declare class Friends {
-    requestId: number;
-    sender: number;
-    receiver: number;
+    id: Number;
     FriendStatus: string;
+    requestSender: User;
+    requestReceiver: User;
 }

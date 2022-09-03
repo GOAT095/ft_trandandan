@@ -28,8 +28,11 @@ export class User{
   @Column({default:"online"})
   status: UserStatus;
 
-  // @OneToMany(() => Friends, (friends) => friends.requestId)
-  // sentFriendrequests: Friends[];
+  @OneToMany(() => Friends, (friends) => friends.requestSender)
+  sentFriendrequests: Friends[];
+
+  @OneToMany(() => Friends, (friends) => friends.requestReceiver)
+  receivedFriendrequests: Friends[];
   /*
    * Create and Update Date Columns
    */

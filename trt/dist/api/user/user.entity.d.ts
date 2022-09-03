@@ -1,3 +1,4 @@
+import { Friends } from "./friend.entity";
 import { UserStatus } from "./user.status.enum";
 export declare class User {
     id: number;
@@ -7,4 +8,6 @@ export declare class User {
     losses: number;
     lvl: number;
     status: UserStatus;
+    sentFriendrequests: Friends[];
+    receivedFriendrequests: Friends[];
 }

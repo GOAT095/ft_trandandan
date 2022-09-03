@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const class_validator_1 = require("class-validator");
 const typeorm_1 = require("typeorm");
+const friend_entity_1 = require("./friend.entity");
 const user_status_enum_1 = require("./user.status.enum");
 let User = class User {
 };
@@ -44,6 +45,14 @@ __decorate([
     (0, typeorm_1.Column)({ default: "online" }),
     __metadata("design:type", String)
 ], User.prototype, "status", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => friend_entity_1.Friends, (friends) => friends.requestSender),
+    __metadata("design:type", Array)
+], User.prototype, "sentFriendrequests", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => friend_entity_1.Friends, (friends) => friends.requestReceiver),
+    __metadata("design:type", Array)
+], User.prototype, "receivedFriendrequests", void 0);
 User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

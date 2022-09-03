@@ -13,6 +13,7 @@ const app_service_1 = require("./app.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./api/user/user.entity");
 const user_module_1 = require("./api/user/user.module");
+const friend_entity_1 = require("./api/user/friend.entity");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -24,7 +25,7 @@ AppModule = __decorate([
                 database: process.env.POSTGRES_DB,
                 username: process.env.POSTGRES_USER,
                 password: process.env.POSTGRES_PASS,
-                entities: [user_entity_1.User],
+                entities: [user_entity_1.User, friend_entity_1.Friends],
                 logger: 'file',
                 synchronize: true,
             })],
