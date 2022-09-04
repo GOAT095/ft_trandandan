@@ -36,7 +36,7 @@ import { Entity, DataSource, BaseEntity, Column, PrimaryColumn } from "typeorm";
 
 @Entity("cities")
 export class City extends BaseEntity {
-	@PrimaryColumn()
+	@PrimaryColumn({type: "varchar", length: 80})
 	name: string
 	@Column({type: "point"})
 	location: object
@@ -46,7 +46,7 @@ export class City extends BaseEntity {
 export class Weather extends BaseEntity {
 	@PrimaryColumn()
 	city: string
-	@Column()
+	@Column({type: "varchar", length: 80})
 	temp_lo: number
 	@Column()
 	temp_hi: number
