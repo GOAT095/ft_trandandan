@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"outDir": "./dist/",
+		"sourceMap": true,
+		"module": "node16",
+		"target": "es2017",
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"moduleResolution": "node",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"skipLibCheck": true
+	},
+	"exclude": [
+		"node_modules"
+	]
+}
