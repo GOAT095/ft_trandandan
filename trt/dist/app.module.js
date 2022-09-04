@@ -25,7 +25,7 @@ AppModule = __decorate([
                 database: process.env.POSTGRES_DB,
                 username: process.env.POSTGRES_USER,
                 password: process.env.POSTGRES_PASS,
-                entities: [user_entity_1.User, friend_entity_1.Friends],
+                entities: [user_entity_1.User, friend_entity_1.FriendrequestEntity],
                 logger: 'file',
                 synchronize: true,
             })],

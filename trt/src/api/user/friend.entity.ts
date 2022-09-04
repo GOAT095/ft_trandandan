@@ -3,8 +3,8 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { User } from "./user.entity";
 
 
-@Entity('User')
-export class Friends{
+@Entity('friends')
+export class FriendrequestEntity{
 
   @PrimaryGeneratedColumn()
   id: Number;

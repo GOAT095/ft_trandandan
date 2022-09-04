@@ -9,29 +9,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Friends = void 0;
+exports.FriendrequestEntity = void 0;
 const typeorm_1 = require("typeorm");
 const user_entity_1 = require("./user.entity");
-let Friends = class Friends {
+let FriendrequestEntity = class FriendrequestEntity {
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Friends.prototype, "id", void 0);
+], FriendrequestEntity.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: "pending" }),
     __metadata("design:type", String)
-], Friends.prototype, "FriendStatus", void 0);
+], FriendrequestEntity.prototype, "FriendStatus", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (User) => User.sentFriendrequests),
     __metadata("design:type", user_entity_1.User)
-], Friends.prototype, "requestSender", void 0);
+], FriendrequestEntity.prototype, "requestSender", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (User) => User.receivedFriendrequests),
     __metadata("design:type", user_entity_1.User)
-], Friends.prototype, "requestReceiver", void 0);
-Friends = __decorate([
-    (0, typeorm_1.Entity)('User')
-], Friends);
-exports.Friends = Friends;
+], FriendrequestEntity.prototype, "requestReceiver", void 0);
+FriendrequestEntity = __decorate([
+    (0, typeorm_1.Entity)('friends')
+], FriendrequestEntity);
+exports.FriendrequestEntity = FriendrequestEntity;
 //# sourceMappingURL=friend.entity.js.map

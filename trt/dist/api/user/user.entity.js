@@ -46,15 +46,15 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => friend_entity_1.Friends, (friends) => friends.requestSender),
+    (0, typeorm_1.OneToMany)(() => friend_entity_1.FriendrequestEntity, (FriendrequestEntity) => FriendrequestEntity.requestSender),
     __metadata("design:type", Array)
 ], User.prototype, "sentFriendrequests", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => friend_entity_1.Friends, (friends) => friends.requestReceiver),
+    (0, typeorm_1.OneToMany)(() => friend_entity_1.FriendrequestEntity, (FriendrequestEntity) => FriendrequestEntity.requestReceiver),
     __metadata("design:type", Array)
 ], User.prototype, "receivedFriendrequests", void 0);
 User = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)('user')
 ], User);
 exports.User = User;
 //# sourceMappingURL=user.entity.js.map

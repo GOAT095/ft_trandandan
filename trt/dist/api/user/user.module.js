@@ -12,6 +12,7 @@ const jwt_1 = require("@nestjs/jwt");
 const passport_1 = require("@nestjs/passport");
 const typeorm_1 = require("@nestjs/typeorm");
 const jwt_strategy_1 = require("../auth/jwt.strategy");
+const friend_entity_1 = require("./friend.entity");
 const user_controller_1 = require("./user.controller");
 const user_entity_1 = require("./user.entity");
 const user_service_1 = require("./user.service");
@@ -19,7 +20,7 @@ let UserModule = class UserModule {
 };
 UserModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
+        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, friend_entity_1.FriendrequestEntity]),
             passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
             jwt_1.JwtModule.register({
                 secret: process.env.JWT_SECRET,
