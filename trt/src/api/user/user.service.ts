@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import {CreateUserDto} from '../dto/user.dto'
 import { UserStatus } from './user.status.enum';
 import { userInfo } from 'os';
+import { FriendrequestEntity } from './friend.entity';
 
 @Injectable()
 export class UserService {
@@ -18,14 +19,17 @@ export class UserService {
     {
         return await this.repository.find();
     }
+
      async createUser(body: CreateUserDto): Promise<User> {
         const user: User = new User();
-    
+        
+        user.id = body.id;
         user.name = body.name;
         user.avatar = body.avatar;
         user.status = UserStatus.online;
         return await this.repository.save(user);
       }
+
     async addUserToDB(user: any): Promise <boolean>
     {
         let x  = await this.getUserByid(user.id);
@@ -67,5 +71,16 @@ export class UserService {
         const res = await this.repository.delete(id);
         return (res.affected === 1);
       }
+    async sendFriendRequest(receiverId: Number, sender: User): Promise<FriendrequestEntity>
+    {
+        if (receiverId === sender.id)
+            throw new ForbiddenException("can't add yourself");
+        
+        const receiver = await this.getUserByid(Number(receiverId));
+        const frindrequest: FriendrequestEntity = new FriendrequestEntity();
+        frindrequest.requestSender = sender;
+        frindrequest.requestReceiver = receiver;
+        return frindrequest;
+    }
     
 }

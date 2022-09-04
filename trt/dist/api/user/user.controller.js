@@ -60,6 +60,9 @@ let UserController = class UserController {
         else
             throw new common_1.UnauthorizedException('this user doesnt have the rights to remove the user');
     }
+    async sendFriendRequest(receiverId, user) {
+        return this.service.sendFriendRequest(receiverId, user);
+    }
 };
 __decorate([
     (0, common_1.Inject)(user_service_1.UserService),
@@ -117,6 +120,15 @@ __decorate([
     __metadata("design:paramtypes", [Number, user_entity_1.User]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "removeUser", null);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
+    (0, common_1.Post)('friend-request/send/:receiverId'),
+    __param(0, (0, common_1.Param)('receiverId')),
+    __param(1, (0, get_user_decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, user_entity_1.User]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "sendFriendRequest", null);
 UserController = __decorate([
     (0, common_1.Controller)('user')
 ], UserController);

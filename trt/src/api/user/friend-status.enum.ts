@@ -1,5 +1,5 @@
 export enum FriendStatus { 
-    online = 'pending',
-    offline = 'accepted',
-    ingame = 'declined',
+    pending = 'pending',
+    accepted = 'accepted',
+    declined = 'declined',
 }

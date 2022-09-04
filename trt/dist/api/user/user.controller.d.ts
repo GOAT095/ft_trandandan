@@ -1,5 +1,6 @@
 import { CreateUserDto } from '../dto/user.dto';
 import { User } from './user.entity';
+import { FriendrequestEntity } from './friend.entity';
 export declare class UserController {
     private readonly service;
     private readonly JwtService;
@@ -9,4 +10,5 @@ export declare class UserController {
     createUser(body: CreateUserDto): Promise<User>;
     updateUsernameAvatar(id: number, name: string, avatar: string, user: User): Promise<User>;
     removeUser(id: number, user: User): Promise<Boolean>;
+    sendFriendRequest(receiverId: Number, user: User): Promise<FriendrequestEntity>;
 }

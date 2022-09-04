@@ -15,6 +15,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./user.entity");
 const typeorm_2 = require("typeorm");
 const user_status_enum_1 = require("./user.status.enum");
+const friend_entity_1 = require("./friend.entity");
 let UserService = class UserService {
     async getUserByid(id) {
         return await this.repository.findOne({ where: { id } });
@@ -24,6 +25,7 @@ let UserService = class UserService {
     }
     async createUser(body) {
         const user = new user_entity_1.User();
+        user.id = body.id;
         user.name = body.name;
         user.avatar = body.avatar;
         user.status = user_status_enum_1.UserStatus.online;
@@ -58,6 +60,15 @@ let UserService = class UserService {
     async removeUser(id) {
         const res = await this.repository.delete(id);
         return (res.affected === 1);
+    }
+    async sendFriendRequest(receiverId, sender) {
+        if (receiverId === sender.id)
+            throw new common_1.ForbiddenException("can't add yourself");
+        const receiver = await this.getUserByid(Number(receiverId));
+        const frindrequest = new friend_entity_1.FriendrequestEntity();
+        frindrequest.requestSender = sender;
+        frindrequest.requestReceiver = receiver;
+        return frindrequest;
     }
 };
 __decorate([

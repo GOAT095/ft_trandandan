@@ -8,6 +8,8 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../auth/jwt.payload.interface';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/get-user.decorator';
+import { FriendStatus } from './friend-status.enum';
+import { FriendrequestEntity } from './friend.entity';
 
 @Controller('user')
 export class UserController {
@@ -50,6 +52,7 @@ export class UserController {
   public getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
      return this.service.getUserByid(id);
   }
+
   @UseGuards(AuthGuard())
   @Get()
   public getAllUsers(): Promise<User[]> {
@@ -62,6 +65,8 @@ export class UserController {
     
     return this.service.createUser(body);
   }
+
+
   @UseGuards(AuthGuard())
   @Patch(':id/update')
   async updateUsernameAvatar(@Param('id', ParseIntPipe) id: number, @Body('name') name: string, @Body('avatar') avatar: string
@@ -79,6 +84,8 @@ export class UserController {
   //   const av = avatar;
   //   return await this.service.updateUsername(id, av);
   // }
+
+
   @UseGuards(AuthGuard())
   @Delete('/:id/delete')
   async removeUser(@Param('id') id : number, @GetUser() user: User) : Promise <Boolean>
@@ -91,4 +98,12 @@ export class UserController {
     else
     throw new UnauthorizedException('this user doesnt have the rights to remove the user');
   }
+
+  @UseGuards(AuthGuard())
+  @Post('friend-request/send/:receiverId')
+  async sendFriendRequest(@Param('receiverId') receiverId: Number, @GetUser() user: User): Promise <FriendrequestEntity>{
+    
+    return this.service.sendFriendRequest(receiverId, user);
+  }
+  
 }

@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FriendrequestEntity = void 0;
 const typeorm_1 = require("typeorm");
+const friend_status_enum_1 = require("./friend-status.enum");
 const user_entity_1 = require("./user.entity");
 let FriendrequestEntity = class FriendrequestEntity {
 };
