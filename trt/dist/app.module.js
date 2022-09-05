@@ -13,7 +13,7 @@ const app_service_1 = require("./app.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./api/user/user.entity");
 const user_module_1 = require("./api/user/user.module");
-const friend_entity_1 = require("./api/user/friend.entity");
+const friend_entity_1 = require("./api/friends/friend.entity");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -29,8 +29,8 @@ AppModule = __decorate([
                 logger: 'file',
                 synchronize: true,
             })],
-        controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        controllers: [app_controller_1.AppController,],
+        providers: [app_service_1.AppService,],
     })
 ], AppModule);
 exports.AppModule = AppModule;

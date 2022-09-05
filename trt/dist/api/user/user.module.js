@@ -12,7 +12,9 @@ const jwt_1 = require("@nestjs/jwt");
 const passport_1 = require("@nestjs/passport");
 const typeorm_1 = require("@nestjs/typeorm");
 const jwt_strategy_1 = require("../auth/jwt.strategy");
-const friend_entity_1 = require("./friend.entity");
+const friend_entity_1 = require("../friends/friend.entity");
+const friends_controller_1 = require("../friends/friends.controller");
+const friends_service_1 = require("../friends/friends.service");
 const user_controller_1 = require("./user.controller");
 const user_entity_1 = require("./user.entity");
 const user_service_1 = require("./user.service");
@@ -27,10 +29,10 @@ UserModule = __decorate([
                 signOptions: { expiresIn: '1d' },
             }),
         ],
-        controllers: [user_controller_1.UserController],
-        providers: [user_service_1.UserService,
+        controllers: [user_controller_1.UserController, friends_controller_1.FriendsController],
+        providers: [user_service_1.UserService, friends_service_1.FriendsService,
             jwt_strategy_1.JwtStrategy],
-        exports: [jwt_strategy_1.JwtStrategy, passport_1.PassportModule],
+        exports: [jwt_strategy_1.JwtStrategy, passport_1.PassportModule, user_service_1.UserService]
     })
 ], UserModule);
 exports.UserModule = UserModule;

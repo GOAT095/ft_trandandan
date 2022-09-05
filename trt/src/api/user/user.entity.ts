@@ -1,11 +1,12 @@
 import { IsNotEmpty } from "class-validator";
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn, OneToMany  } from "typeorm";
-import { FriendrequestEntity } from "./friend.entity";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn, OneToMany, Unique  } from "typeorm";
+import { FriendrequestEntity } from "../friends/friend.entity";
 import { UserStatus } from "./user.status.enum";
 
 @Entity('user')
 export class User{
-
+  
+  
   @PrimaryColumn()
   @IsNotEmpty()
   public id: number;

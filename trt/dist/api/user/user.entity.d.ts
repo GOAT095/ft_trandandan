@@ -1,4 +1,4 @@
-import { FriendrequestEntity } from "./friend.entity";
+import { FriendrequestEntity } from "../friends/friend.entity";
 import { UserStatus } from "./user.status.enum";
 export declare class User {
     id: number;

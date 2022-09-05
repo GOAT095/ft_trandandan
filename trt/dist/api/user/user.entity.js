@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const class_validator_1 = require("class-validator");
 const typeorm_1 = require("typeorm");
-const friend_entity_1 = require("./friend.entity");
+const friend_entity_1 = require("../friends/friend.entity");
 const user_status_enum_1 = require("./user.status.enum");
 let User = class User {
 };

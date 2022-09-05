@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import {CreateUserDto} from '../dto/user.dto'
 import { UserStatus } from './user.status.enum';
 import { userInfo } from 'os';
-import { FriendrequestEntity } from './friend.entity';
+import { FriendrequestEntity } from '../friends/friend.entity';
 
 @Injectable()
 export class UserService {
@@ -71,16 +71,6 @@ export class UserService {
         const res = await this.repository.delete(id);
         return (res.affected === 1);
       }
-    async sendFriendRequest(receiverId: Number, sender: User): Promise<FriendrequestEntity>
-    {
-        if (receiverId === sender.id)
-            throw new ForbiddenException("can't add yourself");
-        
-        const receiver = await this.getUserByid(Number(receiverId));
-        const frindrequest: FriendrequestEntity = new FriendrequestEntity();
-        frindrequest.requestSender = sender;
-        frindrequest.requestReceiver = receiver;
-        return frindrequest;
-    }
+  
     
 }

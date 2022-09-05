@@ -3,7 +3,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtStrategy } from '../auth/jwt.strategy';
-import { FriendrequestEntity } from './friend.entity';
+import { FriendrequestEntity } from '../friends/friend.entity';
+import { FriendsController } from '../friends/friends.controller';
+import { FriendsService } from '../friends/friends.service';
 import { UserController } from './user.controller';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -16,9 +18,9 @@ import { UserService } from './user.service';
     signOptions: { expiresIn: '1d'},
   }),
   ],
-  controllers: [UserController],
-  providers: [UserService,
+  controllers: [UserController, FriendsController],
+  providers: [UserService, FriendsService, 
   JwtStrategy],
-  exports: [JwtStrategy, PassportModule],
+  exports: [JwtStrategy, PassportModule, UserService]
 })
 export class UserModule {}

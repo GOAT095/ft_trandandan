@@ -1,16 +1,16 @@
 import { isNotEmpty, IsNotEmpty } from "class-validator";
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn, ManyToOne  } from "typeorm";
 import { FriendStatus } from "./friend-status.enum";
-import { User } from "./user.entity";
+import { User } from "../user/user.entity";
 
 
 @Entity('friends')
 export class FriendrequestEntity{
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({name: 'id',})
   id: Number;
 
-  @Column({default: "pending"})
+  @Column({default:"pending"})
   public FriendStatus: FriendStatus;
   
   @ManyToOne(() => User , (User) => User.sentFriendrequests)
