@@ -17,8 +17,8 @@ export class FriendsService {
 
     async sendFriendRequest(receiverId: Number, sender: User): Promise<FriendrequestEntity>
     {
-        console.log("sender"+ sender.id + " receiver"+ receiverId);
-        if (receiverId === sender.id)
+        console.log("sender "+ sender.id + " receiver "+ receiverId);
+        if (receiverId == Number(sender.id))
         {
             throw new ForbiddenException("can't add yourself");
         }

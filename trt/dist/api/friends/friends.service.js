@@ -18,8 +18,8 @@ const friend_status_enum_1 = require("./friend-status.enum");
 const typeorm_2 = require("typeorm");
 let FriendsService = class FriendsService {
     async sendFriendRequest(receiverId, sender) {
-        console.log("sender" + sender.id + " receiver" + receiverId);
-        if (receiverId === sender.id) {
+        console.log("sender " + sender.id + " receiver " + receiverId);
+        if (receiverId == Number(sender.id)) {
             throw new common_1.ForbiddenException("can't add yourself");
         }
         const receiver = await this.userService.getUserByid(Number(receiverId));
