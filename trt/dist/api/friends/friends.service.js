@@ -11,25 +11,37 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FriendsService = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
 const friend_entity_1 = require("./friend.entity");
 const user_service_1 = require("../user/user.service");
 const friend_status_enum_1 = require("./friend-status.enum");
+const typeorm_2 = require("typeorm");
 let FriendsService = class FriendsService {
     async sendFriendRequest(receiverId, sender) {
-        if (receiverId === sender.id)
+        console.log("sender" + sender.id + " receiver" + receiverId);
+        if (receiverId === sender.id) {
             throw new common_1.ForbiddenException("can't add yourself");
+        }
         const receiver = await this.userService.getUserByid(Number(receiverId));
         const frindrequest = new friend_entity_1.FriendrequestEntity();
         frindrequest.requestSender = sender;
         frindrequest.requestReceiver = receiver;
-        frindrequest.FriendStatus = friend_status_enum_1.FriendStatus.pending;
+        await this.repository.save(frindrequest);
         return frindrequest;
+    }
+    async getfriendRequests(user) {
+        const query = await this.repository.find({ where: { "requestReceiver": { id: 5 }, FriendStatus: friend_status_enum_1.FriendStatus.pending }, relations: ['requestSender', 'requestReceiver'] });
+        return query;
     }
 };
 __decorate([
     (0, common_1.Inject)(user_service_1.UserService),
     __metadata("design:type", user_service_1.UserService)
 ], FriendsService.prototype, "userService", void 0);
+__decorate([
+    (0, typeorm_1.InjectRepository)(friend_entity_1.FriendrequestEntity),
+    __metadata("design:type", typeorm_2.Repository)
+], FriendsService.prototype, "repository", void 0);
 FriendsService = __decorate([
     (0, common_1.Injectable)()
 ], FriendsService);

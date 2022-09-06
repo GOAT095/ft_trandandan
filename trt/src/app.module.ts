@@ -18,7 +18,8 @@ import { UserService } from './api/user/user.service';
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASS,
     entities: [User, FriendrequestEntity],
-    logger: 'file',
+    //logger: 'file',
+    // logging: true,
     synchronize: true, // never use TRUE in productio
 
   })],

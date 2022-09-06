@@ -1,4 +1,4 @@
-import { Controller, Inject, Param, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Inject, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/get-user.decorator';
 import { FriendrequestEntity } from './friend.entity';
@@ -20,5 +20,12 @@ export class FriendsController {
       {
         return this.friendService.sendFriendRequest(receiverId, user);
       }
+    
+    @UseGuards(AuthGuard())
+    @Get('getfriendrequests')
+    async getfriendRequests(@GetUser() user: User): Promise<any>
+    {
+      return await this.friendService.getfriendRequests(user);
+    }
 
 }

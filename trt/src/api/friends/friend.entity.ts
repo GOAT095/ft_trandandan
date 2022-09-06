@@ -7,8 +7,8 @@ import { User } from "../user/user.entity";
 @Entity('friends')
 export class FriendrequestEntity{
 
-  @PrimaryGeneratedColumn({name: 'id',})
-  id: Number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({default:"pending"})
   public FriendStatus: FriendStatus;

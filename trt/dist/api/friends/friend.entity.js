@@ -16,7 +16,7 @@ const user_entity_1 = require("../user/user.entity");
 let FriendrequestEntity = class FriendrequestEntity {
 };
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)({ name: 'id', }),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], FriendrequestEntity.prototype, "id", void 0);
 __decorate([

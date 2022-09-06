@@ -23,6 +23,9 @@ let FriendsController = class FriendsController {
     async sendFriendRequest(receiverId, user) {
         return this.friendService.sendFriendRequest(receiverId, user);
     }
+    async getfriendRequests(user) {
+        return await this.friendService.getfriendRequests(user);
+    }
 };
 __decorate([
     (0, common_1.Inject)(friends_service_1.FriendsService),
@@ -41,6 +44,14 @@ __decorate([
     __metadata("design:paramtypes", [Number, user_entity_1.User]),
     __metadata("design:returntype", Promise)
 ], FriendsController.prototype, "sendFriendRequest", null);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
+    (0, common_1.Get)('getfriendrequests'),
+    __param(0, (0, get_user_decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_entity_1.User]),
+    __metadata("design:returntype", Promise)
+], FriendsController.prototype, "getfriendRequests", null);
 FriendsController = __decorate([
     (0, common_1.Controller)('friends')
 ], FriendsController);
