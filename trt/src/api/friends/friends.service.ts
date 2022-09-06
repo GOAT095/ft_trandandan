@@ -15,15 +15,23 @@ export class FriendsService {
     @InjectRepository(FriendrequestEntity)
     private readonly repository: Repository<FriendrequestEntity>;
 
-    async sendFriendRequest(receiverId: Number, sender: User): Promise<FriendrequestEntity>
+    async sendFriendRequest(receiverId: number, sender: User): Promise<FriendrequestEntity>
     {
-        console.log("sender "+ sender.id + " receiver "+ receiverId);
+        // console.log("sender "+ sender.id + " receiver "+ receiverId);
         if (receiverId == Number(sender.id))
         {
             throw new ForbiddenException("can't add yourself");
         }
-        
-        const receiver = await this.userService.getUserByid(Number(receiverId));
+
+        const query = await this.repository
+        .find({where:{ "requestSender":{id:sender.id}, 'requestReceiver':{id:receiverId}, FriendStatus:FriendStatus.pending },
+         relations:['requestSender', 'requestReceiver'] });
+        console.log(query);
+        if(query.length != 0)
+         {
+            throw new ForbiddenException("friend request already sent");
+         }
+        const receiver = await this.userService.getUserByid(Number(receiverId))
         const frindrequest: FriendrequestEntity = new FriendrequestEntity();
         
         frindrequest.requestSender = sender;
@@ -36,7 +44,7 @@ export class FriendsService {
     async getfriendRequests(user: User): Promise<any>
     {
         // const query = await this.repository.find({relations:['requestSender', 'requestReceiver'] })
-        const query = await this.repository.find({where:{ "requestReceiver":{id: 5}, FriendStatus:FriendStatus.pending }, relations:['requestSender', 'requestReceiver'] });
+        const query = await this.repository.find({where:{ "requestReceiver":{id:user.id}, FriendStatus:FriendStatus.pending }, relations:['requestSender', 'requestReceiver'] });
         //where("FriendrequestEntity.requestReceiver= :user", {user: user})
         // 
         

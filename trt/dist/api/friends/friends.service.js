@@ -18,9 +18,15 @@ const friend_status_enum_1 = require("./friend-status.enum");
 const typeorm_2 = require("typeorm");
 let FriendsService = class FriendsService {
     async sendFriendRequest(receiverId, sender) {
-        console.log("sender " + sender.id + " receiver " + receiverId);
         if (receiverId == Number(sender.id)) {
             throw new common_1.ForbiddenException("can't add yourself");
+        }
+        const query = await this.repository
+            .find({ where: { "requestSender": { id: sender.id }, 'requestReceiver': { id: receiverId }, FriendStatus: friend_status_enum_1.FriendStatus.pending },
+            relations: ['requestSender', 'requestReceiver'] });
+        console.log(query);
+        if (query.length != 0) {
+            throw new common_1.ForbiddenException("friend request already sent");
         }
         const receiver = await this.userService.getUserByid(Number(receiverId));
         const frindrequest = new friend_entity_1.FriendrequestEntity();
@@ -30,7 +36,7 @@ let FriendsService = class FriendsService {
         return frindrequest;
     }
     async getfriendRequests(user) {
-        const query = await this.repository.find({ where: { "requestReceiver": { id: 5 }, FriendStatus: friend_status_enum_1.FriendStatus.pending }, relations: ['requestSender', 'requestReceiver'] });
+        const query = await this.repository.find({ where: { "requestReceiver": { id: user.id }, FriendStatus: friend_status_enum_1.FriendStatus.pending }, relations: ['requestSender', 'requestReceiver'] });
         return query;
     }
 };

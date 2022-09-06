@@ -16,7 +16,7 @@ export class FriendsController {
     
     @UseGuards(AuthGuard())
     @Post('sendRequest/:receiverId')
-    async sendFriendRequest(@Param('receiverId') receiverId: Number, @GetUser() user: User): Promise <FriendrequestEntity>
+    async sendFriendRequest(@Param('receiverId') receiverId: number, @GetUser() user: User): Promise <FriendrequestEntity>
       {
         return this.friendService.sendFriendRequest(receiverId, user);
       }
