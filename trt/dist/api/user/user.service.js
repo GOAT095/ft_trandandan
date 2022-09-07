@@ -28,7 +28,14 @@ let UserService = class UserService {
         user.name = body.name;
         user.avatar = body.avatar;
         user.status = user_status_enum_1.UserStatus.online;
-        return await this.repository.save(user);
+        try {
+            await this.repository.save(user);
+        }
+        catch (error) {
+            if (error.code === '23505')
+                throw new common_1.ConflictException('id already exist !');
+        }
+        return;
     }
     async addUserToDB(user) {
         let x = await this.getUserByid(user.id);

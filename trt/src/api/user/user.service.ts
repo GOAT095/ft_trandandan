@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -27,7 +27,13 @@ export class UserService {
         user.name = body.name;
         user.avatar = body.avatar;
         user.status = UserStatus.online;
-        return await this.repository.save(user);
+        try {await this.repository.save(user);}
+        catch(error)
+        {
+            if(error.code === '23505')
+                throw new ConflictException('id already exist !');
+        }
+        return ;
       }
 
     async addUserToDB(user: any): Promise <boolean>
