@@ -7,4 +7,5 @@ export declare class FriendsService {
     getfriendRequests(user: User): Promise<any>;
     acceptFriendRequest(requstId: number, receiver: User): Promise<boolean>;
     declineFriendRequest(requstId: number, receiver: User): Promise<boolean>;
+    getAllRequestsForDebugging(): Promise<FriendrequestEntity[]>;
 }

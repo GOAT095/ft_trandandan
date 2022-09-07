@@ -7,4 +7,5 @@ export declare class FriendsController {
     getfriendRequests(user: User): Promise<any>;
     acceptFriendRequest(requstId: number, user: User): Promise<boolean>;
     declinetFriendRequest(requstId: number, user: User): Promise<boolean>;
+    getAllRequestsForDebugging(): Promise<FriendrequestEntity[]>;
 }

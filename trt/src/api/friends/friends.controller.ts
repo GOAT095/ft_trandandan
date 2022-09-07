@@ -40,4 +40,9 @@ export class FriendsController {
       
       return this.friendService.declineFriendRequest(requstId, user);
     }
+
+    @Get('getAllrequests')
+    async getAllRequestsForDebugging(): Promise<FriendrequestEntity[]>{
+      return await this.friendService.getAllRequestsForDebugging();
+    }
 }

@@ -1,4 +1,4 @@
-import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FriendrequestEntity } from './friend.entity';
 import { User } from '../user/user.entity';
@@ -20,7 +20,7 @@ export class FriendsService {
         // console.log("sender "+ sender.id + " receiver "+ receiverId);
         if (receiverId == Number(sender.id))
         {
-            throw new ForbiddenException("can't add yourself");
+            throw new ConflictException("can't add yourself");
         }
 
         const query = await this.repository
@@ -29,7 +29,7 @@ export class FriendsService {
         // console.log(query);
         if(query.length != 0)
         {
-            throw new ForbiddenException("friend request already sent");
+            throw new ConflictException("friend request already sent");
         }
         const receiver = await this.userService.getUserByid(Number(receiverId))
         const frindrequest: FriendrequestEntity = new FriendrequestEntity();
@@ -55,7 +55,8 @@ export class FriendsService {
 
     async acceptFriendRequest(requstId: number, receiver: User): Promise<boolean>
     {
-        const friendRequst = await this.repository.findOne({where:{id:requstId, FriendStatus:FriendStatus.pending}, relations:['requestSender', 'requestReceiver']});
+        const friendRequst = await this.repository.findOne({where:{id:requstId, FriendStatus:FriendStatus.pending},
+        relations:['requestSender', 'requestReceiver']});
         if(friendRequst)
         {
             friendRequst.FriendStatus = FriendStatus.accepted;
@@ -77,4 +78,8 @@ export class FriendsService {
         return false;
     }
 
+    async getAllRequestsForDebugging(): Promise<FriendrequestEntity[]>
+    {
+        return await this.repository.find({relations:['requestSender', 'requestReceiver']});
+    }
 }
