@@ -26,6 +26,9 @@ let FriendsController = class FriendsController {
     async getfriendRequests(user) {
         return await this.friendService.getfriendRequests(user);
     }
+    async acceptFriendRequest(requstId, user) {
+        return this.friendService.acceptFriendRequest(requstId, user);
+    }
 };
 __decorate([
     (0, common_1.Inject)(friends_service_1.FriendsService),
@@ -36,7 +39,6 @@ __decorate([
     __metadata("design:type", user_service_1.UserService)
 ], FriendsController.prototype, "service", void 0);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Post)('sendRequest/:receiverId'),
     __param(0, (0, common_1.Param)('receiverId')),
     __param(1, (0, get_user_decorator_1.GetUser)()),
@@ -45,14 +47,22 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], FriendsController.prototype, "sendFriendRequest", null);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Get)('getfriendrequests'),
     __param(0, (0, get_user_decorator_1.GetUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_entity_1.User]),
     __metadata("design:returntype", Promise)
 ], FriendsController.prototype, "getfriendRequests", null);
+__decorate([
+    (0, common_1.Post)('acceptRequest/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, get_user_decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, user_entity_1.User]),
+    __metadata("design:returntype", Promise)
+], FriendsController.prototype, "acceptFriendRequest", null);
 FriendsController = __decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Controller)('friends')
 ], FriendsController);
 exports.FriendsController = FriendsController;

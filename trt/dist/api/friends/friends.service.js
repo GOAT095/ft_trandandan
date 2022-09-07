@@ -24,7 +24,6 @@ let FriendsService = class FriendsService {
         const query = await this.repository
             .find({ where: { "requestSender": { id: sender.id }, 'requestReceiver': { id: receiverId }, FriendStatus: friend_status_enum_1.FriendStatus.pending },
             relations: ['requestSender', 'requestReceiver'] });
-        console.log(query);
         if (query.length != 0) {
             throw new common_1.ForbiddenException("friend request already sent");
         }
@@ -36,8 +35,19 @@ let FriendsService = class FriendsService {
         return frindrequest;
     }
     async getfriendRequests(user) {
-        const query = await this.repository.find({ where: { "requestReceiver": { id: user.id }, FriendStatus: friend_status_enum_1.FriendStatus.pending }, relations: ['requestSender', 'requestReceiver'] });
+        const query = await this.repository
+            .find({ where: { "requestReceiver": { id: user.id }, FriendStatus: friend_status_enum_1.FriendStatus.pending },
+            relations: ['requestSender', 'requestReceiver'] });
         return query;
+    }
+    async acceptFriendRequest(requstId, receiver) {
+        const friendRequst = await this.repository.findOne({ where: { id: requstId, FriendStatus: friend_status_enum_1.FriendStatus.pending }, relations: ['requestSender', 'requestReceiver'] });
+        if (friendRequst) {
+            friendRequst.FriendStatus = friend_status_enum_1.FriendStatus.accepted;
+            this.repository.save(friendRequst);
+            return true;
+        }
+        return false;
     }
 };
 __decorate([

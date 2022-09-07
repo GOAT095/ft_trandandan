@@ -24,13 +24,13 @@ export class FriendsService {
         }
 
         const query = await this.repository
-        .find({where:{ "requestSender":{id:sender.id}, 'requestReceiver':{id:receiverId}, FriendStatus:FriendStatus.pending },
+        .find({where:{ "requestSender":{id:sender.id}, 'requestReceiver':{id:receiverId}, FriendStatus:FriendStatus.pending},
          relations:['requestSender', 'requestReceiver'] });
-        console.log(query);
+        // console.log(query);
         if(query.length != 0)
-         {
+        {
             throw new ForbiddenException("friend request already sent");
-         }
+        }
         const receiver = await this.userService.getUserByid(Number(receiverId))
         const frindrequest: FriendrequestEntity = new FriendrequestEntity();
         
@@ -44,10 +44,24 @@ export class FriendsService {
     async getfriendRequests(user: User): Promise<any>
     {
         // const query = await this.repository.find({relations:['requestSender', 'requestReceiver'] })
-        const query = await this.repository.find({where:{ "requestReceiver":{id:user.id}, FriendStatus:FriendStatus.pending }, relations:['requestSender', 'requestReceiver'] });
+        const query = await this.repository
+        .find({where:{ "requestReceiver":{id:user.id}, FriendStatus:FriendStatus.pending },
+         relations:['requestSender', 'requestReceiver'] });
         //where("FriendrequestEntity.requestReceiver= :user", {user: user})
-        // 
-        
+        //
         return query;
+    }
+
+
+    async acceptFriendRequest(requstId: number, receiver: User): Promise<boolean>
+    {
+        const friendRequst = await this.repository.findOne({where:{id:requstId, FriendStatus:FriendStatus.pending}, relations:['requestSender', 'requestReceiver']});
+        if(friendRequst)
+        {
+            friendRequst.FriendStatus = FriendStatus.accepted;
+            this.repository.save(friendRequst);
+            return true;
+        }
+        return false;
     }
 }

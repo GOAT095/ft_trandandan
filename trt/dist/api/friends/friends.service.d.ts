@@ -5,4 +5,5 @@ export declare class FriendsService {
     private readonly repository;
     sendFriendRequest(receiverId: number, sender: User): Promise<FriendrequestEntity>;
     getfriendRequests(user: User): Promise<any>;
+    acceptFriendRequest(requstId: number, receiver: User): Promise<boolean>;
 }
