@@ -34,4 +34,10 @@ export class FriendsController {
       
       return this.friendService.acceptFriendRequest(requstId, user);
     }
+
+    @Post('declineRequest/:id')
+    async declinetFriendRequest(@Param('id') requstId: number, @GetUser() user: User): Promise<boolean>{
+      
+      return this.friendService.declineFriendRequest(requstId, user);
+    }
 }

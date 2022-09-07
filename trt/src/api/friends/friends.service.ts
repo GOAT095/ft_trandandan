@@ -64,4 +64,17 @@ export class FriendsService {
         }
         return false;
     }
+
+    async declineFriendRequest(requstId: number, receiver: User): Promise<boolean>
+    {
+        const friendRequst = await this.repository.findOne({where:{id:requstId, FriendStatus:FriendStatus.pending}, relations:['requestSender', 'requestReceiver']});
+        if(friendRequst)
+        {
+            friendRequst.FriendStatus = FriendStatus.declined;
+            this.repository.save(friendRequst);
+            return true;
+        }
+        return false;
+    }
+
 }

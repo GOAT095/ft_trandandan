@@ -6,4 +6,5 @@ export declare class FriendsController {
     sendFriendRequest(receiverId: number, user: User): Promise<FriendrequestEntity>;
     getfriendRequests(user: User): Promise<any>;
     acceptFriendRequest(requstId: number, user: User): Promise<boolean>;
+    declinetFriendRequest(requstId: number, user: User): Promise<boolean>;
 }

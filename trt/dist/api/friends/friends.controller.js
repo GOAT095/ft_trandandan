@@ -29,6 +29,9 @@ let FriendsController = class FriendsController {
     async acceptFriendRequest(requstId, user) {
         return this.friendService.acceptFriendRequest(requstId, user);
     }
+    async declinetFriendRequest(requstId, user) {
+        return this.friendService.declineFriendRequest(requstId, user);
+    }
 };
 __decorate([
     (0, common_1.Inject)(friends_service_1.FriendsService),
@@ -61,6 +64,14 @@ __decorate([
     __metadata("design:paramtypes", [Number, user_entity_1.User]),
     __metadata("design:returntype", Promise)
 ], FriendsController.prototype, "acceptFriendRequest", null);
+__decorate([
+    (0, common_1.Post)('declineRequest/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, get_user_decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, user_entity_1.User]),
+    __metadata("design:returntype", Promise)
+], FriendsController.prototype, "declinetFriendRequest", null);
 FriendsController = __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Controller)('friends')

@@ -49,6 +49,15 @@ let FriendsService = class FriendsService {
         }
         return false;
     }
+    async declineFriendRequest(requstId, receiver) {
+        const friendRequst = await this.repository.findOne({ where: { id: requstId, FriendStatus: friend_status_enum_1.FriendStatus.pending }, relations: ['requestSender', 'requestReceiver'] });
+        if (friendRequst) {
+            friendRequst.FriendStatus = friend_status_enum_1.FriendStatus.declined;
+            this.repository.save(friendRequst);
+            return true;
+        }
+        return false;
+    }
 };
 __decorate([
     (0, common_1.Inject)(user_service_1.UserService),
