@@ -27,7 +27,7 @@ AppModule = __decorate([
                 password: process.env.POSTGRES_PASS,
                 entities: [user_entity_1.User, friend_entity_1.FriendrequestEntity],
                 synchronize: true,
-            })],
+            }),],
         controllers: [app_controller_1.AppController,],
         providers: [app_service_1.AppService,],
     })

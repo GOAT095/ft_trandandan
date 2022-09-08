@@ -32,7 +32,7 @@ export class User{
   @Column({default:false})
   twoFactor: Boolean;
 
-  @Column()
+  @Column({nullable: true})
   twoFactorAuthenticationSecret: string;
 
   @OneToMany(() => FriendrequestEntity, (FriendrequestEntity) => FriendrequestEntity.requestSender)

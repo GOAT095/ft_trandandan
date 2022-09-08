@@ -11,12 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.twoFactorAuthenticatorService = void 0;
 const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
 const otplib_1 = require("otplib");
+const user_service_1 = require("./user.service");
 const qrcode_1 = require("qrcode");
-const user_service_1 = require("../user/user.service");
 let twoFactorAuthenticatorService = class twoFactorAuthenticatorService {
-    constructor(usersService) {
+    constructor(usersService, configService) {
         this.usersService = usersService;
+        this.configService = configService;
     }
     async generateTwoFactorAuthenticationSecret(user) {
         const secret = otplib_1.authenticator.generateSecret();
@@ -33,7 +35,8 @@ let twoFactorAuthenticatorService = class twoFactorAuthenticatorService {
 };
 twoFactorAuthenticatorService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [user_service_1.UserService])
+    __metadata("design:paramtypes", [user_service_1.UserService,
+        config_1.ConfigService])
 ], twoFactorAuthenticatorService);
 exports.twoFactorAuthenticatorService = twoFactorAuthenticatorService;
 //# sourceMappingURL=twoFactorAuthentication.service.js.map

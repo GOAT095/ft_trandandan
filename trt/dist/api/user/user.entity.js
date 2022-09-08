@@ -50,7 +50,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "twoFactor", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "twoFactorAuthenticationSecret", void 0);
 __decorate([

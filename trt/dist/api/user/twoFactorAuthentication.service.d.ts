@@ -1,8 +1,10 @@
-import { User } from "../user/user.entity";
-import { UserService } from "../user/user.service";
+import { ConfigService } from "@nestjs/config";
+import { User } from "./user.entity";
+import { UserService } from "./user.service";
 export declare class twoFactorAuthenticatorService {
     private readonly usersService;
-    constructor(usersService: UserService);
+    private readonly configService;
+    constructor(usersService: UserService, configService: ConfigService);
     generateTwoFactorAuthenticationSecret(user: User): Promise<{
         secret: string;
         otpauthurl: string;

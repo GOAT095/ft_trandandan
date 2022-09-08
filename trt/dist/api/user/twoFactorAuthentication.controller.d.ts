@@ -1,4 +1,4 @@
-import { User } from '../user/user.entity';
+import { User } from './user.entity';
 import { twoFactorAuthenticatorService } from './twoFactorAuthentication.service';
 export declare class TwoFactorAuthenticationController {
     private readonly twoFactorAuthenticationService;

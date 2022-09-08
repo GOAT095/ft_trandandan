@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TwoFactorAuthenticationController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
-const user_entity_1 = require("../user/user.entity");
-const user_service_1 = require("../user/user.service");
-const get_user_decorator_1 = require("./get-user.decorator");
+const user_entity_1 = require("./user.entity");
+const user_service_1 = require("./user.service");
+const get_user_decorator_1 = require("../auth/get-user.decorator");
 const twoFactorAuthentication_service_1 = require("./twoFactorAuthentication.service");
 let TwoFactorAuthenticationController = class TwoFactorAuthenticationController {
     constructor(twoFactorAuthenticationService) {

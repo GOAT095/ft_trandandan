@@ -12,6 +12,8 @@ const jwt_1 = require("@nestjs/jwt");
 const passport_1 = require("@nestjs/passport");
 const typeorm_1 = require("@nestjs/typeorm");
 const jwt_strategy_1 = require("../auth/jwt.strategy");
+const twoFactorAuthentication_controller_1 = require("../auth/twoFactorAuthentication.controller");
+const twoFactorAuthentication_service_1 = require("../auth/twoFactorAuthentication.service");
 const friend_entity_1 = require("../friends/friend.entity");
 const friends_controller_1 = require("../friends/friends.controller");
 const friends_service_1 = require("../friends/friends.service");
@@ -29,9 +31,8 @@ UserModule = __decorate([
                 signOptions: { expiresIn: '1d' },
             }),
         ],
-        controllers: [user_controller_1.UserController, friends_controller_1.FriendsController],
-        providers: [user_service_1.UserService, friends_service_1.FriendsService,
-            jwt_strategy_1.JwtStrategy],
+        controllers: [user_controller_1.UserController, friends_controller_1.FriendsController, twoFactorAuthentication_controller_1.TwoFactorAuthenticationController],
+        providers: [user_service_1.UserService, friends_service_1.FriendsService, jwt_strategy_1.JwtStrategy, twoFactorAuthentication_service_1.twoFactorAuthenticatorService],
         exports: [jwt_strategy_1.JwtStrategy, passport_1.PassportModule, user_service_1.UserService]
     })
 ], UserModule);

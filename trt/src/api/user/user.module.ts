@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtStrategy } from '../auth/jwt.strategy';
+import { TwoFactorAuthenticationController } from '../auth/twoFactorAuthentication.controller';
+import { twoFactorAuthenticatorService } from '../auth/twoFactorAuthentication.service';
 import { FriendrequestEntity } from '../friends/friend.entity';
 import { FriendsController } from '../friends/friends.controller';
 import { FriendsService } from '../friends/friends.service';
@@ -18,9 +21,8 @@ import { UserService } from './user.service';
     signOptions: { expiresIn: '1d'},
   }),
   ],
-  controllers: [UserController, FriendsController],
-  providers: [UserService, FriendsService, 
-  JwtStrategy],
+  controllers: [UserController, FriendsController, TwoFactorAuthenticationController],
+  providers: [UserService, FriendsService, JwtStrategy, twoFactorAuthenticatorService],
   exports: [JwtStrategy, PassportModule, UserService]
 })
 export class UserModule {}
