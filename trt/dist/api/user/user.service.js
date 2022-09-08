@@ -72,6 +72,11 @@ let UserService = class UserService {
             twoFactorAuthenticationSecret: secret
         });
     }
+    async turnOnTwoFactorAuthentication(userId) {
+        return this.repository.update(userId, {
+            twoFactor: true
+        });
+    }
 };
 __decorate([
     (0, typeorm_1.InjectRepository)(user_entity_1.User),

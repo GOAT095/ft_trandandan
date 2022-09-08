@@ -83,4 +83,10 @@ export class UserService {
           twoFactorAuthenticationSecret: secret
         });
       }
+
+      async turnOnTwoFactorAuthentication(userId: number) {
+        return this.repository.update(userId, {
+            twoFactor: true
+        });
+      }
 }

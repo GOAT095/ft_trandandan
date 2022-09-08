@@ -9,4 +9,5 @@ export declare class UserService {
     updateUsernameAvatar(id: number, username: string, avatar: string): Promise<User>;
     removeUser(id: number): Promise<boolean>;
     setTwoFactorAuthenticationSecret(secret: string, userId: number): Promise<import("typeorm").UpdateResult>;
+    turnOnTwoFactorAuthentication(userId: number): Promise<import("typeorm").UpdateResult>;
 }
