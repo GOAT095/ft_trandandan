@@ -8,4 +8,5 @@ export declare class UserService {
     addUserToDB(user: any): Promise<boolean>;
     updateUsernameAvatar(id: number, username: string, avatar: string): Promise<User>;
     removeUser(id: number): Promise<boolean>;
+    setTwoFactorAuthenticationSecret(secret: string, userId: number): Promise<import("typeorm").UpdateResult>;
 }

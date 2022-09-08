@@ -9,25 +9,31 @@ export class User{
   
   @PrimaryColumn()
   @IsNotEmpty()
-  public id: number;
+   id: number;
 
   @Column({ type: 'varchar', length: 120 })
-  public name: string;
+   name: string;
 
   @Column({type: 'varchar', length: 254})
-  public avatar: string;
+   avatar: string;
 
   @Column({default:0})
-  public wins:number;
+   wins:number;
 
   @Column({default:0})
-  public losses:number;
+   losses:number;
 
   @Column({default:0})
-  public lvl:number;
+  lvl:number;
 
   @Column({default:"online"})
   status: UserStatus;
+
+  @Column({default:false})
+  twoFactor: Boolean;
+
+  @Column()
+  twoFactorAuthenticationSecret: string;
 
   @OneToMany(() => FriendrequestEntity, (FriendrequestEntity) => FriendrequestEntity.requestSender)
   sentFriendrequests: FriendrequestEntity[];

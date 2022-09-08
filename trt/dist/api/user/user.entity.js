@@ -46,6 +46,14 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "status", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], User.prototype, "twoFactor", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], User.prototype, "twoFactorAuthenticationSecret", void 0);
+__decorate([
     (0, typeorm_1.OneToMany)(() => friend_entity_1.FriendrequestEntity, (FriendrequestEntity) => FriendrequestEntity.requestSender),
     __metadata("design:type", Array)
 ], User.prototype, "sentFriendrequests", void 0);

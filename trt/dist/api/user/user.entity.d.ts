@@ -8,6 +8,8 @@ export declare class User {
     losses: number;
     lvl: number;
     status: UserStatus;
+    twoFactor: Boolean;
+    twoFactorAuthenticationSecret: string;
     sentFriendrequests: FriendrequestEntity[];
     receivedFriendrequests: FriendrequestEntity[];
 }

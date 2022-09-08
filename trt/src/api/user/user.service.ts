@@ -78,5 +78,9 @@ export class UserService {
         return (res.affected === 1);
       }
   
-    
+      async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
+        return this.repository.update(userId, {
+          twoFactorAuthenticationSecret: secret
+        });
+      }
 }

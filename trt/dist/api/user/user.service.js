@@ -67,6 +67,11 @@ let UserService = class UserService {
         const res = await this.repository.delete(id);
         return (res.affected === 1);
     }
+    async setTwoFactorAuthenticationSecret(secret, userId) {
+        return this.repository.update(userId, {
+            twoFactorAuthenticationSecret: secret
+        });
+    }
 };
 __decorate([
     (0, typeorm_1.InjectRepository)(user_entity_1.User),
