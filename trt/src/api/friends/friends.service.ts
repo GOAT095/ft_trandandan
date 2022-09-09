@@ -4,7 +4,8 @@ import { FriendrequestEntity } from './friend.entity';
 import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { FriendStatus } from './friend-status.enum';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
+import { GetUser } from '../auth/get-user.decorator';
 
 @Injectable()
 export class FriendsService {
@@ -76,6 +77,11 @@ export class FriendsService {
             return true;
         }
         return false;
+    }
+
+    async getMyFriends(user: User): Promise<FriendrequestEntity[]>
+    {
+        return await this.repository.find({where:{id:user.id, FriendStatus:FriendStatus.accepted} , relations:['requestSender', 'requestReceiver']})
     }
 
     async getAllRequestsForDebugging(): Promise<FriendrequestEntity[]>

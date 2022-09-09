@@ -43,6 +43,7 @@ export class UserController {
             const payload: JwtPayload = {id};
             const accesToken = await this.JwtService.sign(payload);
             console.log(accesToken);
+            //need to add 2fa logic ! if enabled and normal login case should stay
             return accesToken;
           }
           else
