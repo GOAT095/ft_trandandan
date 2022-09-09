@@ -3,6 +3,7 @@ import { twoFactorAuthenticatorService } from './twoFactorAuthentication.service
 export declare class TwoFactorAuthenticationController {
     private readonly twoFactorAuthenticationService;
     constructor(twoFactorAuthenticationService: twoFactorAuthenticatorService);
-    private readonly service;
+    private readonly usersService;
     register(response: Response, user: User): Promise<any>;
+    turnOnTwoFactorAuthentication(user: User, twoFactorAuthenticationCode: string): Promise<void>;
 }

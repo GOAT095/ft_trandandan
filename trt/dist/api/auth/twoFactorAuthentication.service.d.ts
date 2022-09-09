@@ -8,4 +8,5 @@ export declare class twoFactorAuthenticatorService {
         otpauthurl: string;
     }>;
     pipeQrCodeStream(stream: Response, otpauthUrl: string): Promise<any>;
+    isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: User): boolean;
 }

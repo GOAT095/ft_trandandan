@@ -30,6 +30,12 @@ let twoFactorAuthenticatorService = class twoFactorAuthenticatorService {
     async pipeQrCodeStream(stream, otpauthUrl) {
         return (0, qrcode_1.toFileStream)(stream, otpauthUrl);
     }
+    isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode, user) {
+        return otplib_1.authenticator.verify({
+            token: twoFactorAuthenticationCode,
+            secret: user.twoFactorAuthenticationSecret
+        });
+    }
 };
 twoFactorAuthenticatorService = __decorate([
     (0, common_1.Injectable)(),

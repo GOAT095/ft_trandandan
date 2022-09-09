@@ -27,11 +27,18 @@ let TwoFactorAuthenticationController = class TwoFactorAuthenticationController 
         const { otpauthurl } = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(user);
         return this.twoFactorAuthenticationService.pipeQrCodeStream(response, otpauthurl);
     }
+    async turnOnTwoFactorAuthentication(user, twoFactorAuthenticationCode) {
+        const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode['code'], user);
+        if (!isCodeValid) {
+            throw new common_1.UnauthorizedException('Wrong authentication code');
+        }
+        await this.usersService.turnOnTwoFactorAuthentication(user.id);
+    }
 };
 __decorate([
     (0, common_1.Inject)(user_service_1.UserService),
     __metadata("design:type", user_service_1.UserService)
-], TwoFactorAuthenticationController.prototype, "service", void 0);
+], TwoFactorAuthenticationController.prototype, "usersService", void 0);
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Post)('generate'),
@@ -41,6 +48,15 @@ __decorate([
     __metadata("design:paramtypes", [Response, user_entity_1.User]),
     __metadata("design:returntype", Promise)
 ], TwoFactorAuthenticationController.prototype, "register", null);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
+    (0, common_1.Post)('turn-on'),
+    __param(0, (0, get_user_decorator_1.GetUser)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_entity_1.User, String]),
+    __metadata("design:returntype", Promise)
+], TwoFactorAuthenticationController.prototype, "turnOnTwoFactorAuthentication", null);
 TwoFactorAuthenticationController = __decorate([
     (0, common_1.Controller)('2fa'),
     __metadata("design:paramtypes", [twoFactorAuthentication_service_1.twoFactorAuthenticatorService])

@@ -1,4 +1,4 @@
-import {ClassSerializerInterceptor,Controller,Post,UseInterceptors,Res,UseGuards, Inject,} from '@nestjs/common';
+import {ClassSerializerInterceptor,Controller,Post,UseInterceptors,Res,UseGuards, Inject, UnauthorizedException, Body,} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -14,7 +14,7 @@ import { GetUser } from './get-user.decorator';
     ) {}
 
     @Inject(UserService)
-    private readonly service: UserService;
+    private readonly usersService: UserService;
 
     @UseGuards(AuthGuard())
     @Post('generate')
@@ -22,5 +22,15 @@ import { GetUser } from './get-user.decorator';
       const { otpauthurl }  = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(user);
    
       return this.twoFactorAuthenticationService.pipeQrCodeStream(response, otpauthurl);
+    }
+
+    @UseGuards(AuthGuard())
+    @Post('turn-on')
+    async turnOnTwoFactorAuthentication(@GetUser() user :User, @Body()twoFactorAuthenticationCode : string) {
+      const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode['code'], user);
+      if (!isCodeValid) {
+        throw new UnauthorizedException('Wrong authentication code');
+      }
+      await this.usersService.turnOnTwoFactorAuthentication(user.id);
     }
   }

@@ -6,6 +6,7 @@ import {CreateUserDto} from '../dto/user.dto'
 import { UserStatus } from './user.status.enum';
 import { userInfo } from 'os';
 import { FriendrequestEntity } from '../friends/friend.entity';
+import { authenticator } from 'otplib';
 
 @Injectable()
 export class UserService {
@@ -89,4 +90,5 @@ export class UserService {
             twoFactor: true
         });
       }
+      
 }
