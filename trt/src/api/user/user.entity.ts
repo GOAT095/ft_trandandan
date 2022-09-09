@@ -1,52 +1,65 @@
-import { IsNotEmpty } from "class-validator";
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn, OneToMany, Unique  } from "typeorm";
-import { FriendrequestEntity } from "../friends/friend.entity";
-import { UserStatus } from "./user.status.enum";
+import { IsNotEmpty } from 'class-validator';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
+  OneToMany,
+  Unique,
+} from 'typeorm';
+import { FriendrequestEntity } from '../friends/friend.entity';
+import { UserStatus } from './user.status.enum';
 
 @Entity('user')
-export class User{
-  
-  
+export class User {
   @PrimaryColumn()
   @IsNotEmpty()
-   id: number;
+  id: number;
 
   @Column({ type: 'varchar', length: 120 })
-   name: string;
+  name: string;
 
-  @Column({type: 'varchar', length: 254})
-   avatar: string;
+  @Column({ type: 'varchar', length: 254 })
+  avatar: string;
 
-  @Column({default:0})
-   wins:number;
+  @Column({ default: 0 })
+  wins: number;
 
-  @Column({default:0})
-   losses:number;
+  @Column({ default: 0 })
+  losses: number;
 
-  @Column({default:0})
-  lvl:number;
+  @Column({ default: 0 })
+  lvl: number;
 
-  @Column({default:"online"})
+  @Column({ default: 'online' })
   status: UserStatus;
 
-  @Column({default:false})
-  twoFactor: Boolean;
+  @Column({ default: false })
+  twoFactor: boolean;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   twoFactorAuthenticationSecret: string;
 
-  @OneToMany(() => FriendrequestEntity, (FriendrequestEntity) => FriendrequestEntity.requestSender)
+  @OneToMany(
+    () => FriendrequestEntity,
+    (FriendrequestEntity) => FriendrequestEntity.requestSender,
+  )
   sentFriendrequests: FriendrequestEntity[];
 
-  @OneToMany(() => FriendrequestEntity, (FriendrequestEntity) => FriendrequestEntity.requestReceiver)
+  @OneToMany(
+    () => FriendrequestEntity,
+    (FriendrequestEntity) => FriendrequestEntity.requestReceiver,
+  )
   receivedFriendrequests: FriendrequestEntity[];
   /*
    * Create and Update Date Columns
    */
 
-//   @CreateDateColumn({ type: 'timestamp' })
-//   public createdAt: Date;
+  //   @CreateDateColumn({ type: 'timestamp' })
+  //   public createdAt: Date;
 
-//   @UpdateDateColumn({ type: 'timestamp' })
-//   public updatedAt: Date;
+  //   @UpdateDateColumn({ type: 'timestamp' })
+  //   public updatedAt: Date;
 }
