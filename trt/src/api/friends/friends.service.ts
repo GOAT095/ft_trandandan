@@ -86,7 +86,7 @@ export class FriendsService {
     receiver: User,
   ): Promise<boolean> {
     const friendRequst = await this.repository.findOne({
-      where: [{ id: requstId, FriendStatus: FriendStatus.pending }, {}],
+      where: [{ id: requstId, FriendStatus: FriendStatus.pending }],
       relations: ['requestSender', 'requestReceiver'],
     });
     if (friendRequst) {
@@ -98,10 +98,16 @@ export class FriendsService {
   }
 
   async getMyFriends(user: User): Promise<FriendrequestEntity[]> {
+    // const all = this.getAllRequestsForDebugging();
+    // user.id =
     return await this.repository.find({
-      where: { id: user.id, FriendStatus: FriendStatus.accepted },
+      where: [
+        { requestReceiver: user, FriendStatus: FriendStatus.accepted },
+        { requestSender: user, FriendStatus: FriendStatus.accepted },
+      ],
       relations: ['requestSender', 'requestReceiver'],
     });
+    //needs tests !
   }
 
   async getAllRequestsForDebugging(): Promise<FriendrequestEntity[]> {

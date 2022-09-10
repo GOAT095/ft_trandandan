@@ -9,6 +9,6 @@ import { FriendsService } from './friends.service';
 @Module({
   imports: [UserService],
   controllers: [FriendsController],
-  providers: [FriendsService, ]
+  providers: [FriendsService],
 })
 export class FriendsModule {}

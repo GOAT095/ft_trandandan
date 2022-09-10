@@ -4,6 +4,6 @@ import { AuthModule } from './auth/auth.module';
 import { FriendsModule } from './friends/friends.module';
 
 @Module({
-  imports: [UserModule, AuthModule, FriendsModule,  ]
+  imports: [UserModule, AuthModule, FriendsModule],
 })
 export class ApiModule {}

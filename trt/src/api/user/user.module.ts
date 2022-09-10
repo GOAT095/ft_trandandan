@@ -14,15 +14,25 @@ import { User } from './user.entity';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, FriendrequestEntity]),
-  PassportModule.register({ defaultStrategy: 'jwt' }),
-  JwtModule.register({
-    secret: process.env.JWT_SECRET,
-    signOptions: { expiresIn: '1d'},
-  }),
+  imports: [
+    TypeOrmModule.forFeature([User, FriendrequestEntity]),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1d' },
+    }),
   ],
-  controllers: [UserController, FriendsController, TwoFactorAuthenticationController],
-  providers: [UserService, FriendsService, JwtStrategy, twoFactorAuthenticatorService],
-  exports: [JwtStrategy, PassportModule, UserService]
+  controllers: [
+    UserController,
+    FriendsController,
+    TwoFactorAuthenticationController,
+  ],
+  providers: [
+    UserService,
+    FriendsService,
+    JwtStrategy,
+    twoFactorAuthenticatorService,
+  ],
+  exports: [JwtStrategy, PassportModule, UserService],
 })
 export class UserModule {}
