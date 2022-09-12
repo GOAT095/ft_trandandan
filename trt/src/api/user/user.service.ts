@@ -9,10 +9,10 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dto/user.dto';
 import { UserStatus } from './user.status.enum';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { GetUser } from '../auth/get-user.decorator';
 import { userInfo } from 'os';
-import { FriendrequestEntity } from '../friends/friend.entity';
-import { authenticator } from 'otplib';
-
+import * as fs from 'fs';
 @Injectable()
 export class UserService {
   @InjectRepository(User)
@@ -79,6 +79,15 @@ export class UserService {
   //     await this.repository.save(user);
   //     return await this.getUserByid(id);
   // }
+
+  // async addAvatar(@GetUser() user: User, @UploadedFile() file: Express.Multer.File) {
+  //   return this.repository.addAvatar(user.id, {
+  //     path: file.path,
+  //     filename: file.originalname,
+  //     mimetype: file.mimetype
+  //   });
+  // }
+
   async removeUser(id: number): Promise<boolean> {
     const res = await this.repository.delete(id);
     return res.affected === 1;
@@ -94,5 +103,22 @@ export class UserService {
     return this.repository.update(userId, {
       twoFactor: true,
     });
+  }
+
+  async uploafile(user: User, file: any): Promise<User> {
+    console.log(file);
+    const type = file.mimetype.split('/')[1];
+    console.log(type);
+    fs.rename(
+      file.path,
+      file.destination + '/' + user.name + '.' + type,
+      (Error) => {
+        if (Error) throw Error;
+      },
+    );
+
+    user.avatar = process.env.UPLAOD_PATH + '/' + user.name + '.' + type;
+    this.repository.save(user);
+    return user;
   }
 }

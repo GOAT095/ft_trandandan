@@ -42,7 +42,7 @@ __decorate([
     __metadata("design:type", Number)
 ], User.prototype, "lvl", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: "online" }),
+    (0, typeorm_1.Column)({ default: 'online' }),
     __metadata("design:type", String)
 ], User.prototype, "status", void 0);
 __decorate([

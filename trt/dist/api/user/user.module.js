@@ -24,16 +24,26 @@ let UserModule = class UserModule {
 };
 UserModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, friend_entity_1.FriendrequestEntity]),
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, friend_entity_1.FriendrequestEntity]),
             passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
             jwt_1.JwtModule.register({
                 secret: process.env.JWT_SECRET,
                 signOptions: { expiresIn: '1d' },
             }),
         ],
-        controllers: [user_controller_1.UserController, friends_controller_1.FriendsController, twoFactorAuthentication_controller_1.TwoFactorAuthenticationController],
-        providers: [user_service_1.UserService, friends_service_1.FriendsService, jwt_strategy_1.JwtStrategy, twoFactorAuthentication_service_1.twoFactorAuthenticatorService],
-        exports: [jwt_strategy_1.JwtStrategy, passport_1.PassportModule, user_service_1.UserService]
+        controllers: [
+            user_controller_1.UserController,
+            friends_controller_1.FriendsController,
+            twoFactorAuthentication_controller_1.TwoFactorAuthenticationController,
+        ],
+        providers: [
+            user_service_1.UserService,
+            friends_service_1.FriendsService,
+            jwt_strategy_1.JwtStrategy,
+            twoFactorAuthentication_service_1.twoFactorAuthenticatorService,
+        ],
+        exports: [jwt_strategy_1.JwtStrategy, passport_1.PassportModule, user_service_1.UserService],
     })
 ], UserModule);
 exports.UserModule = UserModule;

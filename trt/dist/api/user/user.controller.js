@@ -21,10 +21,12 @@ const api42client_1 = require("api42client");
 const jwt_1 = require("@nestjs/jwt");
 const passport_1 = require("@nestjs/passport");
 const get_user_decorator_1 = require("../auth/get-user.decorator");
+const platform_express_1 = require("@nestjs/platform-express");
+const multer_1 = require("multer");
 let UserController = class UserController {
     async getauthedUser(code) {
-        var app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
-        var data = await app.get_Access_token(code);
+        const app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
+        const data = await app.get_Access_token(code);
         if (data.access_token) {
             const d = await app.get_user_data(data.access_token);
             await this.service.addUserToDB(d);
@@ -43,6 +45,9 @@ let UserController = class UserController {
     }
     getAllUsers() {
         return this.service.getAllUser();
+    }
+    async uploadFile(file, user) {
+        return this.service.uploafile(user, file);
     }
     async createUser(body) {
         await this.service.createUser(body);
@@ -96,6 +101,27 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllUsers", null);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
+    (0, common_1.Post)('uploadfile'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image', {
+        storage: (0, multer_1.diskStorage)({
+            destination: './public/uploadfile',
+        }),
+    })),
+    __param(0, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
+        validators: [
+            new common_1.MaxFileSizeValidator({ maxSize: 10000 }),
+            new common_1.FileTypeValidator({
+                fileType: /(gif|jpe?g|tiff?|png|webp|bmp|jpg)/,
+            }),
+        ],
+    }))),
+    __param(1, (0, get_user_decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, user_entity_1.User]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "uploadFile", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),

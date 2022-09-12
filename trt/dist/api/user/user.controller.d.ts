@@ -1,3 +1,4 @@
+/// <reference types="multer" />
 import { CreateUserDto } from '../dto/user.dto';
 import { User } from './user.entity';
 export declare class UserController {
@@ -6,7 +7,8 @@ export declare class UserController {
     getauthedUser(code: string): Promise<string>;
     getUser(id: number): Promise<User>;
     getAllUsers(): Promise<User[]>;
+    uploadFile(file: Express.Multer.File, user: User): Promise<User>;
     createUser(body: CreateUserDto): Promise<string>;
     updateUsernameAvatar(id: number, name: string, avatar: string, user: User): Promise<User>;
-    removeUser(id: number, user: User): Promise<Boolean>;
+    removeUser(id: number, user: User): Promise<boolean>;
 }

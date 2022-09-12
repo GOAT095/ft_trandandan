@@ -24,7 +24,7 @@ let twoFactorAuthenticatorService = class twoFactorAuthenticatorService {
         await this.usersService.setTwoFactorAuthenticationSecret(secret, user.id);
         return {
             secret,
-            otpauthurl
+            otpauthurl,
         };
     }
     async pipeQrCodeStream(stream, otpauthUrl) {
@@ -33,7 +33,7 @@ let twoFactorAuthenticatorService = class twoFactorAuthenticatorService {
     isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode, user) {
         return otplib_1.authenticator.verify({
             token: twoFactorAuthenticationCode,
-            secret: user.twoFactorAuthenticationSecret
+            secret: user.twoFactorAuthenticationSecret,
         });
     }
 };

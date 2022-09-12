@@ -21,11 +21,16 @@ let FriendsService = class FriendsService {
         if (receiverId == Number(sender.id)) {
             throw new common_1.ConflictException("can't add yourself");
         }
-        const query = await this.repository
-            .find({ where: { "requestSender": { id: sender.id }, 'requestReceiver': { id: receiverId }, FriendStatus: friend_status_enum_1.FriendStatus.pending },
-            relations: ['requestSender', 'requestReceiver'] });
+        const query = await this.repository.find({
+            where: {
+                requestSender: { id: sender.id },
+                requestReceiver: { id: receiverId },
+                FriendStatus: friend_status_enum_1.FriendStatus.pending,
+            },
+            relations: ['requestSender', 'requestReceiver'],
+        });
         if (query.length != 0) {
-            throw new common_1.ConflictException("friend request already sent");
+            throw new common_1.ConflictException('friend request already sent');
         }
         const receiver = await this.userService.getUserByid(Number(receiverId));
         const frindrequest = new friend_entity_1.FriendrequestEntity();
@@ -35,14 +40,20 @@ let FriendsService = class FriendsService {
         return frindrequest;
     }
     async getfriendRequests(user) {
-        const query = await this.repository
-            .find({ where: { "requestReceiver": { id: user.id }, FriendStatus: friend_status_enum_1.FriendStatus.pending },
-            relations: ['requestSender', 'requestReceiver'] });
+        const query = await this.repository.find({
+            where: {
+                requestReceiver: { id: user.id },
+                FriendStatus: friend_status_enum_1.FriendStatus.pending,
+            },
+            relations: ['requestSender', 'requestReceiver'],
+        });
         return query;
     }
     async acceptFriendRequest(requstId, receiver) {
-        const friendRequst = await this.repository.findOne({ where: { id: requstId, FriendStatus: friend_status_enum_1.FriendStatus.pending },
-            relations: ['requestSender', 'requestReceiver'] });
+        const friendRequst = await this.repository.findOne({
+            where: { id: requstId, FriendStatus: friend_status_enum_1.FriendStatus.pending },
+            relations: ['requestSender', 'requestReceiver'],
+        });
         if (friendRequst) {
             friendRequst.FriendStatus = friend_status_enum_1.FriendStatus.accepted;
             this.repository.save(friendRequst);
@@ -51,7 +62,10 @@ let FriendsService = class FriendsService {
         return false;
     }
     async declineFriendRequest(requstId, receiver) {
-        const friendRequst = await this.repository.findOne({ where: { id: requstId, FriendStatus: friend_status_enum_1.FriendStatus.pending }, relations: ['requestSender', 'requestReceiver'] });
+        const friendRequst = await this.repository.findOne({
+            where: [{ id: requstId, FriendStatus: friend_status_enum_1.FriendStatus.pending }],
+            relations: ['requestSender', 'requestReceiver'],
+        });
         if (friendRequst) {
             friendRequst.FriendStatus = friend_status_enum_1.FriendStatus.declined;
             this.repository.save(friendRequst);
@@ -59,8 +73,19 @@ let FriendsService = class FriendsService {
         }
         return false;
     }
+    async getMyFriends(user) {
+        return await this.repository.find({
+            where: [
+                { requestReceiver: user, FriendStatus: friend_status_enum_1.FriendStatus.accepted },
+                { requestSender: user, FriendStatus: friend_status_enum_1.FriendStatus.accepted },
+            ],
+            relations: ['requestSender', 'requestReceiver'],
+        });
+    }
     async getAllRequestsForDebugging() {
-        return await this.repository.find({ relations: ['requestSender', 'requestReceiver'] });
+        return await this.repository.find({
+            relations: ['requestSender', 'requestReceiver'],
+        });
     }
 };
 __decorate([

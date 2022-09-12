@@ -20,7 +20,7 @@ __decorate([
     __metadata("design:type", Number)
 ], FriendrequestEntity.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: "pending" }),
+    (0, typeorm_1.Column)({ default: 'pending' }),
     __metadata("design:type", String)
 ], FriendrequestEntity.prototype, "FriendStatus", void 0);
 __decorate([

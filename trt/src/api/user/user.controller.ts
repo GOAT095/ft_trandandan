@@ -6,17 +6,19 @@ import {
   HttpException,
   HttpStatus,
   Inject,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Query,
-  Req,
   UnauthorizedException,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
+  Req,
 } from '@nestjs/common';
 import { CreateUserDto } from '../dto/user.dto';
 import { User } from './user.entity';
@@ -26,6 +28,11 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../auth/jwt.payload.interface';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/get-user.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
+import { diskStorage } from 'multer';
+import * as fs from 'fs';
+import { request } from 'http';
 
 @Controller('user')
 export class UserController {
@@ -79,6 +86,32 @@ export class UserController {
   public getAllUsers(): Promise<User[]> {
     //  console.log(req.user);
     return this.service.getAllUser();
+  }
+
+  @UseGuards(AuthGuard())
+  @Post('uploadfile')
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './public/uploadfile',
+      }),
+    }),
+  )
+  async uploadFile(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 10000 }),
+          new FileTypeValidator({
+            fileType: /(gif|jpe?g|tiff?|png|webp|bmp|jpg)/,
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @GetUser() user: User,
+  ): Promise<User> {
+    return this.service.uploafile(user, file);
   }
 
   @Post()

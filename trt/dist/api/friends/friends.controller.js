@@ -32,6 +32,9 @@ let FriendsController = class FriendsController {
     async declinetFriendRequest(requstId, user) {
         return this.friendService.declineFriendRequest(requstId, user);
     }
+    async getMyFriends(user) {
+        return this.friendService.getMyFriends(user);
+    }
     async getAllRequestsForDebugging() {
         return await this.friendService.getAllRequestsForDebugging();
     }
@@ -75,6 +78,13 @@ __decorate([
     __metadata("design:paramtypes", [Number, user_entity_1.User]),
     __metadata("design:returntype", Promise)
 ], FriendsController.prototype, "declinetFriendRequest", null);
+__decorate([
+    (0, common_1.Get)('friends'),
+    __param(0, (0, get_user_decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_entity_1.User]),
+    __metadata("design:returntype", Promise)
+], FriendsController.prototype, "getMyFriends", null);
 __decorate([
     (0, common_1.Get)('getAllrequests'),
     __metadata("design:type", Function),

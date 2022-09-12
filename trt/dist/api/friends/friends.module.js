@@ -17,7 +17,7 @@ FriendsModule = __decorate([
     (0, common_1.Module)({
         imports: [user_service_1.UserService],
         controllers: [friends_controller_1.FriendsController],
-        providers: [friends_service_1.FriendsService,]
+        providers: [friends_service_1.FriendsService],
     })
 ], FriendsModule);
 exports.FriendsModule = FriendsModule;

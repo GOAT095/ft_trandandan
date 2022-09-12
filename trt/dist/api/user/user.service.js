@@ -15,6 +15,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./user.entity");
 const typeorm_2 = require("typeorm");
 const user_status_enum_1 = require("./user.status.enum");
+const fs = require("fs");
 let UserService = class UserService {
     async getUserByid(id) {
         return await this.repository.findOne({ where: { id } });
@@ -38,11 +39,11 @@ let UserService = class UserService {
         return;
     }
     async addUserToDB(user) {
-        let x = await this.getUserByid(user.id);
+        const x = await this.getUserByid(user.id);
         if (x) {
             return false;
         }
-        let ret = new user_entity_1.User();
+        const ret = new user_entity_1.User();
         ret.id = user.id;
         ret.name = user.login;
         ret.avatar = user.image_url;
@@ -51,7 +52,7 @@ let UserService = class UserService {
         return true;
     }
     async updateUsernameAvatar(id, username, avatar) {
-        let user = await this.getUserByid(id);
+        const user = await this.getUserByid(id);
         if (!user)
             throw new common_1.NotFoundException(`user with id ${id} not found`);
         if (username) {
@@ -65,17 +66,29 @@ let UserService = class UserService {
     }
     async removeUser(id) {
         const res = await this.repository.delete(id);
-        return (res.affected === 1);
+        return res.affected === 1;
     }
     async setTwoFactorAuthenticationSecret(secret, userId) {
         return this.repository.update(userId, {
-            twoFactorAuthenticationSecret: secret
+            twoFactorAuthenticationSecret: secret,
         });
     }
     async turnOnTwoFactorAuthentication(userId) {
         return this.repository.update(userId, {
-            twoFactor: true
+            twoFactor: true,
         });
+    }
+    async uploafile(user, file) {
+        console.log(file);
+        const type = file.mimetype.split('/')[1];
+        console.log(type);
+        fs.rename(file.path, file.destination + '/' + user.name + '.' + type, (Error) => {
+            if (Error)
+                throw Error;
+        });
+        user.avatar = process.env.UPLAOD_PATH + '/' + user.name + '.' + type;
+        this.repository.save(user);
+        return user;
     }
 };
 __decorate([

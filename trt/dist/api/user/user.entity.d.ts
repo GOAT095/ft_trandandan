@@ -1,5 +1,5 @@
-import { FriendrequestEntity } from "../friends/friend.entity";
-import { UserStatus } from "./user.status.enum";
+import { FriendrequestEntity } from '../friends/friend.entity';
+import { UserStatus } from './user.status.enum';
 export declare class User {
     id: number;
     name: string;
@@ -8,7 +8,7 @@ export declare class User {
     losses: number;
     lvl: number;
     status: UserStatus;
-    twoFactor: Boolean;
+    twoFactor: boolean;
     twoFactorAuthenticationSecret: string;
     sentFriendrequests: FriendrequestEntity[];
     receivedFriendrequests: FriendrequestEntity[];

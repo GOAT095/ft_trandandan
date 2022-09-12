@@ -15,7 +15,7 @@ let ApiModule = class ApiModule {
 };
 ApiModule = __decorate([
     (0, common_1.Module)({
-        imports: [user_module_1.UserModule, auth_module_1.AuthModule, friends_module_1.FriendsModule,]
+        imports: [user_module_1.UserModule, auth_module_1.AuthModule, friends_module_1.FriendsModule],
     })
 ], ApiModule);
 exports.ApiModule = ApiModule;

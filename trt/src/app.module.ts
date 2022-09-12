@@ -5,8 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './api/user/user.entity';
 import { UserModule } from './api/user/user.module';
 import { FriendrequestEntity } from './api/friends/friend.entity';
+import { MulterModule } from '@nestjs/platform-express';
 @Module({
   imports: [
+    MulterModule.register({
+      dest: './upload',
+    }),
     UserModule,
     TypeOrmModule.forRoot({
       type: 'postgres',

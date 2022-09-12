@@ -1,5 +1,5 @@
-import { User } from "../user/user.entity";
-import { UserService } from "../user/user.service";
+import { User } from '../user/user.entity';
+import { UserService } from '../user/user.service';
 export declare class twoFactorAuthenticatorService {
     private readonly usersService;
     constructor(usersService: UserService);

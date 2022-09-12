@@ -14,11 +14,17 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./api/user/user.entity");
 const user_module_1 = require("./api/user/user.module");
 const friend_entity_1 = require("./api/friends/friend.entity");
+const platform_express_1 = require("@nestjs/platform-express");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [user_module_1.UserModule, typeorm_1.TypeOrmModule.forRoot({
+        imports: [
+            platform_express_1.MulterModule.register({
+                dest: './upload',
+            }),
+            user_module_1.UserModule,
+            typeorm_1.TypeOrmModule.forRoot({
                 type: 'postgres',
                 host: process.env.POSTGRES_HOST,
                 port: Number(process.env.POSTGRES_PORT),
@@ -27,9 +33,10 @@ AppModule = __decorate([
                 password: process.env.POSTGRES_PASS,
                 entities: [user_entity_1.User, friend_entity_1.FriendrequestEntity],
                 synchronize: true,
-            }),],
-        controllers: [app_controller_1.AppController,],
-        providers: [app_service_1.AppService,],
+            }),
+        ],
+        controllers: [app_controller_1.AppController],
+        providers: [app_service_1.AppService],
     })
 ], AppModule);
 exports.AppModule = AppModule;
