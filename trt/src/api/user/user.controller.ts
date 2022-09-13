@@ -97,7 +97,7 @@ export class UserController {
       }),
     }),
   )
-  async uploadFile(
+  async updateavatar(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -111,7 +111,7 @@ export class UserController {
     file: Express.Multer.File,
     @GetUser() user: User,
   ): Promise<User> {
-    return this.service.uploafile(user, file);
+    return this.service.updateavatar(user, file);
   }
 
   @Post()
@@ -125,15 +125,14 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard())
-  @Patch(':id/update')
-  async updateUsernameAvatar(
+  @Patch(':id/updatename')
+  async updateUsername(
     @Param('id', ParseIntPipe) id: number,
     @Body('name') name: string,
-    @Body('avatar') avatar: string,
     @GetUser() user: User,
   ): Promise<User> {
     if (id === user.id) {
-      return await this.service.updateUsernameAvatar(id, name, avatar);
+      return await this.service.updateUsername(id, name);
     } else
       throw new UnauthorizedException(
         'this user doesnt have the rights to edit',

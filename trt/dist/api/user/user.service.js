@@ -51,15 +51,12 @@ let UserService = class UserService {
         await this.repository.save(ret);
         return true;
     }
-    async updateUsernameAvatar(id, username, avatar) {
+    async updateUsername(id, username) {
         const user = await this.getUserByid(id);
         if (!user)
             throw new common_1.NotFoundException(`user with id ${id} not found`);
         if (username) {
             user.name = username;
-        }
-        if (avatar) {
-            user.avatar = avatar;
         }
         await this.repository.save(user);
         return await this.getUserByid(id);
@@ -78,7 +75,7 @@ let UserService = class UserService {
             twoFactor: true,
         });
     }
-    async uploafile(user, file) {
+    async updateavatar(user, file) {
         console.log(file);
         const type = file.mimetype.split('/')[1];
         console.log(type);

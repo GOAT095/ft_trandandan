@@ -54,18 +54,11 @@ export class UserService {
     await this.repository.save(ret);
     return true;
   }
-  async updateUsernameAvatar(
-    id: number,
-    username: string,
-    avatar: string,
-  ): Promise<User> {
+  async updateUsername(id: number, username: string): Promise<User> {
     const user = await this.getUserByid(id);
     if (!user) throw new NotFoundException(`user with id ${id} not found`);
     if (username) {
       user.name = username;
-    }
-    if (avatar) {
-      user.avatar = avatar;
     }
     await this.repository.save(user);
     return await this.getUserByid(id);
@@ -105,7 +98,7 @@ export class UserService {
     });
   }
 
-  async uploafile(user: User, file: any): Promise<User> {
+  async updateavatar(user: User, file: any): Promise<User> {
     console.log(file);
     const type = file.mimetype.split('/')[1];
     console.log(type);

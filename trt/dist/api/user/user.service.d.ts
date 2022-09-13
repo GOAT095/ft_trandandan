@@ -6,9 +6,9 @@ export declare class UserService {
     getAllUser(): Promise<User[]>;
     createUser(body: CreateUserDto): Promise<User>;
     addUserToDB(user: any): Promise<boolean>;
-    updateUsernameAvatar(id: number, username: string, avatar: string): Promise<User>;
+    updateUsername(id: number, username: string): Promise<User>;
     removeUser(id: number): Promise<boolean>;
     setTwoFactorAuthenticationSecret(secret: string, userId: number): Promise<import("typeorm").UpdateResult>;
     turnOnTwoFactorAuthentication(userId: number): Promise<import("typeorm").UpdateResult>;
-    uploafile(user: User, file: any): Promise<User>;
+    updateavatar(user: User, file: any): Promise<User>;
 }

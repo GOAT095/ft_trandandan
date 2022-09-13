@@ -46,8 +46,8 @@ let UserController = class UserController {
     getAllUsers() {
         return this.service.getAllUser();
     }
-    async uploadFile(file, user) {
-        return this.service.uploafile(user, file);
+    async updateavatar(file, user) {
+        return this.service.updateavatar(user, file);
     }
     async createUser(body) {
         await this.service.createUser(body);
@@ -57,9 +57,9 @@ let UserController = class UserController {
         console.log(accesToken);
         return accesToken;
     }
-    async updateUsernameAvatar(id, name, avatar, user) {
+    async updateUsername(id, name, user) {
         if (id === user.id) {
-            return await this.service.updateUsernameAvatar(id, name, avatar);
+            return await this.service.updateUsername(id, name);
         }
         else
             throw new common_1.UnauthorizedException('this user doesnt have the rights to edit');
@@ -121,7 +121,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, user_entity_1.User]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "uploadFile", null);
+], UserController.prototype, "updateavatar", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
@@ -131,15 +131,14 @@ __decorate([
 ], UserController.prototype, "createUser", null);
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
-    (0, common_1.Patch)(':id/update'),
+    (0, common_1.Patch)(':id/updatename'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)('name')),
-    __param(2, (0, common_1.Body)('avatar')),
-    __param(3, (0, get_user_decorator_1.GetUser)()),
+    __param(2, (0, get_user_decorator_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String, String, user_entity_1.User]),
+    __metadata("design:paramtypes", [Number, String, user_entity_1.User]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "updateUsernameAvatar", null);
+], UserController.prototype, "updateUsername", null);
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Delete)('/:id/delete'),
