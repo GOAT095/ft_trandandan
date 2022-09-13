@@ -15,6 +15,8 @@ const user_entity_1 = require("./api/user/user.entity");
 const user_module_1 = require("./api/user/user.module");
 const friend_entity_1 = require("./api/friends/friend.entity");
 const platform_express_1 = require("@nestjs/platform-express");
+const serve_static_1 = require("@nestjs/serve-static");
+const path_1 = require("path");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -22,6 +24,9 @@ AppModule = __decorate([
         imports: [
             platform_express_1.MulterModule.register({
                 dest: './upload',
+            }),
+            serve_static_1.ServeStaticModule.forRoot({
+                rootPath: (0, path_1.join)(__dirname, '..', 'public'),
             }),
             user_module_1.UserModule,
             typeorm_1.TypeOrmModule.forRoot({

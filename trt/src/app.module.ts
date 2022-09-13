@@ -6,10 +6,15 @@ import { User } from './api/user/user.entity';
 import { UserModule } from './api/user/user.module';
 import { FriendrequestEntity } from './api/friends/friend.entity';
 import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 @Module({
   imports: [
     MulterModule.register({
       dest: './upload',
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
     }),
     UserModule,
     TypeOrmModule.forRoot({
