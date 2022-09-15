@@ -4,7 +4,7 @@ import { User } from './user.entity';
 export declare class UserController {
     private readonly service;
     private readonly JwtService;
-    getauthedUser(code: string): Promise<string>;
+    getauthedUser(code: string, res: any): Promise<any>;
     getUser(id: number): Promise<User>;
     getAllUsers(): Promise<User[]>;
     updateavatar(file: Express.Multer.File, user: User): Promise<User>;

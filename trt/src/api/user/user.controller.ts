@@ -19,6 +19,7 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
   Req,
+  Res,
 } from '@nestjs/common';
 import { CreateUserDto } from '../dto/user.dto';
 import { User } from './user.entity';
@@ -31,8 +32,6 @@ import { GetUser } from '../auth/get-user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import { diskStorage } from 'multer';
-import * as fs from 'fs';
-import { request } from 'http';
 
 @Controller('user')
 export class UserController {
@@ -42,7 +41,10 @@ export class UserController {
   private readonly JwtService: JwtService;
 
   @Get('redirect')
-  async getauthedUser(@Query('code') code: string) {
+  async getauthedUser(
+    @Query('code') code: string,
+    @Res() res: any,
+  ): Promise<any> {
     const app = new Authenticator(
       process.env.clientID,
       process.env.clientSecret,
@@ -50,28 +52,9 @@ export class UserController {
     );
 
     const data = await app.get_Access_token(code);
-    // console.log("CHECK " + JSON.stringify(data)); //token, refresh_token,
-    // token.then((data) => {
-    // get the acces token of the user
-    // console.log("======================== auth user Data =========================");
-    // // console.log(data);
-    // console.log("========================= 42 user data ==========================");
-    // get the user info from 42 api
-    // console.log(await app.get_user_data(data.access_token));
-
     if (data.access_token) {
       const d = await app.get_user_data(data.access_token);
-
-      // console.log(id + "dawdawdawdawdada")
-      await this.service.addUserToDB(d);
-      // console.log("Hello "+ d.login);
-      // console.log(d);
-      const id = await (await this.getUser(d.id)).id;
-      const payload: JwtPayload = { id };
-      const accesToken = await this.JwtService.sign(payload);
-      console.log(accesToken);
-      //need to add 2fa logic ! if enabled and normal login case should stay
-      return accesToken;
+      this.service.createaccess(d, res);
     } else {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }

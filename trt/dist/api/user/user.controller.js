@@ -24,17 +24,12 @@ const get_user_decorator_1 = require("../auth/get-user.decorator");
 const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
 let UserController = class UserController {
-    async getauthedUser(code) {
+    async getauthedUser(code, res) {
         const app = new api42client_1.default(process.env.clientID, process.env.clientSecret, process.env.callbackURL);
         const data = await app.get_Access_token(code);
         if (data.access_token) {
             const d = await app.get_user_data(data.access_token);
-            await this.service.addUserToDB(d);
-            const id = await (await this.getUser(d.id)).id;
-            const payload = { id };
-            const accesToken = await this.JwtService.sign(payload);
-            console.log(accesToken);
-            return accesToken;
+            this.service.createaccess(d, res);
         }
         else {
             throw new common_1.HttpException('Forbidden', common_1.HttpStatus.FORBIDDEN);
@@ -83,8 +78,9 @@ __decorate([
 __decorate([
     (0, common_1.Get)('redirect'),
     __param(0, (0, common_1.Query)('code')),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getauthedUser", null);
 __decorate([

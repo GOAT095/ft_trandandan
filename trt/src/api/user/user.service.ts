@@ -1,27 +1,49 @@
 import {
   ConflictException,
-  ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
+  Res,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dto/user.dto';
 import { UserStatus } from './user.status.enum';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { GetUser } from '../auth/get-user.decorator';
-import { userInfo } from 'os';
 import * as fs from 'fs';
+import { JwtPayload } from '../auth/jwt.payload.interface';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class UserService {
   @InjectRepository(User)
   private readonly repository: Repository<User>;
+  @Inject(JwtService)
+  private readonly JwtService: JwtService;
+
   async getUserByid(id: number): Promise<User> {
     return await this.repository.findOne({ where: { id } });
   }
   async getAllUser(): Promise<User[]> {
     return await this.repository.find();
+  }
+
+  async createaccess(d: any, @Res() res): Promise<string> {
+    // console.log(id + "dawdawdawdawdada")
+    await this.addUserToDB(d);
+    // console.log("Hello "+ d.login);
+    // console.log(d);
+    const id = await (await this.getUserByid(d.id)).id;
+    const twofa = await (await this.getUserByid(d.id)).twoFactor;
+    if (!twofa) {
+      const payload: JwtPayload = { id };
+      const accesToken = await this.JwtService.sign(payload);
+      console.log(accesToken);
+      return accesToken;
+    } else {
+      console.log('2fa');
+      res.redirect('http://localhost:3000/2fa/check');
+    }
+    return;
   }
 
   async createUser(body: CreateUserDto): Promise<User> {
@@ -97,6 +119,11 @@ export class UserService {
       twoFactor: true,
     });
   }
+
+  // async two_fac(@Response() res, user: User) {
+
+  //   return;
+  // }
 
   async updateavatar(user: User, file: any): Promise<User> {
     console.log(file);

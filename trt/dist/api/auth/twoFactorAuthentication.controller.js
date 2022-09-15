@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TwoFactorAuthenticationController = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_1 = require("@nestjs/jwt");
 const passport_1 = require("@nestjs/passport");
 const user_entity_1 = require("../user/user.entity");
 const user_service_1 = require("../user/user.service");
@@ -22,6 +23,16 @@ const twoFactorAuthentication_service_1 = require("./twoFactorAuthentication.ser
 let TwoFactorAuthenticationController = class TwoFactorAuthenticationController {
     constructor(twoFactorAuthenticationService) {
         this.twoFactorAuthenticationService = twoFactorAuthenticationService;
+    }
+    async checkTwoFactorAuthentication(user, twoFactorAuthenticationCode) {
+        console.log(twoFactorAuthenticationCode);
+        if (this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode, user)) {
+            const payload = { id: user.id };
+            const accesToken = await this.JwtService.sign(payload);
+            console.log(accesToken);
+            return accesToken;
+        }
+        throw new common_1.UnauthorizedException('wrong 2fa authentication code');
     }
     async register(response, user) {
         const { otpauthurl } = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(user);
@@ -36,9 +47,22 @@ let TwoFactorAuthenticationController = class TwoFactorAuthenticationController 
     }
 };
 __decorate([
+    (0, common_1.Inject)(jwt_1.JwtService),
+    __metadata("design:type", jwt_1.JwtService)
+], TwoFactorAuthenticationController.prototype, "JwtService", void 0);
+__decorate([
     (0, common_1.Inject)(user_service_1.UserService),
     __metadata("design:type", user_service_1.UserService)
 ], TwoFactorAuthenticationController.prototype, "usersService", void 0);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
+    (0, common_1.Post)('check'),
+    __param(0, (0, get_user_decorator_1.GetUser)()),
+    __param(1, (0, common_1.Body)('code')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_entity_1.User, String]),
+    __metadata("design:returntype", Promise)
+], TwoFactorAuthenticationController.prototype, "checkTwoFactorAuthentication", null);
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Post)('generate'),

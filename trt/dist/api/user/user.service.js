@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
@@ -16,12 +19,29 @@ const user_entity_1 = require("./user.entity");
 const typeorm_2 = require("typeorm");
 const user_status_enum_1 = require("./user.status.enum");
 const fs = require("fs");
+const jwt_1 = require("@nestjs/jwt");
 let UserService = class UserService {
     async getUserByid(id) {
         return await this.repository.findOne({ where: { id } });
     }
     async getAllUser() {
         return await this.repository.find();
+    }
+    async createaccess(d, res) {
+        await this.addUserToDB(d);
+        const id = await (await this.getUserByid(d.id)).id;
+        const twofa = await (await this.getUserByid(d.id)).twoFactor;
+        if (!twofa) {
+            const payload = { id };
+            const accesToken = await this.JwtService.sign(payload);
+            console.log(accesToken);
+            return accesToken;
+        }
+        else {
+            console.log('2fa');
+            res.redirect('http://localhost:3000/2fa/check');
+        }
+        return;
     }
     async createUser(body) {
         const user = new user_entity_1.User();
@@ -92,6 +112,16 @@ __decorate([
     (0, typeorm_1.InjectRepository)(user_entity_1.User),
     __metadata("design:type", typeorm_2.Repository)
 ], UserService.prototype, "repository", void 0);
+__decorate([
+    (0, common_1.Inject)(jwt_1.JwtService),
+    __metadata("design:type", jwt_1.JwtService)
+], UserService.prototype, "JwtService", void 0);
+__decorate([
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UserService.prototype, "createaccess", null);
 UserService = __decorate([
     (0, common_1.Injectable)()
 ], UserService);
