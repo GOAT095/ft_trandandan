@@ -13,6 +13,7 @@ import { UserStatus } from './user.status.enum';
 import * as fs from 'fs';
 import { JwtPayload } from '../auth/jwt.payload.interface';
 import { JwtService } from '@nestjs/jwt';
+import { hashPassword } from '../utils/bcrypt';
 @Injectable()
 export class UserService {
   @InjectRepository(User)
@@ -109,8 +110,9 @@ export class UserService {
   }
 
   async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
+    const res: string = await hashPassword(secret);
     return this.repository.update(userId, {
-      twoFactorAuthenticationSecret: secret,
+      twoFactorAuthenticationSecret: res,
     });
   }
 
