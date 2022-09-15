@@ -45,6 +45,9 @@ let TwoFactorAuthenticationController = class TwoFactorAuthenticationController 
         }
         await this.usersService.turnOnTwoFactorAuthentication(user.id);
     }
+    async turnOffTwoFactorAuthentication(user) {
+        await this.usersService.turnOffTwoFactorAuthentication(user.id);
+    }
 };
 __decorate([
     (0, common_1.Inject)(jwt_1.JwtService),
@@ -81,6 +84,14 @@ __decorate([
     __metadata("design:paramtypes", [user_entity_1.User, String]),
     __metadata("design:returntype", Promise)
 ], TwoFactorAuthenticationController.prototype, "turnOnTwoFactorAuthentication", null);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
+    (0, common_1.Post)('turn-off'),
+    __param(0, (0, get_user_decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_entity_1.User]),
+    __metadata("design:returntype", Promise)
+], TwoFactorAuthenticationController.prototype, "turnOffTwoFactorAuthentication", null);
 TwoFactorAuthenticationController = __decorate([
     (0, common_1.Controller)('2fa'),
     __metadata("design:paramtypes", [twoFactorAuthentication_service_1.twoFactorAuthenticatorService])

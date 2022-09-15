@@ -1,8 +1,6 @@
 import {
-  ClassSerializerInterceptor,
   Controller,
   Post,
-  UseInterceptors,
   Res,
   UseGuards,
   Inject,
@@ -78,5 +76,11 @@ export class TwoFactorAuthenticationController {
       throw new UnauthorizedException('Wrong authentication code');
     }
     await this.usersService.turnOnTwoFactorAuthentication(user.id);
+  }
+
+  @UseGuards(AuthGuard())
+  @Post('turn-off')
+  async turnOffTwoFactorAuthentication(@GetUser() user: User) {
+    await this.usersService.turnOffTwoFactorAuthentication(user.id);
   }
 }

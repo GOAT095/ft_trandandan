@@ -8,4 +8,5 @@ export declare class TwoFactorAuthenticationController {
     checkTwoFactorAuthentication(user: User, twoFactorAuthenticationCode: string): Promise<string>;
     register(response: Response, user: User): Promise<any>;
     turnOnTwoFactorAuthentication(user: User, twoFactorAuthenticationCode: string): Promise<void>;
+    turnOffTwoFactorAuthentication(user: User): Promise<void>;
 }

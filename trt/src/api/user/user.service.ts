@@ -13,7 +13,7 @@ import { UserStatus } from './user.status.enum';
 import * as fs from 'fs';
 import { JwtPayload } from '../auth/jwt.payload.interface';
 import { JwtService } from '@nestjs/jwt';
-import { hashPassword } from '../utils/bcrypt';
+// import { hashPassword } from '../utils/bcrypt';
 @Injectable()
 export class UserService {
   @InjectRepository(User)
@@ -29,10 +29,7 @@ export class UserService {
   }
 
   async createaccess(d: any, @Res() res): Promise<string> {
-    // console.log(id + "dawdawdawdawdada")
     await this.addUserToDB(d);
-    // console.log("Hello "+ d.login);
-    // console.log(d);
     const id = await (await this.getUserByid(d.id)).id;
     const twofa = await (await this.getUserByid(d.id)).twoFactor;
     if (!twofa) {
@@ -110,9 +107,9 @@ export class UserService {
   }
 
   async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
-    const res: string = await hashPassword(secret);
+    // const res: string = await hashPassword(secret);
     return this.repository.update(userId, {
-      twoFactorAuthenticationSecret: res,
+      twoFactorAuthenticationSecret: secret,
     });
   }
 
@@ -122,10 +119,12 @@ export class UserService {
     });
   }
 
-  // async two_fac(@Response() res, user: User) {
-
-  //   return;
-  // }
+  async turnOffTwoFactorAuthentication(userId: number) {
+    return this.repository.update(userId, {
+      twoFactor: false,
+      twoFactorAuthenticationSecret: null,
+    });
+  }
 
   async updateavatar(user: User, file: any): Promise<User> {
     console.log(file);
