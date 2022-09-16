@@ -1,0 +1,34 @@
+div.layout {
+    display: flex;
+    flex-direction: column;
+    // debug
+    border: 2px dashed yellow;
+    height: 100vh;
+    padding: 1.2em;
+}
+
+.layout > nav {
+    display: flex;
+    flex: 2;
+    // debug
+    border: 2px solid darkgray;
+}
+
+.layout > nav > div {
+    border: 2px dashed orange;
+    flex-basis: auto;
+    flex-grow: 1;
+}
+
+.layout > nav > div.nav-tab {
+    text-align: center;
+}
+
+#display {
+    flex: 8;
+    border: 2px dashed purple;
+}
+
+.chat {
+    height: 100%;
+}

@@ -1,0 +1,296 @@
+//.normal-flow  {
+//    display: block;
+//}
+
+//.normal-flow  {
+//    float:right;
+//}
+
+// display
+//.normal-flow {
+//    display: table;
+//}
+//
+//.normal-flow {
+//    position: inherit;
+//}
+//
+//// flex
+//.wrapper {
+//    display: flex;
+//}
+//.wrapper > div {
+//    flex: 1;
+//}
+//
+//.wrapper > div {
+//    background-color: aquamarine;
+//}
+//
+//// grid
+//.wrapper-grid {
+//    display: grid;
+//    grid-template-columns: 1fr 1fr 1fr;
+//    grid-template-rows: 100px 100px;
+//    gap: 10px;
+//}
+//
+//.wrapper-grid > div {
+//    background-color: aquamarine;
+//}
+
+// grid-custom
+
+//.wrapper-grid-custom {
+//    display: grid;
+//    grid-template-columns: 1fr 1fr 1fr;
+//    grid-template-rows: 100px 100px;
+//    gap: 10px;
+//}
+//
+//.wrapper-grid-custom > div {
+//    background-color: aquamarine;
+//}
+//
+//.box1 {
+//    grid-column: 2 / 4;
+//    grid-row: 1;
+//}
+//
+//.box2 {
+//    grid-column: 1;
+//    grid-row: 1 / 3;
+//}
+//
+//.box3 {
+//    grid-row: 2;
+//    grid-column: 3;
+//}
+//
+//// float example
+//.box {
+//    float: left;
+//    width: 150px;
+//    height: 150px;
+//    margin-right: 30px;
+//    background-color: aquamarine;
+//}
+
+// simple positioning example
+/*
+body {
+    width: 500px;
+    margin: 0 auto;
+}
+
+p {
+    background-color: rgb(207, 232, 220);
+    border: 2px solid rgb(79, 185, 227);
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+}
+*/
+
+// relative positioning
+/*
+.positioned {
+    position: relative;
+    top: -30px;
+    left: 30px;
+    background-color:cadetblue;
+}
+*/
+
+// absolute positioning
+/*
+.positioned {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    background-color:cadetblue;
+}
+*/
+
+// fixed positioning
+/*
+.positioned {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    background-color:cadetblue;
+    border: 2px solid rgb(79, 185, 227);
+    border-radius: 5px;
+}
+*/
+
+// sticky positioning
+//body {
+//    width: 500px;
+//    margin: 0 auto;
+//}
+
+/*
+p {
+    background-color: rgb(207, 232, 220);
+    border: 2px solid rgb(79, 185, 227);
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+}
+*/
+
+//.positioned {
+//    position: sticky;
+//    top: 30px;
+//    left: 30px;
+//    background-color:cadetblue;
+//    border: 2px solid rgb(79, 185, 227);
+//    border-radius: 5px;
+//}
+
+// flex box task 1
+/*
+nav ul {
+    max-width: 700px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav a:link,
+nav a:visited {
+    background-color: #4D7298;
+    border: 2px solid #77A6B6;
+    border-radius: .5em;
+    color: #fff;
+    padding: .5em;
+    display: inline-block;
+    text-decoration: none;
+}
+ul {
+    display: flex;
+    flex-direction: row; // default
+    border: 2px dashed;
+    //align-items: center;
+    justify-content: space-between;
+    //align-items: flex-start;
+}
+
+li {
+    //flex: 1;
+    background-color:cadetblue;
+    border: 2px solid rgb(79, 185, 227);
+    border-radius: 5px;
+}
+*/
+
+// flex box task 2
+/*
+ul {
+    max-width: 700px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    // sol
+    display: flex;
+}
+
+li {
+    background-color: #4D7298;
+    border: 2px solid #77A6B6;
+    color: #fff;
+    padding: .5em;
+    // sol
+    flex: 1;
+}
+
+li:nth-of-type(1) {
+    flex: 2;
+}
+*/
+
+// flex box task 3
+/*
+.parent {
+    border: 2px solid #77A6B6;
+    border-radius: .5em;
+    width: 400px;
+    height: 300px;
+    // sol
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.child {
+    background-color: #4D7298;
+    color: #fff;
+    padding: .5em;
+    width: 150px;
+    // sol
+    //justify-content: ;
+}
+*/
+
+// flex box task 4
+/*
+ul {
+    with: 450px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    // sol
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+li {
+    background-color: #4D7298;
+    border: 2px solid #77A6B6;
+    border-radius: .5em;
+    color: #fff;
+    padding: .5em;
+    margin: .5em;
+    // sol
+    //flex: 1 80px;
+    //flex: 1 0 auto; // grow, shrink, basis (minimum size)
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+*/
+
+// default page 
+div.viewport {
+    height: 98vh;
+}
+
+div.default {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    // debug
+    // border: 2px solid;
+}
+
+.default > div > h1{
+    margin-bottom: 0px;
+}
+
+.default > div > h6 {
+    margin-bottom: 2.2em;
+    //float: right;
+    text-align: end;
+}
+
+.layout-child {
+    display: flex;
+    flex-direction: column;
+}
+.layout-child > button {
+    align-self: center;
+}
+// player page
