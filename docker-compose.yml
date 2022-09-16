@@ -43,14 +43,14 @@ services:
 
 # phpMyAdmin just for development in case we need a look up to database
 
-  phpmyadmin:
-    container_name: phpmyadmin
-    image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: $PGADMIN_DEFAULT_EMAIL
-      PGADMIN_DEFAULT_PASSWORD: $PGADMIN_DEFAULT_PASSWORD
-    ports:
-      - "8080:80"
-    depends_on:
-      - db
+  # phpmyadmin:
+  #   container_name: phpmyadmin
+  #   image: dpage/pgadmin4
+  #   restart: always
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: $PGADMIN_DEFAULT_EMAIL
+  #     PGADMIN_DEFAULT_PASSWORD: $PGADMIN_DEFAULT_PASSWORD
+  #   ports:
+  #     - "8080:80"
+  #   depends_on:
+  #     - db

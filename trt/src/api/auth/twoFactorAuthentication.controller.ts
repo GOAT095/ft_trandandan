@@ -15,6 +15,7 @@ import { GetUser } from './get-user.decorator';
 import { JwtPayload } from './jwt.payload.interface';
 import { twoFactorAuthenticatorService } from './twoFactorAuthentication.service';
 
+@UseGuards(AuthGuard())
 @Controller('2fa')
 //   @UseInterceptors(ClassSerializerInterceptor)
 export class TwoFactorAuthenticationController {
@@ -27,7 +28,6 @@ export class TwoFactorAuthenticationController {
   @Inject(UserService)
   private readonly usersService: UserService;
 
-  @UseGuards(AuthGuard())
   @Post('check')
   async checkTwoFactorAuthentication(
     @GetUser() user: User,
@@ -47,7 +47,7 @@ export class TwoFactorAuthenticationController {
     }
     throw new UnauthorizedException('wrong 2fa authentication code');
   }
-  @UseGuards(AuthGuard())
+
   @Post('generate')
   async register(@Res() response: Response, @GetUser() user: User) {
     const { otpauthurl } =
@@ -61,7 +61,6 @@ export class TwoFactorAuthenticationController {
     );
   }
 
-  @UseGuards(AuthGuard())
   @Post('turn-on')
   async turnOnTwoFactorAuthentication(
     @GetUser() user: User,
@@ -78,7 +77,6 @@ export class TwoFactorAuthenticationController {
     await this.usersService.turnOnTwoFactorAuthentication(user.id);
   }
 
-  @UseGuards(AuthGuard())
   @Post('turn-off')
   async turnOffTwoFactorAuthentication(@GetUser() user: User) {
     await this.usersService.turnOffTwoFactorAuthentication(user.id);

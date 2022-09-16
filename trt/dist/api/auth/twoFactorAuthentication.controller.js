@@ -58,7 +58,6 @@ __decorate([
     __metadata("design:type", user_service_1.UserService)
 ], TwoFactorAuthenticationController.prototype, "usersService", void 0);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Post)('check'),
     __param(0, (0, get_user_decorator_1.GetUser)()),
     __param(1, (0, common_1.Body)('code')),
@@ -67,7 +66,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TwoFactorAuthenticationController.prototype, "checkTwoFactorAuthentication", null);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Post)('generate'),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, get_user_decorator_1.GetUser)()),
@@ -76,7 +74,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TwoFactorAuthenticationController.prototype, "register", null);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Post)('turn-on'),
     __param(0, (0, get_user_decorator_1.GetUser)()),
     __param(1, (0, common_1.Body)()),
@@ -85,7 +82,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TwoFactorAuthenticationController.prototype, "turnOnTwoFactorAuthentication", null);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Post)('turn-off'),
     __param(0, (0, get_user_decorator_1.GetUser)()),
     __metadata("design:type", Function),
@@ -93,6 +89,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TwoFactorAuthenticationController.prototype, "turnOffTwoFactorAuthentication", null);
 TwoFactorAuthenticationController = __decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     (0, common_1.Controller)('2fa'),
     __metadata("design:paramtypes", [twoFactorAuthentication_service_1.twoFactorAuthenticatorService])
 ], TwoFactorAuthenticationController);

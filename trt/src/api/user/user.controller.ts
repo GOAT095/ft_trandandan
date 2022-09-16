@@ -18,7 +18,6 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
-  Req,
   Res,
 } from '@nestjs/common';
 import { CreateUserDto } from '../dto/user.dto';

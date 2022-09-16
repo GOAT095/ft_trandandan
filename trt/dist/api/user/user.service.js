@@ -20,6 +20,7 @@ const typeorm_2 = require("typeorm");
 const user_status_enum_1 = require("./user.status.enum");
 const fs = require("fs");
 const jwt_1 = require("@nestjs/jwt");
+const bcrypt_1 = require("../utils/bcrypt");
 let UserService = class UserService {
     async getUserByid(id) {
         return await this.repository.findOne({ where: { id } });
@@ -86,8 +87,9 @@ let UserService = class UserService {
         return res.affected === 1;
     }
     async setTwoFactorAuthenticationSecret(secret, userId) {
+        const res = await (0, bcrypt_1.hashPassword)(secret);
         return this.repository.update(userId, {
-            twoFactorAuthenticationSecret: secret,
+            twoFactorAuthenticationSecret: res,
         });
     }
     async turnOnTwoFactorAuthentication(userId) {
