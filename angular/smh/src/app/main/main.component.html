@@ -2,8 +2,9 @@
     <nav>
         <div>
             <!--<span>Player info</span>-->
-            <img class="nes-avatar is-pixelated is-large" src="https://www.gravatar.com/avatar/3bc8ceda0c2d6dcbc3b4a844c02a39c4?default=retro">
-            <h6>Rui Uyemara</h6>
+            <!--<img class="nes-avatar is-pixelated is-large" src="https://www.gravatar.com/avatar/3bc8ceda0c2d6dcbc3b4a844c02a39c4?default=retro">
+            <h6>Rui Uyemara</h6>-->
+            <app-player-info></app-player-info>
         </div>
         <div class="nav-tab">
             <span>Chat</span>
@@ -20,7 +21,7 @@
     </nav>
     <div id="display">
         <!--<span>Display</span>-->
-        <div class="chat nes-container">
+        <div :hidden class="chat nes-container">
             <section class="message-list">
                 <section class="message -left">
                     <i class="nes-bcrikko"></i>
@@ -38,5 +39,6 @@
                 </section>
             </section>
         </div>
+        <app-player-settings></app-player-settings>
     </div>
 </div>

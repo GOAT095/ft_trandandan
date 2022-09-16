@@ -7,6 +7,8 @@ import { GlobalBackgroundComponent } from './global-background/global-background
 import { UserInfoComponent } from './user-info/user-info.component';
 import { DefaultComponent } from './default/default.component';
 import { MainComponent } from './main/main.component';
+import { PlayerInfoComponent } from './player-info/player-info.component';
+import { PlayerSettingsComponent } from './player-settings/player-settings.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +17,8 @@ import { MainComponent } from './main/main.component';
     AppComponent,
     DefaultComponent,
     MainComponent,
+    PlayerInfoComponent,
+    PlayerSettingsComponent,
   ],
   imports: [
     BrowserModule,
@@ -25,7 +29,9 @@ import { MainComponent } from './main/main.component';
   exports: [
     UserInfoComponent,
     DefaultComponent,
-    MainComponent
+    MainComponent,
+    PlayerInfoComponent,
+    PlayerSettingsComponent
   ]
 })
 export class AppModule { }

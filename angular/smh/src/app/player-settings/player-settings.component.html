@@ -1,0 +1,30 @@
+<div class="nes-container is-dark is-centered with-title">
+    <span class="title">Settings</span>
+    <div class="nes-container with-title is-dark">
+        <span class="title">Info</span>
+        <div class="setting group">
+            <div class="setting group-child">
+                <span >Avatar</span>
+                <div class="setting info-group-child">
+                    <label type='button' class="nes-btn" for='edit-avatar'>Select !</label>
+                    <input :hidden id='edit-avatar' class="nes-input" type="file" />
+                </div>
+            </div>
+            <div class="setting group-child">
+                <span>Username</span>
+                <input class="nes-input" type="text" />
+                <button class="nes-btn is-primary"> Save </button>
+            </div>
+        </div>
+    </div>
+    <div class="nes-container with-title is-dark">
+        <span class="title">Security</span>
+        <span>Two factor auth: </span>
+        <button type="button" class="nes-btn is-success is-dark">Enable</button>
+    </div>
+    <div class="nes-container with-title is-dark">
+       <span class="title">Privacy</span>
+       <span>Blocked users:</span>
+    </div>
+
+</div>

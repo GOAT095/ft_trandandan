@@ -29,7 +29,7 @@
             ],
             "styles": [
               "src/styles.less",
-              "nes.css/css/nes.css"
+              "node_modules/nes.css/css/nes.css"
             ],
             "scripts": []
           },
@@ -106,6 +106,7 @@
     }
   },
   "cli": {
-    "analytics": "110c0196-4ad2-4244-92da-5c85d5715db9"
+    "analytics": "110c0196-4ad2-4244-92da-5c85d5715db9",
+    "packageManager": "yarn"
   }
 }
