@@ -14,6 +14,7 @@ import * as fs from 'fs';
 import { JwtPayload } from '../auth/jwt.payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { hashPassword } from '../utils/bcrypt';
+import { GetUser } from '../auth/get-user.decorator';
 // import { hashPassword } from '../utils/bcrypt';
 @Injectable()
 export class UserService {
@@ -144,6 +145,16 @@ export class UserService {
     return user;
   }
 
-  // game stuff
+  //game stuff
+  async addwin(@GetUser() user: User): Promise<User> {
+    user.wins += 1;
+    await this.repository.save(user);
+    return await this.getUserByid(user.id);
+  }
+  async addloss(@GetUser() user: User): Promise<User> {
+    user.losses += 1;
+    await this.repository.save(user);
+    return await this.getUserByid(user.id);
+  }
 
 }
