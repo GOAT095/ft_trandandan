@@ -19,6 +19,8 @@ import {
   TwoFactorDialogPromptComponent
 } from './player-settings/player-settings.component';
 import { PlayerFriendRequestsComponent } from './player-friend-requests/player-friend-requests.component';
+import { PlayerFriendsComponent } from './player-friends/player-friends.component';
+import { PlayerInfoShortComponent } from './player-info-short/player-info-short.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { PlayerFriendRequestsComponent } from './player-friend-requests/player-f
     TwoFactorDialogPromptComponent,
     PlayerSettingsComponent,
     PlayerFriendRequestsComponent,
+    PlayerFriendsComponent,
+    PlayerInfoShortComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,7 +52,9 @@ import { PlayerFriendRequestsComponent } from './player-friend-requests/player-f
     UserInfoComponent,
     DefaultComponent,
     MainComponent,
-    ActionButtonComponent
+    ActionButtonComponent,
+    PlayerFriendsComponent,
+    PlayerInfoShortComponent
   ]
 })
 export class AppModule { }
