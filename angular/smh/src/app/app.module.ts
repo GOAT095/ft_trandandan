@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from '@angular/cdk/dialog';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -10,8 +11,10 @@ import { GlobalBackgroundComponent } from './global-background/global-background
 import { UserInfoComponent } from './user-info/user-info.component';
 import { DefaultComponent } from './default/default.component';
 import { MainComponent } from './main/main.component';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActionButtonComponent, PromptDialogComponent } from './action-button/action-button.component';
+import { PlayerInfoComponent } from './player-info/player-info.component';
+import { PlayerSettingsComponent } from './player-settings/player-settings.component';
+import { PlayerFriendRequestsComponent } from './player-friend-requests/player-friend-requests.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +25,9 @@ import { ActionButtonComponent, PromptDialogComponent } from './action-button/ac
     MainComponent,
     ActionButtonComponent,
     PromptDialogComponent,
+    PlayerInfoComponent,
+    PlayerSettingsComponent,
+    PlayerFriendRequestsComponent,
   ],
   imports: [
     BrowserModule,
