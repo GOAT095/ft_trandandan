@@ -143,4 +143,7 @@ export class UserService {
     this.repository.save(user);
     return user;
   }
+
+  // game stuff
+
 }
