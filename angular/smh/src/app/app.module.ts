@@ -13,7 +13,11 @@ import { DefaultComponent } from './default/default.component';
 import { MainComponent } from './main/main.component';
 import { ActionButtonComponent, PromptDialogComponent } from './action-button/action-button.component';
 import { PlayerInfoComponent } from './player-info/player-info.component';
-import { PlayerSettingsComponent } from './player-settings/player-settings.component';
+import { 
+  PlayerSettingsComponent,
+  TwoFactorActionButtonComponent,
+  TwoFactorDialogPromptComponent
+} from './player-settings/player-settings.component';
 import { PlayerFriendRequestsComponent } from './player-friend-requests/player-friend-requests.component';
 
 @NgModule({
@@ -26,6 +30,8 @@ import { PlayerFriendRequestsComponent } from './player-friend-requests/player-f
     ActionButtonComponent,
     PromptDialogComponent,
     PlayerInfoComponent,
+    TwoFactorActionButtonComponent,
+    TwoFactorDialogPromptComponent,
     PlayerSettingsComponent,
     PlayerFriendRequestsComponent,
   ],
