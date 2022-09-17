@@ -1,14 +1,17 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { FormsModule } from '@angular/forms';
+import { DialogModule } from '@angular/cdk/dialog';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GlobalBackgroundComponent } from './global-background/global-background.component';
 import { UserInfoComponent } from './user-info/user-info.component';
 import { DefaultComponent } from './default/default.component';
 import { MainComponent } from './main/main.component';
-import { PlayerInfoComponent } from './player-info/player-info.component';
-import { PlayerSettingsComponent } from './player-settings/player-settings.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ActionButtonComponent, PromptDialogComponent } from './action-button/action-button.component';
 
 @NgModule({
   declarations: [
@@ -17,12 +20,15 @@ import { PlayerSettingsComponent } from './player-settings/player-settings.compo
     AppComponent,
     DefaultComponent,
     MainComponent,
-    PlayerInfoComponent,
-    PlayerSettingsComponent,
+    ActionButtonComponent,
+    PromptDialogComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NoopAnimationsModule,
+    FormsModule,
+    DialogModule
   ],
   providers: [],
   bootstrap: [AppComponent],
@@ -30,8 +36,7 @@ import { PlayerSettingsComponent } from './player-settings/player-settings.compo
     UserInfoComponent,
     DefaultComponent,
     MainComponent,
-    PlayerInfoComponent,
-    PlayerSettingsComponent
+    ActionButtonComponent
   ]
 })
 export class AppModule { }
