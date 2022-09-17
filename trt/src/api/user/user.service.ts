@@ -108,9 +108,9 @@ export class UserService {
   }
 
   async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
-    const res: string = await hashPassword(secret);
+    // const res: string = await hashPassword(secret);
     return this.repository.update(userId, {
-      twoFactorAuthenticationSecret: res,
+      twoFactorAuthenticationSecret: secret,
     });
   }
 
