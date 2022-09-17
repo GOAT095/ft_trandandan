@@ -1,0 +1,80 @@
+diff --git a/angular/smh/src/app/player-settings/player-settings.component.html b/angular/smh/src/app/player-settings/player-settings.component.html
+index 1972c1d..c148a9f 100644
+--- a/angular/smh/src/app/player-settings/player-settings.component.html
++++ b/angular/smh/src/app/player-settings/player-settings.component.html
+@@ -1,28 +1,30 @@
+ <div class="nes-container is-dark is-centered with-title">
+     <span class="title">Settings</span>
+-    <div class="nes-container with-title is-dark">
++    <div class="section nes-container with-title is-dark">
+         <span class="title">Info</span>
+         <div class="setting group">
++            <span class="setting-item-label">Avatar</span>
+             <div class="setting group-child">
+-                <span >Avatar</span>
+                 <div class="setting info-group-child">
+                     <label type='button' class="nes-btn" for='edit-avatar'>Select !</label>
+                     <input :hidden id='edit-avatar' class="nes-input" type="file" />
+                 </div>
+             </div>
++            <span class="setting-item-label">Username</span>
+             <div class="setting group-child">
+-                <span>Username</span>
+                 <input class="nes-input" type="text" />
+                 <button class="nes-btn is-primary"> Save </button>
+             </div>
+         </div>
+     </div>
+-    <div class="nes-container with-title is-dark">
++    <div class="section nes-container with-title is-dark">
+         <span class="title">Security</span>
+-        <span>Two factor auth: </span>
+-        <button type="button" class="nes-btn is-success is-dark">Enable</button>
++        <div class="group">
++            <span class="setting-item-label">2FA</span>
++            <button type="button" class="nes-btn is-success is-dark">Enable</button>
++        </div>
+     </div>
+-    <div class="nes-container with-title is-dark">
++    <div class="section nes-container with-title is-dark">
+         <span class="title">Privacy</span>
+         <span>Blocked users:</span>
+         <div class="setting block-list-item">
+diff --git a/angular/smh/src/app/player-settings/player-settings.component.less b/angular/smh/src/app/player-settings/player-settings.component.less
+index bc70553..37a1fc3 100644
+--- a/angular/smh/src/app/player-settings/player-settings.component.less
++++ b/angular/smh/src/app/player-settings/player-settings.component.less
+@@ -10,7 +10,7 @@ div.group-child > span {
+ }
+ 
+ div.group-child > div, div.group-child > input {
+-    flex: 1;
++    // flex: 1;
+     // debug
+     //border: 2px dashed forestgreen;
+ }
+@@ -23,4 +23,23 @@ div.block-list-item {
+ 
+ div.block-list-item > * {
+     margin: 1em;
++}
++
++div.section {
++    margin: 1em;
++}
++
++span.setting-item-label {
++    margin-top: 1em;
++    margin-right: 1em;
++    margin-left: 8em;
++    text-align: left;
++    // debug
++    // border: 2px dashed orange;
++}
++
++div.group {
++    display: grid;
++    grid-template-columns: 1fr 2fr;
++    // grid-template-rows: 1fr 1fr;
+ }
+\ No newline at end of file
