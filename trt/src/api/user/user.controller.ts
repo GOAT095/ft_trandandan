@@ -19,6 +19,7 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
   Res,
+  Req,
 } from '@nestjs/common';
 import { CreateUserDto } from '../dto/user.dto';
 import { User } from './user.entity';
@@ -39,6 +40,10 @@ export class UserController {
   @Inject(JwtService)
   private readonly JwtService: JwtService;
 
+  @Get('home')
+  async hellohome(@Req() req): Promise<string> {
+    return 'hello' + req.user.name.toString();
+  }
   @Get('redirect')
   async getauthedUser(
     @Query('code') code: string,
@@ -53,6 +58,7 @@ export class UserController {
     const data = await app.get_Access_token(code);
     if (data.access_token) {
       const d = await app.get_user_data(data.access_token);
+      // console.log(d);
       this.service.createaccess(d, res);
     } else {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);

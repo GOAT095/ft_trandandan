@@ -32,6 +32,7 @@ export class TwoFactorAuthenticationController {
   async checkTwoFactorAuthentication(
     @GetUser() user: User,
     @Body('code') twoFactorAuthenticationCode: string,
+    @Res() res,
   ) {
     console.log(twoFactorAuthenticationCode);
     if (
@@ -43,7 +44,8 @@ export class TwoFactorAuthenticationController {
       const payload: JwtPayload = { id: user.id };
       const accesToken = await this.JwtService.sign(payload);
       console.log(accesToken);
-      return accesToken;
+      res.cookie('auth-cookie', accesToken, { httpOnly: false });
+      // return accesToken;
     }
     throw new UnauthorizedException('wrong 2fa authentication code');
   }

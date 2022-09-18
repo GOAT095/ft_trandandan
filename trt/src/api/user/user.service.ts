@@ -36,8 +36,10 @@ export class UserService {
     const twofa = await (await this.getUserByid(d.id)).twoFactor;
     if (!twofa) {
       const payload: JwtPayload = { id };
-      const accesToken = await this.JwtService.sign(payload);
+      const accesToken = this.JwtService.sign(payload);
       console.log(accesToken);
+      res.cookie('auth-cookie', accesToken, { httpOnly: false });
+      res.redirect('http://localhost:3000/user/home');
       return accesToken;
     } else {
       console.log('2fa');
@@ -79,6 +81,10 @@ export class UserService {
   async updateUsername(id: number, username: string): Promise<User> {
     const user = await this.getUserByid(id);
     if (!user) throw new NotFoundException(`user with id ${id} not found`);
+    const tmp = await this.repository.findOne({
+      where: { name: username },
+    });
+    if (tmp) throw new ConflictException('username already exist !');
     if (username) {
       user.name = username;
     }
@@ -156,5 +162,4 @@ export class UserService {
     await this.repository.save(user);
     return await this.getUserByid(user.id);
   }
-
 }
