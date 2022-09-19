@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthController } from '../auth/auth.controller';
 import { JwtStrategy } from '../auth/jwt.strategy';
 import { TwoFactorAuthenticationController } from '../auth/twoFactorAuthentication.controller';
 import { twoFactorAuthenticatorService } from '../auth/twoFactorAuthentication.service';
@@ -26,6 +27,7 @@ import { UserService } from './user.service';
     UserController,
     FriendsController,
     TwoFactorAuthenticationController,
+    AuthController,
   ],
   providers: [
     UserService,

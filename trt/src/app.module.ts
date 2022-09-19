@@ -27,7 +27,7 @@ import { join } from 'path';
       entities: [User, FriendrequestEntity],
       //logger: 'file',
       // logging: true,
-      synchronize: true, // never use TRUE in productio
+      synchronize: true, // never use TRUE in production
     }),
   ],
   controllers: [AppController],

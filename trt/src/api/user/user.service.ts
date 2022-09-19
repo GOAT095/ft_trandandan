@@ -38,10 +38,10 @@ export class UserService {
     if (!twofa) {
       const payload: JwtPayload = { id };
       const accesToken = this.JwtService.sign(payload);
-      console.log(accesToken);
+      // console.log(accesToken);
       res.cookie('auth-cookie', accesToken, { httpOnly: false });
       res.redirect('http://localhost:3000/user/home');
-      return accesToken;
+      // return accesToken;
     } else {
       console.log('2fa');
       res.redirect('http://localhost:3000/2fa/check');
@@ -154,6 +154,8 @@ export class UserService {
 
   //game stuff
   async addwin(user: User): Promise<User> {
+
+    if(user){console.log(user);}
     user.wins += 1;
     await this.repository.save(user);
     return await this.getUserByid(user.id);

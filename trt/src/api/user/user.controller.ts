@@ -44,28 +44,29 @@ export class UserController {
   @UseGuards(AuthGuard())
   @Get('home')
   async hellohome(@GetUser() user): Promise<string> {
-    return 'hello' + JSON.stringify(user.name);
+    const name = JSON.stringify(user.name);
+    return 'hello' + name;
   }
 
-  @Get('redirect')
-  async getauthedUser(
-    @Query('code') code: string,
-    @Res() res: any,
-  ): Promise<any> {
-    const app = new Authenticator(
-      process.env.clientID,
-      process.env.clientSecret,
-      process.env.callbackURL,
-    );
+  // @Get('redirect')
+  // async getauthedUser(
+  //   @Query('code') code: string,
+  //   @Res() res: any,
+  // ): Promise<any> {
+  //   const app = new Authenticator(
+  //     process.env.clientID,
+  //     process.env.clientSecret,
+  //     process.env.callbackURL,
+  //   );
 
-    const tokenData = await app.get_Access_token(code);
-    if (tokenData.access_token) {
-      const data = await app.get_user_data(tokenData.access_token);
-      this.service.createaccess(data, res);
-    } else {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-    }
-  }
+  //   const tokenData = await app.get_Access_token(code);
+  //   if (tokenData.access_token) {
+  //     const data = await app.get_user_data(tokenData.access_token);
+  //     this.service.createaccess(data, res);
+  //   } else {
+  //     throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+  //   }
+  // }
 
   @Get(':id')
   public getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
