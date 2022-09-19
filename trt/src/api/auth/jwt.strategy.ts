@@ -17,12 +17,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: any) => {
           const data = request?.headers.cookie;
+          if (!data) {
+            return null;
+          }
           const res = data
             .split(';')
             .find((c) => c.trim().startsWith('auth-cookie='));
-          if (res) {
-            return res.split('=')[1];
-          }
+          if (res) return res.split('=')[1];
           return null;
         },
       ]),

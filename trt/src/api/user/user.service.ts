@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  Get,
   Inject,
   Injectable,
   NotFoundException,
@@ -152,14 +153,20 @@ export class UserService {
   }
 
   //game stuff
-  async addwin(@GetUser() user: User): Promise<User> {
+  async addwin(user: User): Promise<User> {
     user.wins += 1;
     await this.repository.save(user);
     return await this.getUserByid(user.id);
   }
-  async addloss(@GetUser() user: User): Promise<User> {
+  async addloss(user: User): Promise<User> {
     user.losses += 1;
     await this.repository.save(user);
     return await this.getUserByid(user.id);
+  }
+
+  async upgradelvl(user: User, ): Promise<User>{
+    //some math to upgrade the lvl !
+
+    return;
   }
 }

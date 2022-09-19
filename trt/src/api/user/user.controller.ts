@@ -32,6 +32,7 @@ import { GetUser } from '../auth/get-user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import { diskStorage } from 'multer';
+import { json } from 'stream/consumers';
 
 @Controller('user')
 export class UserController {
@@ -40,10 +41,12 @@ export class UserController {
   @Inject(JwtService)
   private readonly JwtService: JwtService;
 
+  @UseGuards(AuthGuard())
   @Get('home')
-  async hellohome(@Req() req): Promise<string> {
-    return 'hello' + req.user.name.toString();
+  async hellohome(@GetUser() user): Promise<string> {
+    return 'hello' + JSON.stringify(user.name);
   }
+
   @Get('redirect')
   async getauthedUser(
     @Query('code') code: string,
@@ -55,15 +58,15 @@ export class UserController {
       process.env.callbackURL,
     );
 
-    const data = await app.get_Access_token(code);
-    if (data.access_token) {
-      const d = await app.get_user_data(data.access_token);
-      // console.log(d);
-      this.service.createaccess(d, res);
+    const tokenData = await app.get_Access_token(code);
+    if (tokenData.access_token) {
+      const data = await app.get_user_data(tokenData.access_token);
+      this.service.createaccess(data, res);
     } else {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
   }
+
   @Get(':id')
   public getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
     return this.service.getUserByid(id);
