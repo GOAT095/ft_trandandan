@@ -36,10 +36,9 @@ export class AuthController {
     // console.log("__USER__ID__ : ", user.id);
     if (id == user.id)
     {
-      return res.clearCookie('auth-cookie', {httponly: true});
+      res.cookie('auth-cookie', null,  {httponly: true, expires: new Date(1)});
       res.redirect("/redirect/home");
       // res.send("/redirect/home");
-
       return true;
     }
     else throw new ForbiddenException('unauthorised logout request');
