@@ -44,7 +44,7 @@ export class TwoFactorAuthenticationController {
       const payload: JwtPayload = { id: user.id };
       const accesToken = await this.JwtService.sign(payload);
       // console.log(accesToken);
-      res.cookie('auth-cookie', accesToken, { httpOnly: false });
+      res.cookie('auth-cookie', accesToken, { httpOnly: true });
       // return accesToken;
     }
     throw new UnauthorizedException('wrong 2fa authentication code');

@@ -140,7 +140,7 @@ export class UserController {
   @UseGuards(AuthGuard())
   @Delete('/:id/delete')
   async removeUser(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
   ): Promise<boolean> {
     // console.log(user);

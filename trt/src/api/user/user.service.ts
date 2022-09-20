@@ -39,12 +39,12 @@ export class UserService {
       const payload: JwtPayload = { id };
       const accesToken = this.JwtService.sign(payload);
       // console.log(accesToken);
-      res.cookie('auth-cookie', accesToken, { httpOnly: false });
-      res.redirect('http://localhost:3000/user/home');
+      res.cookie('auth-cookie', accesToken, { httpOnly: true });
+      res.redirect('/user/home');
       // return accesToken;
     } else {
       console.log('2fa');
-      res.redirect('http://localhost:3000/2fa/check');
+      res.redirect('/2fa/check');
     }
     return;
   }
@@ -160,6 +160,7 @@ export class UserService {
     await this.repository.save(user);
     return await this.getUserByid(user.id);
   }
+
   async addloss(user: User): Promise<User> {
     user.losses += 1;
     await this.repository.save(user);
@@ -171,4 +172,5 @@ export class UserService {
 
     return;
   }
+
 }

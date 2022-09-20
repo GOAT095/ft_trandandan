@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './api/user/user.entity';
 import { UserModule } from './api/user/user.module';
@@ -30,7 +28,7 @@ import { join } from 'path';
       synchronize: true, // never use TRUE in production
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  // controllers: [AppController],
+  // providers: [AppService],
 })
 export class AppModule {}
