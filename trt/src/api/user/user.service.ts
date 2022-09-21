@@ -33,13 +33,13 @@ export class UserService {
 
   async createaccess(d: any, @Res() res): Promise<string> {
     await this.addUserToDB(d);
-    const id = await (await this.getUserByid(d.id)).id;
-    const twofa = await (await this.getUserByid(d.id)).twoFactor;
+    const id =  (await this.getUserByid(d.id)).id
+    const twofa = (await this.getUserByid(d.id)).twoFactor;
     if (!twofa) {
       const payload: JwtPayload = { id };
-      const accesToken = this.JwtService.sign(payload);
+      const accesToken = this.JwtService.sign(payload, {expiresIn: '1d'});
       // console.log(accesToken);
-      res.cookie('auth-cookie', accesToken, { httpOnly: true });
+      res.cookie('auth-cookie', accesToken, { httpOnly: true});
       res.redirect('/user/home');
       // return accesToken;
     } else {
