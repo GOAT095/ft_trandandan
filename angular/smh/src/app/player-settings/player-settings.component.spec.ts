@@ -1,4 +1,6 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ApiService } from '../api.service';
 
 import { PlayerSettingsComponent } from './player-settings.component';
 
@@ -8,6 +10,7 @@ describe('PlayerSettingsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
       declarations: [ PlayerSettingsComponent ]
     })
     .compileComponents();

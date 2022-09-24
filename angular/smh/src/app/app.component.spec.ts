@@ -1,11 +1,14 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ApiService } from './api.service';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        HttpClientTestingModule,
         RouterTestingModule
       ],
       declarations: [
@@ -23,13 +26,15 @@ describe('AppComponent', () => {
   it(`should have as title 'smh'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('smh');
+    expect(app.title).toEqual('ft_transcendence');
   });
 
-  it('should render title', () => {
+  it('should render the default page', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('smh app is running!');
+    expect(
+      compiled.querySelector('app-default')
+      ).toBeDefined();
   });
 });
