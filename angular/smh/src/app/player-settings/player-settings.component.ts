@@ -13,6 +13,7 @@ export class PlayerSettingsComponent implements OnInit {
   player : Player = {id: '-1', name: '---', wins: 0, lvl: 0, losses: 0, status: 'online'};
   // Editable data
   username : string = '';
+  avatar : File = new File([], '');
 
   constructor(private api: ApiService) {}
   updateUsername(): void {
@@ -22,6 +23,22 @@ export class PlayerSettingsComponent implements OnInit {
         location.reload();
       }
     )
+  }
+  selectAvatar(event: Event): void {
+    let files = (event.target as HTMLInputElement).files;
+    if (files == null)
+      return;
+    if (files.length != 0) {
+      this.avatar = files[0];
+    }
+  }
+  updateAvatar(): void {
+    // TODO : ~~check this.avatar~~ api throws BadRequest
+    this.api.updateAvatar(this.avatar).subscribe(
+      (data) => {
+        this.player = data;
+      }
+    );
   }
   ngOnInit(): void {
   }

@@ -44,6 +44,14 @@ export class ApiService {
     ).pipe(catchError(this.handleError))
   }
 
+  updateAvatar(avatar: File) {
+    let formdata = new FormData();
+    formdata.append('image', avatar);
+    return this.http.post<Player>(
+      `${this.apiUrl}/user/uploadfile`, formdata, {withCredentials: true}
+    ).pipe(catchError(this.handleError))
+  }
+
   getFriendRequests(): void {
     this.http.get(`${this.apiUrl}/friends/getfriendsrequests`, {withCredentials: true}).subscribe(
       (data: object) => { console.debug(data)}

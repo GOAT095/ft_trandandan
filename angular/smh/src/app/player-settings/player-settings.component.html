@@ -7,7 +7,8 @@
                 <span >Avatar</span>
                 <div class="setting info-group-child">
                     <label type='button' class="nes-btn" for='edit-avatar'>Select !</label>
-                    <input :hidden id='edit-avatar' class="nes-input" type="file" />
+                    <input :hidden id='edit-avatar' class="nes-input" type="file" (change)="selectAvatar($event)"/>
+                    <button class="nes-btn is-primary"  (click)="updateAvatar()">Upload</button>
                 </div>
             </div>
             <div class="setting group-child">
