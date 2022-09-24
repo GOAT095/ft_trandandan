@@ -30,7 +30,7 @@
             "styles": [
               "src/custom-theme.scss",
               "src/styles.less",
-              "node_modules/nes.css/css/nes.css"
+              "nes.css/css/nes.css"
             ],
             "scripts": []
           },
