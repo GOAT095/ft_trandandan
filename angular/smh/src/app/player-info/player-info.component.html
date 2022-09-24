@@ -4,11 +4,11 @@
     <img class="nes-avatar is-pixelated is-large layout-child"
     src="https://www.gravatar.com/avatar/3bc8ceda0c2d6dcbc3b4a844c02a39c4?default=retro">
     <div class="player-info group layout-child">
-        <span class="player-info group-child name">Rui Uemara</span>
-        <span class="player-info group-child win-rate nes-text is-success">Wins: <span>10</span></span>
-        <span class="player-info group-child loss-rate nes-text is-error">Losses: <span>9</span></span>
-        <span class="player-info group-child level nes-text is-warning">lvl: <span>9</span></span>
-        <span class="player-info group-child status nes-text is-success">online</span>
+        <span class="player-info group-child name">{{ player.name }}</span>
+        <span class="player-info group-child win-rate nes-text is-success">Wins: <span>{{ player.wins }} </span></span>
+        <span class="player-info group-child loss-rate nes-text is-error">Losses: <span>{{ player.losses }}</span></span>
+        <span class="player-info group-child level nes-text is-warning">lvl: <span>{{ player.lvl }}</span></span>
+        <span class="player-info group-child status nes-text is-success">{{ player.status }}</span>
     </div>
 </div>
 <!--</div>-->

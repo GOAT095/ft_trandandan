@@ -1,10 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { DefaultComponent } from './default/default.component';
+import { MainComponent } from './main/main.component';
+import { TwoFactorCheckComponent } from './two-factor-check/two-factor-check.component';
 
-const routes: Routes = [];
+const routes: Routes = [
+  { path: '2fa-step', component: TwoFactorCheckComponent},
+  { path: 'default', component: MainComponent},
+  { path: '', component: DefaultComponent}
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
+

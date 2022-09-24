@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClientXsrfModule } from '@angular/common/http';
 
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from '@angular/cdk/dialog';
@@ -21,6 +23,8 @@ import {
 import { PlayerFriendRequestsComponent } from './player-friend-requests/player-friend-requests.component';
 import { PlayerFriendsComponent } from './player-friends/player-friends.component';
 import { PlayerInfoShortComponent } from './player-info-short/player-info-short.component';
+import { LogoutButtonComponent } from './logout-button/logout-button.component';
+import { TwoFactorCheckComponent } from './two-factor-check/two-factor-check.component';
 
 @NgModule({
   declarations: [
@@ -38,9 +42,15 @@ import { PlayerInfoShortComponent } from './player-info-short/player-info-short.
     PlayerFriendRequestsComponent,
     PlayerFriendsComponent,
     PlayerInfoShortComponent,
+    LogoutButtonComponent,
+    TwoFactorCheckComponent,
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
+    HttpClientXsrfModule.withOptions({
+      cookieName: 'auth-cookie',
+    }),
     AppRoutingModule,
     NoopAnimationsModule,
     FormsModule,
@@ -54,7 +64,9 @@ import { PlayerInfoShortComponent } from './player-info-short/player-info-short.
     MainComponent,
     ActionButtonComponent,
     PlayerFriendsComponent,
-    PlayerInfoShortComponent
+    PlayerInfoShortComponent,
+    LogoutButtonComponent,
+    TwoFactorCheckComponent
   ]
 })
 export class AppModule { }

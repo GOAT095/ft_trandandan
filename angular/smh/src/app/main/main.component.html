@@ -4,7 +4,7 @@
             <!--<span>Player info</span>-->
             <!--<img class="nes-avatar is-pixelated is-large" src="https://www.gravatar.com/avatar/3bc8ceda0c2d6dcbc3b4a844c02a39c4?default=retro">
             <h6>Rui Uyemara</h6>-->
-            <app-player-info></app-player-info>
+            <app-player-info [player]="player"></app-player-info>
         </div>
         <div class="nav-tab">
             <span>Chat</span>
@@ -16,7 +16,8 @@
             <span>Settings</span>
         </div>
         <div>
-            <span>X</span>
+            <!--<span>X</span>-->
+            <button class="nes-btn is-warning" (click)="logout()">X</button>
         </div>
     </nav>
     <div id="display">

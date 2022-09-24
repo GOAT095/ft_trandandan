@@ -12,8 +12,8 @@
             </div>
             <div class="setting group-child">
                 <span>Username</span>
-                <input class="nes-input" type="text" />
-                <button class="nes-btn is-primary"> Save </button>
+                <input class="nes-input" type="text" [(ngModel)]="username"/>
+                <button class="nes-btn is-primary" (click)="updateUsername()"> Save </button>
             </div>
         </div>
     </div>

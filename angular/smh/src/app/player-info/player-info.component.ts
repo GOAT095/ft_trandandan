@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-player-info',
@@ -6,6 +6,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./player-info.component.less']
 })
 export class PlayerInfoComponent implements OnInit {
+
+  @Input() player: Player = {
+    name: 'Rui Uemara',
+    wins: 10,
+    losses: 9,
+    lvl: 9,
+    status: 'online'
+  };
 
   constructor() { }
 
