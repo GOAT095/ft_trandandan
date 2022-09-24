@@ -58,6 +58,16 @@ export class ApiService {
     ).pipe(catchError(this.handleError))
   }
 
+  enable2fa(code: string) {
+    return this.http.post<object>(`${this.apiUrl}/2fa/turn-on`, {code: code}, {withCredentials: true})
+    .pipe(catchError(this.handleError));
+  }
+
+  generateQRCode() {
+    return this.http.post(`${this.apiUrl}/2fa/generate`, {}, {withCredentials: true, responseType: "blob"})
+    .pipe(catchError(this.handleError))
+  }
+
   getFriendRequests(): void {
     this.http.get(`${this.apiUrl}/friends/getfriendsrequests`, {withCredentials: true}).subscribe(
       (data: object) => { console.debug(data)}

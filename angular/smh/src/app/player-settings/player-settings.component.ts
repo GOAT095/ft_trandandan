@@ -51,7 +51,8 @@ export class PlayerSettingsComponent implements OnInit {
 }
 
 export interface TwoFactorDialogData {
-
+  src: string,
+  code: string,
 }
 
 @Component({
@@ -60,15 +61,26 @@ export interface TwoFactorDialogData {
   styleUrls: ['./two-factor-action-button.component.less']
 })
 export class TwoFactorActionButtonComponent {
-  constructor(public dialog: Dialog) {}
+  reader = new FileReader();
+  constructor(public dialog: Dialog, public api: ApiService) {}
+
   openDialog(): void {
     console.log("2fa dialog");
-    const dialogRef = this.dialog.open<string>(TwoFactorDialogPromptComponent, {
-      data: {},
-    });
-    dialogRef.closed.subscribe(result => {
-      console.log('The TwoFactorDialogPrompt was closed, result =  ' + result);
-    })
+    this.api.generateQRCode().subscribe(
+      (blob) => {
+        this.reader.readAsDataURL(blob);
+        this.reader.onloadend = () => {
+          const dialogRef = this.dialog.open<string>(TwoFactorDialogPromptComponent, {
+            data: {
+              src: this.reader.result
+            },
+          });
+          dialogRef.closed.subscribe(result => {
+            console.log('The TwoFactorDialogPrompt was closed, result =  ' + result);
+          })
+        }
+      }
+    )
   }
 }
 
@@ -78,5 +90,15 @@ export class TwoFactorActionButtonComponent {
   styleUrls: ['./two-factor-dialog-prompt.component.less']
 })
 export class TwoFactorDialogPromptComponent {
-  constructor(public dialogRef: DialogRef<string>, @Inject(DIALOG_DATA) public data: TwoFactorDialogData) {}
+  constructor(
+    public dialogRef: DialogRef<string>,
+    @Inject(DIALOG_DATA) public data: TwoFactorDialogData,
+    public api: ApiService
+  ) {}
+  turnOn() {
+    this.api.enable2fa(this.data.code).subscribe(() => {
+      console.log('2fa enabled !');
+      this.dialogRef.close();
+    })
+  }
 }
