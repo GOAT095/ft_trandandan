@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { Dialog, DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 export interface DialogData {
@@ -15,6 +15,9 @@ export class ActionButtonComponent {
   animal: string | undefined;
   name: string = "";
 
+  @Output()
+  onClose = new EventEmitter();
+
   constructor(public dialog: Dialog) {}
 
   openDialog(): void {
@@ -24,6 +27,7 @@ export class ActionButtonComponent {
     });
     dialogRef.closed.subscribe(result => {
       console.log('The dialog was closed' + ' result = ' + result);
+      this.onClose.emit(result);
     })
   }
 

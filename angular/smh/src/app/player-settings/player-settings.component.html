@@ -24,7 +24,7 @@
         <!-- 2fa: enable -->
         <app-two-factor-action-button></app-two-factor-action-button>
         <!-- 2fa: disable -->
-        <app-action-button></app-action-button>
+        <app-action-button (onClose)="onDialogButtonClose($event)"></app-action-button>
     </div>
     <div class="nes-container with-title is-dark">
         <span class="title">Privacy</span>

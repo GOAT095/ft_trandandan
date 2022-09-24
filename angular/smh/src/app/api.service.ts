@@ -52,6 +52,12 @@ export class ApiService {
     ).pipe(catchError(this.handleError))
   }
 
+  disable2fa() {
+    return this.http.post<object>(
+      `${this.apiUrl}/2fa/turn-off`, {}, {withCredentials: true}
+    ).pipe(catchError(this.handleError))
+  }
+
   getFriendRequests(): void {
     this.http.get(`${this.apiUrl}/friends/getfriendsrequests`, {withCredentials: true}).subscribe(
       (data: object) => { console.debug(data)}

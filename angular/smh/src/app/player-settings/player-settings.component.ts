@@ -40,6 +40,11 @@ export class PlayerSettingsComponent implements OnInit {
       }
     );
   }
+  onDialogButtonClose(result: string) {
+    if (result == 'ok') {
+      this.api.disable2fa().subscribe(() => {console.log('2fa disabled!')});
+    }
+  }
   ngOnInit(): void {
   }
 
