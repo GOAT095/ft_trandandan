@@ -8,6 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class PlayerInfoComponent implements OnInit {
 
   @Input() player: Player = {
+    id: '-1',
     name: 'Rui Uemara',
     wins: 10,
     losses: 9,

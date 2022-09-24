@@ -1,5 +1,5 @@
 import { Dialog, DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
 
 @Component({
@@ -9,20 +9,19 @@ import { ApiService } from '../api.service';
 })
 export class PlayerSettingsComponent implements OnInit {
 
-  player : Player = {name: '---', wins: 0, lvl: 0, losses: 0, status: 'online'};
+  @Input()
+  player : Player = {id: '-1', name: '---', wins: 0, lvl: 0, losses: 0, status: 'online'};
   // Editable data
   username : string = '';
 
-  constructor(private api: ApiService) {
-    api.http.get<Player>(`${api.apiUrl}/user/me`, {withCredentials: true}).subscribe(
+  constructor(private api: ApiService) {}
+  updateUsername(): void {
+    this.api.updatePlayerUsername(this.username, this.player.id).subscribe(
       (data) => {
         this.player = data;
-        console.debug(data);
+        location.reload();
       }
     )
-  }
-  updateUsername(): void {
-    console.log("TODO: send POST with : " + this.username);
   }
   ngOnInit(): void {
   }
