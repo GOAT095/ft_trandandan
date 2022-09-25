@@ -9,13 +9,25 @@ import { ApiService } from '../api.service';
 })
 export class MainComponent implements OnInit {
 
-  player : Player = {id: '-1', name: '---', wins: 0, lvl: 0, losses: 0, status: 'online', avatar: '', email: ''};
+  player : Player = {
+    id: '-1',
+    name: '---',
+    wins: 0, lvl: 0, losses: 0,
+    status: 'online',
+    avatar: '',
+    email: '',
+    twoFactor: false
+  };
+
   constructor(private api: ApiService) {
     api.getPlayer().subscribe(
       (data) => {
         this.player = data;
       }
     )
+  }
+  updatePlayer(player: Player) {
+    this.player = player;
   }
   logout(): void {
     // Unset cookie

@@ -22,9 +22,13 @@
         <span class="title">Security</span>
         <span>Two factor auth: </span>
         <!-- 2fa: enable -->
-        <app-two-factor-action-button></app-two-factor-action-button>
+        <app-two-factor-action-button
+            (playerUpdateEvent)="updatePlayer($event)"
+            *ngIf="player.twoFactor == false"></app-two-factor-action-button>
         <!-- 2fa: disable -->
-        <app-action-button (onClose)="onDialogButtonClose($event)"></app-action-button>
+        <app-action-button
+            *ngIf="player.twoFactor == true"
+            (onClose)="onDialogButtonClose($event)"></app-action-button>
     </div>
     <div class="nes-container with-title is-dark">
         <span class="title">Privacy</span>

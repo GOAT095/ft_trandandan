@@ -17,11 +17,12 @@ export class PlayerInfoComponent implements OnInit {
     status: 'online',
     avatar: '',
     email: '',
+    twoFactor: false
   };
 
   gravatarUrl = 'https://www.gravatar.com/avatar'
   apiUrl = 'http://localhost:3000'
-  avatarSrc : string = `${this.apiUrl}/${this.player.avatar}`;
+  avatarSrc : string = this.getAvatarSrc();
 
   constructor() {}
 

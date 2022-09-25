@@ -6,5 +6,6 @@ interface Player {
     lvl: number,
     status: string,
     avatar: string,
-    email: string
+    email: string,
+    twoFactor: boolean
   }

@@ -1,5 +1,5 @@
 import { Dialog, DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ApiService } from '../api.service';
 
 @Component({
@@ -10,17 +10,30 @@ import { ApiService } from '../api.service';
 export class PlayerSettingsComponent implements OnInit {
 
   @Input()
-  player : Player = {id: '-1', name: '---', wins: 0, lvl: 0, losses: 0, status: 'online', avatar: '', email: ''};
+  player : Player = {
+    id: '-1',
+    name: '---',
+    wins: 0, lvl: 0, losses: 0,
+    status: 'online',
+    avatar: '',
+    email: '',
+    twoFactor: false
+  };
+
   // Editable data
   username : string = '';
   avatar : File = new File([], '');
+
+  // output event
+  @Output()
+  playerUpdateEvent = new EventEmitter<Player>();
 
   constructor(private api: ApiService) {}
   updateUsername(): void {
     this.api.updatePlayerUsername(this.username, this.player.id).subscribe(
       (data) => {
         this.player = data;
-        location.reload();
+        this.playerUpdateEvent.emit(data);
       }
     )
   }
@@ -37,13 +50,20 @@ export class PlayerSettingsComponent implements OnInit {
     this.api.updateAvatar(this.avatar).subscribe(
       (data) => {
         this.player = data;
+        this.playerUpdateEvent.emit(data);
       }
     );
   }
   onDialogButtonClose(result: string) {
     if (result == 'ok') {
-      this.api.disable2fa().subscribe(() => {console.log('2fa disabled!')});
+      this.api.disable2fa().subscribe(() => {
+        this.player.twoFactor = false;
+        console.log('2fa disabled!')
+      });
     }
+  }
+  updatePlayer(player: Player) {
+    this.player.twoFactor = player.twoFactor;
   }
   ngOnInit(): void {
   }
@@ -64,6 +84,20 @@ export class TwoFactorActionButtonComponent {
   reader = new FileReader();
   constructor(public dialog: Dialog, public api: ApiService) {}
 
+  @Input()
+  player : Player = {
+    id: '-1',
+    name: '---',
+    wins: 0, lvl: 0, losses: 0,
+    status: 'online',
+    avatar: '',
+    email: '',
+    twoFactor: false
+  };
+
+  @Output()
+  playerUpdateEvent = new EventEmitter<Player>();
+
   openDialog(): void {
     console.log("2fa dialog");
     this.api.generateQRCode().subscribe(
@@ -77,6 +111,11 @@ export class TwoFactorActionButtonComponent {
           });
           dialogRef.closed.subscribe(result => {
             console.log('The TwoFactorDialogPrompt was closed, result =  ' + result);
+            if (result == 'enabled') {
+              this.player.twoFactor = true;
+              this.playerUpdateEvent.emit(this.player);
+              console.log(this.player)
+            }
           })
         }
       }
@@ -98,7 +137,7 @@ export class TwoFactorDialogPromptComponent {
   turnOn() {
     this.api.enable2fa(this.data.code).subscribe(() => {
       console.log('2fa enabled !');
-      this.dialogRef.close();
+      this.dialogRef.close('enabled');
     })
   }
 }

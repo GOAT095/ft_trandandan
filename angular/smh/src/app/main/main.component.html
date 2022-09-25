@@ -40,6 +40,6 @@
                 </section>
             </section>
         </div>
-        <app-player-settings [player]="player"></app-player-settings>
+        <app-player-settings [player]="player" (playerUpdateEvent)="updatePlayer($event)"></app-player-settings>
     </div>
 </div>
