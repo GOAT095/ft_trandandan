@@ -5,4 +5,6 @@ interface Player {
     losses: number,
     lvl: number,
     status: string,
+    avatar: string,
+    email: string
   }

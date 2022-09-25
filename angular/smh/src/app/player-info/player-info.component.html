@@ -2,7 +2,7 @@
 <!--<div class="nes-container is-centered is-dark">-->
 <div class="player-info layout nes-container is-dark">
     <img class="nes-avatar is-pixelated is-large layout-child"
-    src="https://www.gravatar.com/avatar/3bc8ceda0c2d6dcbc3b4a844c02a39c4?default=retro">
+    [src]="getAvatarSrc()">
     <div class="player-info group layout-child">
         <span class="player-info group-child name">{{ player.name }}</span>
         <span class="player-info group-child win-rate nes-text is-success">Wins: <span>{{ player.wins }} </span></span>

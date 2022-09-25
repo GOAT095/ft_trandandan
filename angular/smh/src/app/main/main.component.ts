@@ -9,7 +9,7 @@ import { ApiService } from '../api.service';
 })
 export class MainComponent implements OnInit {
 
-  player : Player = {id: '-1', name: '---', wins: 0, lvl: 0, losses: 0, status: 'online'};
+  player : Player = {id: '-1', name: '---', wins: 0, lvl: 0, losses: 0, status: 'online', avatar: '', email: ''};
   constructor(private api: ApiService) {
     api.getPlayer().subscribe(
       (data) => {

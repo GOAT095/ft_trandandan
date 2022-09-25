@@ -10,7 +10,7 @@ import { ApiService } from '../api.service';
 export class PlayerSettingsComponent implements OnInit {
 
   @Input()
-  player : Player = {id: '-1', name: '---', wins: 0, lvl: 0, losses: 0, status: 'online'};
+  player : Player = {id: '-1', name: '---', wins: 0, lvl: 0, losses: 0, status: 'online', avatar: '', email: ''};
   // Editable data
   username : string = '';
   avatar : File = new File([], '');
