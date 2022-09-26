@@ -68,10 +68,19 @@ export class ApiService {
     .pipe(catchError(this.handleError))
   }
 
-  getFriendRequests(): void {
-    this.http.get(`${this.apiUrl}/friends/getfriendsrequests`, {withCredentials: true}).subscribe(
-      (data: object) => { console.debug(data)}
-    )
+  getFriendRequests() {
+    return this.http.get<FriendRequest[]>(`${this.apiUrl}/friends/getfriendrequests`, {withCredentials: true})
+    .pipe(catchError(this.handleError))
+  }
+
+  declineFriendRequest(requestId: string) {
+    return this.http.post<boolean>(`${this.apiUrl}/friends/declineRequest/${requestId}`, {}, {withCredentials: true})
+    .pipe(catchError(this.handleError))
+  }
+
+  acceptFriendRequest(requestId: string) {
+    return this.http.post<boolean>(`${this.apiUrl}/friends/acceptRequest/${requestId}`, {}, {withCredentials: true})
+    .pipe(catchError(this.handleError))
   }
 
   getPlayerFriends(): void {
