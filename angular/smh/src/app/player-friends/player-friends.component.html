@@ -7,6 +7,10 @@
     <div class="nes-container is-dark with-title">
         <span class="title">List</span>
         <div class="list">
+            <ng-template ngFor let-item [ngForOf]="friends" let-i="index">
+                <app-player-info-short [player]="item" class="list-item"></app-player-info-short>
+            </ng-template>
+            <!--
             <app-player-info-short class="list-item"></app-player-info-short>
             <app-player-info-short class="list-item"></app-player-info-short>
             <app-player-info-short class="list-item"></app-player-info-short>
@@ -14,7 +18,7 @@
             <app-player-info-short class="list-item"></app-player-info-short>
             <app-player-info-short class="list-item"></app-player-info-short>
             <app-player-info-short class="list-item"></app-player-info-short>
-            <app-player-info-short class="list-item"></app-player-info-short>
+            -->
         </div>
     </div>
 </div>

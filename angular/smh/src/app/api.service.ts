@@ -83,9 +83,8 @@ export class ApiService {
     .pipe(catchError(this.handleError))
   }
 
-  getPlayerFriends(): void {
-    this.http.get(`${this.apiUrl}/friends/friends`, {withCredentials: true}).subscribe(
-      (data: object) => { console.debug(data)}
-    )
+  getPlayerFriends() {
+    return this.http.get<FriendRequest[]>(`${this.apiUrl}/friends/friends`, {withCredentials: true})
+    .pipe(catchError(this.handleError))
   }
 }

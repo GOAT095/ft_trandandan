@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../api.service';
 
 @Component({
   selector: 'app-player-friends',
@@ -7,7 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PlayerFriendsComponent implements OnInit {
 
-  constructor() { }
+  friends: Player[] = [];
+  constructor(public api: ApiService) {
+    api.getPlayerFriends().subscribe(
+      (acceptedFriendRequests) => {
+        acceptedFriendRequests.forEach(element => {
+          this.friends.push(element.requestSender)
+        });
+      }
+    )
+  }
 
   ngOnInit(): void {
   }
