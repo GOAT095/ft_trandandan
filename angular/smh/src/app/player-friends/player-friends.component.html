@@ -2,7 +2,12 @@
     <span class="title">Friends</span>
     <div class="nes-container is-dark with-title">
         <span class="title">Search</span>
-        <input type="search"/>
+        <input #searchbox type="search" [value]="query" (keyup)="onKey(searchbox.value)"/>
+        <div class="list">
+            <ng-template ngFor let-item [ngForOf]="searchResults" let-i="index">
+                <app-player-info-short [player]="item" class="list-item"></app-player-info-short>
+            </ng-template>
+        </div>
     </div>
     <div class="nes-container is-dark with-title">
         <span class="title">List</span>

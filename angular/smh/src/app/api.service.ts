@@ -27,10 +27,9 @@ export class ApiService {
     return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 
-  getUsers(): void {
-    this.http.get(`${this.apiUrl}/user`, {withCredentials: true}).subscribe(
-      (data: object) => { console.debug(data)}
-    )
+  getPlayers() {
+    return this.http.get<Player[]>(`${this.apiUrl}/user`, {withCredentials: true})
+    .pipe(catchError(this.handleError))
   }
 
   getPlayer(): Observable<Player> {

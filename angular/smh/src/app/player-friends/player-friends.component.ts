@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { elementAt } from 'rxjs';
 import { ApiService } from '../api.service';
 
 @Component({
@@ -9,6 +10,9 @@ import { ApiService } from '../api.service';
 export class PlayerFriendsComponent implements OnInit {
 
   friends: Player[] = [];
+  players: Player[] = [];
+  searchResults: Player[] = [];
+  query: string = "";
   constructor(public api: ApiService) {
     api.getPlayerFriends().subscribe(
       (acceptedFriendRequests) => {
@@ -17,9 +21,23 @@ export class PlayerFriendsComponent implements OnInit {
         });
       }
     )
+    api.getPlayers().subscribe(
+      (players) => {
+        this.players = players;
+      }
+    )
   }
 
   ngOnInit(): void {
   }
-
+  onKey(value: string) {
+    console.log(value);
+    let tempSearchResults: Player[] = [];
+    this.players.forEach((element) => {
+      if (element.name.match(value) != null) {
+        tempSearchResults.push(element)
+      }
+    })
+    this.searchResults = tempSearchResults;
+  }
 }
