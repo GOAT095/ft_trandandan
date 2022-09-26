@@ -1,5 +1,6 @@
 <div class="nes-container is-dark">
     <img class="nes-avatar is-medium"
+    (error)="onAvatarSrcError($event)"
     [src]="getAvatarSrc()">
     <span>{{ player.name }}</span>
 </div>

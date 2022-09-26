@@ -2,6 +2,7 @@
 <!--<div class="nes-container is-centered is-dark">-->
 <div class="player-info layout nes-container is-dark">
     <img class="nes-avatar is-pixelated is-large layout-child"
+    (error)="onAvatarSrcError($event)"
     [src]="getAvatarSrc()">
     <div class="player-info group layout-child">
         <span class="player-info group-child name">{{ player.name }}</span>
