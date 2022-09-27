@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { DialogModule } from '@angular/cdk/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
+import { CdkMenuModule } from '@angular/cdk/menu';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GlobalBackgroundComponent } from './global-background/global-background.component';
@@ -54,7 +56,8 @@ import { TwoFactorCheckComponent } from './two-factor-check/two-factor-check.com
     AppRoutingModule,
     NoopAnimationsModule,
     FormsModule,
-    DialogModule
+    DialogModule,
+    CdkMenuModule
   ],
   providers: [],
   bootstrap: [AppComponent],

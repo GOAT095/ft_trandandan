@@ -86,4 +86,9 @@ export class ApiService {
     return this.http.get<FriendRequest[]>(`${this.apiUrl}/friends/friends`, {withCredentials: true})
     .pipe(catchError(this.handleError))
   }
+
+  sendFriendRequest(playerId: string) {
+    return this.http.post<FriendRequest>(`${this.apiUrl}/friends/sendRequest/${playerId}`, {}, {withCredentials: true})
+    .pipe(catchError(this.handleError))
+  }
 }

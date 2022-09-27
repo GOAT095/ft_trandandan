@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Md5 } from 'ts-md5';
 
+import { ApiService } from '../api.service';
+
 @Component({
   selector: 'app-player-info-short',
   templateUrl: './player-info-short.component.html',
@@ -24,7 +26,7 @@ export class PlayerInfoShortComponent implements OnInit {
   apiUrl = 'http://localhost:3000'
   avatarSrc : string = this.getAvatarSrc();
 
-  constructor() {}
+  constructor(public api: ApiService) {}
 
   getGravatarSrc(): string {
     let md5 = new Md5();
@@ -49,6 +51,14 @@ export class PlayerInfoShortComponent implements OnInit {
 
   onAvatarSrcError(event: Event) {
     (event.target as HTMLImageElement).src = this.getGravatarSrc();
+  }
+
+  sendFriendRequest() {
+    this.api.sendFriendRequest(this.player.id).subscribe(
+      (data) => {
+        // TODO: give visual feedback back to user.
+      }
+    )
   }
 
   ngOnInit(): void {
