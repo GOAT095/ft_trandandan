@@ -40,11 +40,11 @@ export class UserService {
       const accesToken = this.JwtService.sign(payload, {expiresIn: '1d'});
       // console.log(accesToken);
       res.cookie('auth-cookie', accesToken, { httpOnly: true});
-      res.redirect('/user/home');
+      res.redirect('http://localhost:4200/default');
       // return accesToken;
     } else {
       console.log('2fa');
-      res.redirect('/2fa/check');
+      res.redirect('http://localhost:4200/2fa-step');
     }
     return;
   }
