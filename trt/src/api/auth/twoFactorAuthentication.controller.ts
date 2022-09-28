@@ -45,9 +45,12 @@ export class TwoFactorAuthenticationController {
       const accesToken = await this.JwtService.sign(payload);
       // console.log(accesToken);
       res.cookie('auth-cookie', accesToken, { httpOnly: true });
+      res.send();
       // return accesToken;
     }
-    throw new UnauthorizedException('wrong 2fa authentication code');
+    else {
+      throw new UnauthorizedException('wrong 2fa authentication code');
+    }
   }
 
   @Post('generate')
