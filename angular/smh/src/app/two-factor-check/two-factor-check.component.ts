@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../api.service';
 
 @Component({
@@ -9,11 +10,21 @@ import { ApiService } from '../api.service';
 export class TwoFactorCheckComponent implements OnInit {
 
   code: string = '';
-  constructor(public api: ApiService) { }
+  token: string = '';
+  constructor(public api: ApiService, public route: ActivatedRoute) {
+    this.route.queryParamMap.subscribe(
+      (params) => {
+        let token = params.get('token');
+        if (token != null) {
+          this.token = token
+        }
+      }
+    )
+  }
 
   check(): void {
     console.debug('code = ', this.code)
-    this.api.http.post(`${this.api.apiUrl}/2fa/check`,{ code: this.code }).subscribe(
+    this.api.http.post(`${this.api.apiUrl}/2fa/check`,{ code: this.code, token: this.token }).subscribe(
       (data) => {
         console.debug("data = ", data);
         window.open("/default", "_self");
