@@ -201,5 +201,12 @@ export class UserService {
 
     return;
   }
-
+  async get_online_users(): Promise<User[]>
+  {
+    return await this.repository.find({where: {status: UserStatus.online}});
+  }
+  async get_user_status(id: number): Promise<UserStatus>
+  {
+    return (await this.getUserByid(id)).status;
+  }
 }
