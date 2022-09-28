@@ -11,9 +11,6 @@ import { join } from 'path';
     MulterModule.register({
       dest: './upload',
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
-    }),
     UserModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
