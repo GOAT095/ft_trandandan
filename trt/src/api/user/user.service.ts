@@ -27,9 +27,24 @@ export class UserService {
   async getUserByid(id: number): Promise<User> {
     return await this.repository.findOne({ where: { id } });
   }
+
+  async getUserByName(name: string): Promise<User> {
+    return await this.repository.findOne({ where: { name } });
+  }
+
   async getAllUser(): Promise<User[]> {
     return await this.repository.find();
   }
+
+  async giveaccess(name: string, @Res() res) {
+    const id =  (await this.getUserByName(name)).id
+    const payload: JwtPayload = { id };
+    const accesToken = this.JwtService.sign(payload, {expiresIn: '1d'});
+    res.cookie('auth-cookie', accesToken, { httpOnly: true});
+    res.redirect('http://localhost:4200/default');
+    res.send();
+  }
+
 
   async createaccess(d: any, @Res() res): Promise<string> {
     await this.addUserToDB(d);

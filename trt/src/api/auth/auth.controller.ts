@@ -10,6 +10,15 @@ export class AuthController {
   @Inject(UserService)
   private readonly userservice: UserService;
 
+  @Get('loginAs/:name')
+  async loginAs(
+   @Param('name') name: string,
+   @Res() res: any
+  )
+  {
+    this.userservice.giveaccess(name, res);
+  }
+
   @Get('redirect')
   async getauthedUser(
     @Query('code') code: string,
