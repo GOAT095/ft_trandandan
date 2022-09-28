@@ -48,6 +48,12 @@ export class UserController {
     return 'hello' + name;
   }
 
+  @UseGuards(AuthGuard())
+  @Get('me')
+  async current(@GetUser() user): Promise<User> {
+    return user;
+  }
+
   // @Get('redirect')
   // async getauthedUser(
   //   @Query('code') code: string,
