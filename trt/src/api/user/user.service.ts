@@ -54,7 +54,8 @@ export class UserService {
 
     user.id = body.id;
     user.name = body.name;
-    user.avatar = body.avatar;
+    user.avatar = null;
+    user.email = body.email;
     user.status = UserStatus.online;
     try {
       await this.repository.save(user);
@@ -74,7 +75,8 @@ export class UserService {
     const ret: User = new User();
     ret.id = user.id;
     ret.name = user.login;
-    ret.avatar = user.image_url;
+    ret.avatar = null;
+    ret.email = user.email;
     user.status = UserStatus.online;
     await this.repository.save(ret);
     return true;
