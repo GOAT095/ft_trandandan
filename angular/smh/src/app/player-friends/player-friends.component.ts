@@ -9,15 +9,38 @@ import { ApiService } from '../api.service';
 })
 export class PlayerFriendsComponent implements OnInit {
 
+  me: Player = {
+    id: '-1',
+    name: 'Rui Uemara',
+    wins: 10,
+    losses: 9,
+    lvl: 9,
+    status: 'online',
+    avatar: '',
+    email: '',
+    twoFactor: false
+  };
+
+
   friends: Player[] = [];
   players: Player[] = [];
   searchResults: Player[] = [];
   query: string = "";
   constructor(public api: ApiService) {
+    api.getPlayer().subscribe(
+      (player) => {
+        this.me = player;
+      }
+    )
     api.getPlayerFriends().subscribe(
       (acceptedFriendRequests) => {
         acceptedFriendRequests.forEach(element => {
-          this.friends.push(element.requestSender)
+          if (element.requestReceiver.id == this.me.id) {
+            this.friends.push(element.requestSender)
+          }
+          else {
+            this.friends.push(element.requestReceiver)
+          }
         });
       }
     )
