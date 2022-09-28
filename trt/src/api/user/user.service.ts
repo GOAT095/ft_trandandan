@@ -147,7 +147,7 @@ export class UserService {
       },
     );
 
-    user.avatar = process.env.UPLAOD_PATH + '/' + user.name + '.' + type;
+    user.avatar = process.env.UPLOAD_PATH + '/' + user.name + '.' + type;
     this.repository.save(user);
     return user;
   }
