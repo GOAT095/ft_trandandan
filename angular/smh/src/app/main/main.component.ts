@@ -31,8 +31,8 @@ export class MainComponent implements OnInit {
   }
   logout(): void {
     // Unset cookie
-    document.cookie = 'auth-cookie=; Max-Age=-99999999;'
-    window.open("/", "_self")
+    this.api.http.get(`${this.api.apiUrl}/auth/logout/${this.player.id}`, {withCredentials: true}).subscribe(); 
+    window.open("/", "_self");
   }
   ngOnInit(): void {
   }
