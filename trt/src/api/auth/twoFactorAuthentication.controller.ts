@@ -6,6 +6,7 @@ import {
   Inject,
   UnauthorizedException,
   Body,
+  BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
@@ -15,7 +16,6 @@ import { GetUser } from './get-user.decorator';
 import { JwtPayload } from './jwt.payload.interface';
 import { twoFactorAuthenticatorService } from './twoFactorAuthentication.service';
 
-@UseGuards(AuthGuard())
 @Controller('2fa')
 //   @UseInterceptors(ClassSerializerInterceptor)
 export class TwoFactorAuthenticationController {
@@ -30,11 +30,25 @@ export class TwoFactorAuthenticationController {
 
   @Post('check')
   async checkTwoFactorAuthentication(
-    @GetUser() user: User,
     @Body('code') twoFactorAuthenticationCode: string,
+    @Body('token') token: string,
     @Res() res,
   ) {
     console.log(twoFactorAuthenticationCode);
+    // get the user.`id` based on the md5 token
+    let user : User;
+    let id : number;
+    if (token in this.usersService.tokens) {
+      id = this.usersService.tokens[token];
+    }
+    else {
+      throw new BadRequestException('Invalid token');
+    }
+    user = await this.usersService.getUserByid(id);
+    if (user == null) {
+      throw new BadRequestException('Bad token')
+    }
+    delete this.usersService.tokens[token]; // clean up
     if (
       this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
         twoFactorAuthenticationCode,
@@ -53,6 +67,7 @@ export class TwoFactorAuthenticationController {
     }
   }
 
+  @UseGuards(AuthGuard())
   @Post('generate')
   async register(@Res() response: Response, @GetUser() user: User) {
     const { otpauthurl } =
@@ -66,6 +81,7 @@ export class TwoFactorAuthenticationController {
     );
   }
 
+  @UseGuards(AuthGuard())
   @Post('turn-on')
   async turnOnTwoFactorAuthentication(
     @GetUser() user: User,

@@ -16,13 +16,20 @@ import { JwtPayload } from '../auth/jwt.payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { hashPassword } from '../utils/bcrypt';
 import { GetUser } from '../auth/get-user.decorator';
+import { createHash, randomBytes } from 'crypto';
 // import { hashPassword } from '../utils/bcrypt';
+
 @Injectable()
 export class UserService {
   @InjectRepository(User)
   private readonly repository: Repository<User>;
   @Inject(JwtService)
   private readonly JwtService: JwtService;
+
+  // TODO: use a better data structure, caveats: requests to /redirect will populate
+  // the mapping without ever cleaning up if /check is not visited for that
+  // particular token
+  tokens: object = {};
 
   async getUserByid(id: number): Promise<User> {
     return await this.repository.findOne({ where: { id } });
@@ -59,7 +66,12 @@ export class UserService {
       // return accesToken;
     } else {
       console.log('2fa');
-      res.redirect('http://localhost:4200/2fa-step');
+      // when 2fa is enabled, we need to match the user who initiated
+      // the original auth requests in /redirect to the /auth/check route
+      // we use a simple md5 string mapping
+      let token = createHash('md5').update(randomBytes(128)).digest('hex');
+      this.tokens[token] = id; // save it
+      res.redirect(`http://localhost:4200/2fa-step?token=${token}`);
     }
     return;
   }
