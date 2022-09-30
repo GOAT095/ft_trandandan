@@ -41,13 +41,10 @@ export class AuthController {
   @UseGuards(AuthGuard())
   @Get('/logout/:id')
   async loguserout(@Param('id', ParseIntPipe) id: number, @Res() res, @GetUser() user: User): Promise<boolean>{
-    // console.log("__ID__ : ", id);
-    // console.log("__USER__ID__ : ", user.id);
     if (id == user.id)
     {
       res.cookie('auth-cookie', null,  {httponly: true, expires: new Date(1)});
-      res.redirect("/redirect/home");
-      // res.send("/redirect/home");
+      res.send();
       return true;
     }
     else throw new ForbiddenException('unauthorised logout request');
