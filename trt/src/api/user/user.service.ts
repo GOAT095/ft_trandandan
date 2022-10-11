@@ -5,24 +5,27 @@ import {
   Injectable,
   NotFoundException,
   Res,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
-import { Repository } from 'typeorm';
-import { CreateUserDto } from '../dto/user.dto';
-import { UserStatus } from './user.status.enum';
-import * as fs from 'fs';
-import { JwtPayload } from '../auth/jwt.payload.interface';
-import { JwtService } from '@nestjs/jwt';
-import { hashPassword } from '../utils/bcrypt';
-import { GetUser } from '../auth/get-user.decorator';
-import { createHash, randomBytes } from 'crypto';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "./user.entity";
+import { Repository } from "typeorm";
+import { CreateUserDto } from "../dto/user.dto";
+import { UserStatus } from "./user.status.enum";
+import * as fs from "fs";
+import { JwtPayload } from "../auth/jwt.payload.interface";
+import { JwtService } from "@nestjs/jwt";
+import { hashPassword } from "../utils/bcrypt";
+import { GetUser } from "../auth/get-user.decorator";
+import { createHash, randomBytes } from "crypto";
+import { Block } from "./block.entity";
 // import { hashPassword } from '../utils/bcrypt';
 
 @Injectable()
 export class UserService {
   @InjectRepository(User)
   private readonly repository: Repository<User>;
+  @InjectRepository(Block)
+  private readonly BlockRepo: Repository<Block>;
   @Inject(JwtService)
   private readonly JwtService: JwtService;
 
@@ -44,32 +47,31 @@ export class UserService {
   }
 
   async giveaccess(name: string, @Res() res) {
-    const id =  (await this.getUserByName(name)).id
+    const id = (await this.getUserByName(name)).id;
     const payload: JwtPayload = { id };
-    const accesToken = this.JwtService.sign(payload, {expiresIn: '1d'});
-    res.cookie('auth-cookie', accesToken, { httpOnly: true});
-    res.redirect('http://localhost:4200/default');
+    const accesToken = this.JwtService.sign(payload, { expiresIn: "1d" });
+    res.cookie("auth-cookie", accesToken, { httpOnly: true });
+    res.redirect("http://localhost:4200/default");
     res.send();
   }
 
-
   async createaccess(d: any, @Res() res): Promise<string> {
     await this.addUserToDB(d);
-    const id =  (await this.getUserByid(d.id)).id
+    const id = (await this.getUserByid(d.id)).id;
     const twofa = (await this.getUserByid(d.id)).twoFactor;
     if (!twofa) {
       const payload: JwtPayload = { id };
-      const accesToken = this.JwtService.sign(payload, {expiresIn: '1d'});
+      const accesToken = this.JwtService.sign(payload, { expiresIn: "1d" });
       // console.log(accesToken);
-      res.cookie('auth-cookie', accesToken, { httpOnly: true});
-      res.redirect('http://localhost:4200/default');
+      res.cookie("auth-cookie", accesToken, { httpOnly: true });
+      res.redirect("http://localhost:4200/default");
       // return accesToken;
     } else {
-      console.log('2fa');
+      console.log("2fa");
       // when 2fa is enabled, we need to match the user who initiated
       // the original auth requests in /redirect to the /auth/check route
       // we use a simple md5 string mapping
-      let token = createHash('md5').update(randomBytes(128)).digest('hex');
+      let token = createHash("md5").update(randomBytes(128)).digest("hex");
       this.tokens[token] = id; // save it
       res.redirect(`http://localhost:4200/2fa-step?token=${token}`);
     }
@@ -87,8 +89,8 @@ export class UserService {
     try {
       await this.repository.save(user);
     } catch (error) {
-      if (error.code === '23505')
-        throw new ConflictException('id already exist !');
+      if (error.code === "23505")
+        throw new ConflictException("id already exist !");
     }
     return;
   }
@@ -114,7 +116,7 @@ export class UserService {
     const tmp = await this.repository.findOne({
       where: { name: username },
     });
-    if (tmp) throw new ConflictException('username already exist !');
+    if (tmp) throw new ConflictException("username already exist !");
     if (username) {
       user.name = username;
     }
@@ -166,25 +168,26 @@ export class UserService {
 
   async updateavatar(user: User, file: any): Promise<User> {
     console.log(file);
-    const type = file.mimetype.split('/')[1];
+    const type = file.mimetype.split("/")[1];
     console.log(type);
     fs.rename(
       file.path,
-      file.destination + '/' + user.name + '.' + type,
+      file.destination + "/" + user.name + "." + type,
       (Error) => {
         if (Error) throw Error;
-      },
+      }
     );
 
-    user.avatar = process.env.UPLOAD_PATH + '/' + user.name + '.' + type;
+    user.avatar = process.env.UPLOAD_PATH + "/" + user.name + "." + type;
     this.repository.save(user);
     return user;
   }
 
   //game stuff
   async addwin(user: User): Promise<User> {
-
-    if(user){console.log(user);}
+    if (user) {
+      console.log(user);
+    }
     user.wins += 1;
     await this.repository.save(user);
     return await this.getUserByid(user.id);
@@ -196,17 +199,31 @@ export class UserService {
     return await this.getUserByid(user.id);
   }
 
-  async upgradelvl(user: User, ): Promise<User>{
+  async upgradelvl(user: User): Promise<User> {
     //some math to upgrade the lvl !
 
     return;
   }
-  async get_online_users(): Promise<User[]>
-  {
-    return await this.repository.find({where: {status: UserStatus.online}});
+  async get_online_users(): Promise<User[]> {
+    return await this.repository.find({ where: { status: UserStatus.online } });
   }
-  async get_user_status(id: number): Promise<UserStatus>
-  {
+
+  async get_user_status(id: number): Promise<UserStatus> {
     return (await this.getUserByid(id)).status;
+  }
+
+  async blockUser(blockedId: number, blocker: User): Promise<Block> {
+    if (blockedId == Number(blocker.id)) {
+      throw new ConflictException("can't block yourself"); // maybe not needed
+    }
+    const blockedUser = await this.getUserByid(blockedId);
+    if (!blockedUser) {
+      throw new ConflictException("user to be blocked not found !");
+    }
+    const blockRequest: Block = new Block();
+    blockRequest.blocker = blocker;
+    blockRequest.blocked = blockedUser;
+    await this.BlockRepo.save(blockRequest);
+    return blockRequest;
   }
 }

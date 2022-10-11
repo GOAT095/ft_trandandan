@@ -3,14 +3,14 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FriendrequestEntity } from './friend.entity';
-import { User } from '../user/user.entity';
-import { UserService } from '../user/user.service';
-import { FriendStatus } from './friend-status.enum';
-import { Repository, UpdateResult } from 'typeorm';
-import { GetUser } from '../auth/get-user.decorator';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { FriendrequestEntity } from "./friend.entity";
+import { User } from "../user/user.entity";
+import { UserService } from "../user/user.service";
+import { FriendStatus } from "./friend-status.enum";
+import { Repository, UpdateResult } from "typeorm";
+import { GetUser } from "../auth/get-user.decorator";
 
 @Injectable()
 export class FriendsService {
@@ -22,7 +22,7 @@ export class FriendsService {
 
   async sendFriendRequest(
     receiverId: number,
-    sender: User,
+    sender: User
   ): Promise<FriendrequestEntity> {
     // console.log("sender "+ sender.id + " receiver "+ receiverId);
     if (receiverId == Number(sender.id)) {
@@ -34,20 +34,20 @@ export class FriendsService {
         requestReceiver: { id: receiverId },
         FriendStatus: FriendStatus.pending,
       },
-      relations: ['requestSender', 'requestReceiver'],
+      relations: ["requestSender", "requestReceiver"],
     });
     // console.log(query);
     if (query.length != 0) {
-      throw new ConflictException('friend request already sent');
+      throw new ConflictException("friend request already sent");
     }
     const receiver = await this.userService.getUserByid(Number(receiverId));
-    const frindrequest: FriendrequestEntity = new FriendrequestEntity();
+    const friendrequest: FriendrequestEntity = new FriendrequestEntity();
 
-    frindrequest.requestSender = sender;
-    frindrequest.requestReceiver = receiver;
+    friendrequest.requestSender = sender;
+    friendrequest.requestReceiver = receiver;
     // console.log(frindrequest);
-    await this.repository.save(frindrequest);
-    return frindrequest;
+    await this.repository.save(friendrequest);
+    return friendrequest;
   }
 
   async getfriendRequests(user: User): Promise<any> {
@@ -57,7 +57,7 @@ export class FriendsService {
         requestReceiver: { id: user.id },
         FriendStatus: FriendStatus.pending,
       },
-      relations: ['requestSender', 'requestReceiver'],
+      relations: ["requestSender", "requestReceiver"],
     });
     //where("FriendrequestEntity.requestReceiver= :user", {user: user})
     //
@@ -66,11 +66,11 @@ export class FriendsService {
 
   async acceptFriendRequest(
     requstId: number,
-    receiver: User,
+    receiver: User
   ): Promise<boolean> {
     const friendRequst = await this.repository.findOne({
       where: { id: requstId, FriendStatus: FriendStatus.pending },
-      relations: ['requestSender', 'requestReceiver'],
+      relations: ["requestSender", "requestReceiver"],
     });
     if (friendRequst) {
       friendRequst.FriendStatus = FriendStatus.accepted;
@@ -82,11 +82,11 @@ export class FriendsService {
 
   async declineFriendRequest(
     requstId: number,
-    receiver: User,
+    receiver: User
   ): Promise<boolean> {
     const friendRequst = await this.repository.findOne({
       where: [{ id: requstId, FriendStatus: FriendStatus.pending }],
-      relations: ['requestSender', 'requestReceiver'],
+      relations: ["requestSender", "requestReceiver"],
     });
     if (friendRequst) {
       friendRequst.FriendStatus = FriendStatus.declined;
@@ -104,14 +104,14 @@ export class FriendsService {
         { requestReceiver: user, FriendStatus: FriendStatus.accepted },
         { requestSender: user, FriendStatus: FriendStatus.accepted },
       ],
-      relations: ['requestSender', 'requestReceiver'],
+      relations: ["requestSender", "requestReceiver"],
     });
     //needs tests !
   }
 
   async getAllRequestsForDebugging(): Promise<FriendrequestEntity[]> {
     return await this.repository.find({
-      relations: ['requestSender', 'requestReceiver'],
+      relations: ["requestSender", "requestReceiver"],
     });
   }
 }
