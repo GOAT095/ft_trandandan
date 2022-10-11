@@ -18,6 +18,7 @@ import { hashPassword } from "../utils/bcrypt";
 import { GetUser } from "../auth/get-user.decorator";
 import { createHash, randomBytes } from "crypto";
 import { Block } from "./block.entity";
+import { query } from "express";
 // import { hashPassword } from '../utils/bcrypt';
 
 @Injectable()
@@ -225,5 +226,19 @@ export class UserService {
     blockRequest.blocked = blockedUser;
     await this.BlockRepo.save(blockRequest);
     return blockRequest;
+  }
+  async unblockUser(blockedId: number, blocker: User): Promise<boolean> {
+    const query = await this.BlockRepo.findOne({
+      where: {
+        blocker: { id: blocker.id },
+        blocked: { id: blockedId },
+      },
+      relations: ["blocker", "blocked"],
+    });
+    if (!query) {
+      throw new ConflictException("can't unblock a non-blocked user !");
+    }
+    this.BlockRepo.delete(query.id);
+    return true;
   }
 }
