@@ -28,6 +28,7 @@ export class FriendsService {
     if (receiverId == Number(sender.id)) {
       throw new ConflictException("can't add yourself");
     }
+
     const query = await this.repository.find({
       where: {
         requestSender: { id: sender.id },
