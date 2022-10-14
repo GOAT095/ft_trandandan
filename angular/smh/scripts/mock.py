@@ -118,6 +118,10 @@ class User:
             if friend_request["requestSender"]["id"] == user.user_id:
                 api.accept_friend_request(friend_request["id"])
 
+    def remove(self) -> None:
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        api.delete_user(str(self.user_id))
 
     def refresh(self) -> None:
         api.session.cookies.clear()
