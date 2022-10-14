@@ -56,7 +56,7 @@ export class TwoFactorAuthenticationController {
       )
     ) {
       const payload: JwtPayload = { id: user.id };
-      const accesToken = await this.JwtService.sign(payload);
+      const accesToken = this.JwtService.sign(payload);
       // console.log(accesToken);
       res.cookie('auth-cookie', accesToken, { httpOnly: true });
       res.send();

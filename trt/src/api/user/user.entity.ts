@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from "class-validator";
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -8,23 +8,24 @@ import {
   PrimaryColumn,
   OneToMany,
   Unique,
-} from 'typeorm';
-import { FriendrequestEntity } from '../friends/friend.entity';
-import { UserStatus } from './user.status.enum';
+} from "typeorm";
+import { FriendrequestEntity } from "../friends/friend.entity";
+import { Block } from "./block.entity";
+import { UserStatus } from "./user.status.enum";
 
-@Entity('user')
+@Entity("user")
 export class User {
   @PrimaryColumn()
   @IsNotEmpty()
   id: number;
 
-  @Column({ type: 'varchar', length: 120 })
+  @Column({ type: "varchar", length: 120 })
   name: string;
 
-  @Column({ type: 'varchar', length: 120, nullable: true})
+  @Column({ type: "varchar", length: 120, nullable: true })
   email: string;
 
-  @Column({ type: 'varchar', length: 254, nullable: true})
+  @Column({ type: "varchar", length: 254, nullable: true })
   avatar: string;
 
   @Column({ default: 0 })
@@ -36,7 +37,7 @@ export class User {
   @Column({ default: 0 })
   lvl: number;
 
-  @Column({ default: 'online' })
+  @Column({ default: "online" })
   status: UserStatus;
 
   @Column({ default: false })
@@ -47,15 +48,21 @@ export class User {
 
   @OneToMany(
     () => FriendrequestEntity,
-    (FriendrequestEntity) => FriendrequestEntity.requestSender,
+    (FriendrequestEntity) => FriendrequestEntity.requestSender
   )
   sentFriendrequests: FriendrequestEntity[];
 
   @OneToMany(
     () => FriendrequestEntity,
-    (FriendrequestEntity) => FriendrequestEntity.requestReceiver,
+    (FriendrequestEntity) => FriendrequestEntity.requestReceiver
   )
   receivedFriendrequests: FriendrequestEntity[];
+
+  @OneToMany(() => Block, (Block) => Block.blocker)
+  blocking: Block[];
+
+  @OneToMany(() => Block, (Block) => Block.blocked)
+  blockedby: Block[];
   /*
    * Create and Update Date Columns
    */

@@ -22,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
           }
           const res = data
             .split(';')
-            .find((c) => c.trim().startsWith('auth-cookie='));
+            .find((c: string) => c.trim().startsWith('auth-cookie='));
           if (res) return res.split('=')[1];
           return null;
         },
@@ -30,12 +30,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: process.env.JWT_SECRET,
     });
   }
-  async validate(payload: JwtPayload): Promise<User> {
-    const { id } = payload;
-    const user = await this.userRepository.findOne({ where: { id } });
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-    return user;
-  }
+  // async validate(payload: JwtPayload): Promise<User> {
+  //   const { id } = payload;
+  //   const user = await this.userRepository.findOne({ where: { id } });
+  //   if (!user) {
+  //     throw new UnauthorizedException();
+  //   }
+  //   return user;
+  // }
 }

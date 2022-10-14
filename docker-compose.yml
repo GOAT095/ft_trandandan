@@ -1,4 +1,4 @@
-version: '3.1'
+version: "3.1"
 
 volumes:
   db-data:
@@ -7,10 +7,10 @@ volumes:
 services:
   users:
     build: ./trt/
-    container_name: auth
+    container_name: trans
     restart: always
     ports:
-      - '3000:3000' # expose ports - HOST:CONTAINER
+      - "3000:3000" # expose ports - HOST:CONTAINER
     volumes:
       - ./trt:/usr/src/app
     environment:
@@ -30,7 +30,6 @@ services:
     depends_on:
       - db
 
-
   db:
     image: postgres
     container_name: trans_db
@@ -41,17 +40,16 @@ services:
       POSTGRES_PASSWORD: $POSTGRES_PASS
     volumes:
       - db-data:/var/lib/postgresql/data
-
 # phpMyAdmin just for development in case we need a look up to database
 
-  # phpmyadmin:
-  #   container_name: phpmyadmin
-  #   image: dpage/pgadmin4
-  #   restart: always
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: $PGADMIN_DEFAULT_EMAIL
-  #     PGADMIN_DEFAULT_PASSWORD: $PGADMIN_DEFAULT_PASSWORD
-  #   ports:
-  #     - "8080:80"
-  #   depends_on:
-  #     - db
+# phpmyadmin:
+#   container_name: phpmyadmin
+#   image: dpage/pgadmin4
+#   restart: always
+#   environment:
+#     PGADMIN_DEFAULT_EMAIL: $PGADMIN_DEFAULT_EMAIL
+#     PGADMIN_DEFAULT_PASSWORD: $PGADMIN_DEFAULT_PASSWORD
+#   ports:
+#     - "8080:80"
+#   depends_on:
+#     - db

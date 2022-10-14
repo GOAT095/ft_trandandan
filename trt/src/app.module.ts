@@ -6,6 +6,7 @@ import { FriendrequestEntity } from './api/friends/friend.entity';
 import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { Block } from './api/user/block.entity';
 @Module({
   imports: [
     MulterModule.register({
@@ -19,7 +20,7 @@ import { join } from 'path';
       database: process.env.POSTGRES_DB,
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASS,
-      entities: [User, FriendrequestEntity],
+      entities: [User, FriendrequestEntity, Block],
       //logger: 'file',
       // logging: true,
       synchronize: true, // never use TRUE in production
