@@ -60,7 +60,14 @@ export class PlayerInfoShortComponent implements OnInit {
       }
     )
   }
-
+  block() {
+    this.api.blockPlayer(this.player.id).subscribe(
+      (data) => {
+        // TODO: give visual feedback back to user
+        console.debug('PlayerInfoShortComponent.blockPlayer', data);
+      }
+    )
+  }
   ngOnInit(): void {
   }
 
