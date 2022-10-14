@@ -28,6 +28,10 @@ export class PlayerSettingsComponent implements OnInit {
   @Output()
   playerUpdateEvent = new EventEmitter<Player>();
 
+  // sections
+  @Input()
+  privacy : boolean = true
+
   constructor(private api: ApiService) {}
   updateUsername(): void {
     this.api.updatePlayerUsername(this.username, this.player.id).subscribe(
