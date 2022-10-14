@@ -16,7 +16,12 @@ def get_random_user_id() -> int:
 def generate_api_token(
     url: str = "http://localhost:3000",
     data: dict = dict(id=0xFFAC, name="mock", email="mock@localhost.local"),
+    new: bool = False,
 ) -> str:
+    if new:
+        return requests.get(
+            f"{url}/auth/loginAs/{data['name']}", allow_redirects=False
+        ).cookies.get("auth-cookie")
     return requests.post(f"{url}/user", data=data).text
 
 
@@ -56,16 +61,25 @@ class Api:
             f"{self.url}/friends/acceptRequest/{request_id}"
         ).json()
 
+    def delete_user(self, user_id: str) -> bool:
+        return self.session.delete(f"{self.url}/user/{user_id}/delete").json()
+
 
 api = Api()
 
 
 class User:
     """
-    foo = User() # creates a new user
-    bar = User()
-    foo.send_friend_request_to(bar)
-    bar.accept_friend_request_from(foo)
+    Args:
+        # user_name: str = fake.user_name(),
+        # user_id: int = get_random_user_id(),
+        # email: str = fake.email(),
+
+    Usage:
+        foo = User() # creates a new user
+        bar = User()
+        foo.send_friend_request_to(bar)
+        bar.accept_friend_request_from(foo)
     """
 
     # TODO: add ability to loginAs/:user_name
@@ -76,12 +90,20 @@ class User:
         # user_id: int = get_random_user_id(),
         # email: str = fake.email(),
     ) -> None:
+        """
+        # user_name: str = fake.user_name(),
+        # user_id: int = get_random_user_id(),
+        # email: str = fake.email(),
+        """
         self.user_name: str = kwargs.get("user_name", fake.user_name())
         self.user_id: int = kwargs.get("user_id", get_random_user_id())
         self.email: str = kwargs.get("email", fake.email())
+        new = ("user_name" in kwargs)
         self.token = generate_api_token(
-            data=dict(id=self.user_id, name=self.user_name, email=self.email)
+            data=dict(id=self.user_id, name=self.user_name, email=self.email),
+            new=new,
         )
+        if new: self.refresh()
 
     def send_friend_request_to(self, user: "User") -> None:
         api.session.cookies.clear()
@@ -95,6 +117,15 @@ class User:
         for friend_request in friend_requests:
             if friend_request["requestSender"]["id"] == user.user_id:
                 api.accept_friend_request(friend_request["id"])
+
+
+    def refresh(self) -> None:
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        data = api.get_player()
+        self.user_name = data["name"]
+        self.user_id = data["id"]
+        self.email = data["email"]
 
 
 if __name__ == "__main__":
