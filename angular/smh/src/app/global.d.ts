@@ -16,3 +16,9 @@ interface FriendRequest {
   requestReceiver: Player,
   requestSender: Player
 }
+
+interface BlockObject {
+  id: string,
+  blocker: Player,
+  blocked: Player
+}

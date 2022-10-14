@@ -94,4 +94,14 @@ export class ApiService {
     return this.http.post<FriendRequest>(`${this.apiUrl}/friends/sendRequest/${playerId}`, {}, {withCredentials: true})
     .pipe(catchError(this.handleError))
   }
+
+  blockPlayer(playerId: string) {
+    return this.http.post<BlockObject>(`${this.apiUrl}/user/block/${playerId}`, {}, {withCredentials: true})
+    .pipe(catchError(this.handleError))
+  }
+
+  unblockPlayer(playerId: string) {
+    return this.http.post<BlockObject>(`${this.apiUrl}/user/ublock/${playerId}`, {}, {withCredentials: true})
+    .pipe(catchError(this.handleError))
+  }
 }
