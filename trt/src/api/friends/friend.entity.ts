@@ -19,9 +19,9 @@ export class FriendrequestEntity {
   @Column({ default: 'pending' })
   public FriendStatus: FriendStatus;
 
-  @ManyToOne(() => User, (User) => User.sentFriendrequests)
+  @ManyToOne(() => User, (User) => User.sentFriendrequests, {onDelete: 'CASCADE'})
   requestSender: User;
 
-  @ManyToOne(() => User, (User) => User.receivedFriendrequests)
+  @ManyToOne(() => User, (User) => User.receivedFriendrequests, {onDelete: 'CASCADE'})
   requestReceiver: User;
 }
