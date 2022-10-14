@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../api.service';
 import { MainNewDialogComponent } from '../main-new-dialog/main-new-dialog.component';
+import { MainOfflineDialogComponent } from '../main-offline-dialog/main-offline-dialog.component';
 
 @Component({
   selector: 'app-main',
@@ -44,6 +45,14 @@ export class MainComponent implements OnInit {
     console.debug('Initialized MainComponent', this.player);
   }
 
+  openOfflineDialog(errorStr: string): void {
+    const dialogRef = this.dialog.open<string>(MainOfflineDialogComponent, {
+      data: {errorStr: errorStr},
+      disableClose: true,
+    });
+    dialogRef.closed.subscribe(result=> {
+      console.debug('MainOfflineDialogComponent closed');
+    })
   }
 
   openFirstLoginDialog(): void {

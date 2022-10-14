@@ -27,6 +27,8 @@ import { PlayerFriendsComponent } from './player-friends/player-friends.componen
 import { PlayerInfoShortComponent } from './player-info-short/player-info-short.component';
 import { LogoutButtonComponent } from './logout-button/logout-button.component';
 import { TwoFactorCheckComponent } from './two-factor-check/two-factor-check.component';
+import { MainNewDialogComponent } from './main-new-dialog/main-new-dialog.component';
+import { MainOfflineDialogComponent } from './main-offline-dialog/main-offline-dialog.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,8 @@ import { TwoFactorCheckComponent } from './two-factor-check/two-factor-check.com
     PlayerInfoShortComponent,
     LogoutButtonComponent,
     TwoFactorCheckComponent,
+    MainNewDialogComponent,
+    MainOfflineDialogComponent,
   ],
   imports: [
     BrowserModule,
