@@ -30,12 +30,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: process.env.JWT_SECRET,
     });
   }
-  // async validate(payload: JwtPayload): Promise<User> {
-  //   const { id } = payload;
-  //   const user = await this.userRepository.findOne({ where: { id } });
-  //   if (!user) {
-  //     throw new UnauthorizedException();
-  //   }
-  //   return user;
-  // }
+  async validate(payload: JwtPayload): Promise<User> {
+    const { id } = payload;
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    return user;
+  }
 }
