@@ -12,7 +12,6 @@ import { MainNewDialogComponent } from '../main-new-dialog/main-new-dialog.compo
 })
 export class MainComponent implements OnInit {
 
-  first_login : boolean = false;
   player : Player = {
     id: '-1',
     name: '---',
@@ -24,21 +23,27 @@ export class MainComponent implements OnInit {
   };
 
   constructor(private api: ApiService, private route: ActivatedRoute, public dialog: Dialog) {
-    this.route.queryParamMap.subscribe(
-      (params) => {
-        var param = params.get('new')
-        if (param != null && param == 'true') {
-          this.first_login  = true;
-        }
-      }
-    )
+
     api.getPlayer().subscribe(
       (data) => {
         this.player = data;
-        this.openFirstLoginDialog();
+        // open first login dialog
+        this.route.queryParamMap.subscribe(
+          (params) => {
+            var param = params.get('new')
+            if (param != null && param == 'true') {
+              this.openFirstLoginDialog();
+            }
+          }
+        )
+      },
+      (error) => {
+        this.openOfflineDialog(error.statusText);
       }
     )
-    console.debug('Initialized MainComponent', this.first_login, this.player);
+    console.debug('Initialized MainComponent', this.player);
+  }
+
   }
 
   openFirstLoginDialog(): void {
@@ -53,6 +58,7 @@ export class MainComponent implements OnInit {
   updatePlayer(player: Player) {
     this.player = player;
   }
+
   logout(): void {
     // Unset cookie
     this.api.http.get(`${this.api.apiUrl}/auth/logout/${this.player.id}`, {withCredentials: true}).subscribe(
@@ -61,6 +67,7 @@ export class MainComponent implements OnInit {
       }
     );
   }
+
   ngOnInit(): void {
   }
 }
