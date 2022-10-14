@@ -64,6 +64,11 @@ class Api:
     def delete_user(self, user_id: str) -> bool:
         return self.session.delete(f"{self.url}/user/{user_id}/delete").json()
 
+    def block(self, user_id: str) -> dict:
+        return self.session.post(f"{self.url}/user/block/{user_id}").json()
+
+    def unblock(self, user_id: str) -> bool:
+        return self.session.post(f"{self.url}/user/ublock/{user_id}").json()
 
 api = Api()
 
@@ -131,6 +136,13 @@ class User:
         self.user_id = data["id"]
         self.email = data["email"]
 
+    def block(self, user: "User") -> dict:
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        return api.block(str(user.user_id))
+
+    def unblock(self, user: "User") -> bool:
+        return api.unblock(str(user.user_id))
 
 if __name__ == "__main__":
     pass
