@@ -176,4 +176,8 @@ export class UserController {
   ): Promise<Boolean> {
     return this.service.unblockUser(blocked, user);
   }
+  @UseGuards(AuthGuard())
+  async getMyBlockedUsers(@GetUser() user:User): Promise<Block[]>{
+    return await this.service.getBlockedusers(user);
+  }
 }
