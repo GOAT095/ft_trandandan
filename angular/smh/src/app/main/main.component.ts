@@ -1,6 +1,9 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../api.service';
+import { MainNewDialogComponent } from '../main-new-dialog/main-new-dialog.component';
 
 @Component({
   selector: 'app-main',
@@ -9,6 +12,7 @@ import { ApiService } from '../api.service';
 })
 export class MainComponent implements OnInit {
 
+  first_login : boolean = false;
   player : Player = {
     id: '-1',
     name: '---',
@@ -19,13 +23,33 @@ export class MainComponent implements OnInit {
     twoFactor: false
   };
 
-  constructor(private api: ApiService) {
+  constructor(private api: ApiService, private route: ActivatedRoute, public dialog: Dialog) {
+    this.route.queryParamMap.subscribe(
+      (params) => {
+        var param = params.get('new')
+        if (param != null && param == 'true') {
+          this.first_login  = true;
+        }
+      }
+    )
     api.getPlayer().subscribe(
       (data) => {
         this.player = data;
+        this.openFirstLoginDialog();
       }
     )
+    console.debug('Initialized MainComponent', this.first_login, this.player);
   }
+
+  openFirstLoginDialog(): void {
+    const dialogRef = this.dialog.open<string>(MainNewDialogComponent, {
+      data: {player: this.player}
+    });
+    dialogRef.closed.subscribe(result => {
+      console.debug('MainNewDialogComponent closed')
+    })
+  }
+
   updatePlayer(player: Player) {
     this.player = player;
   }
@@ -39,5 +63,4 @@ export class MainComponent implements OnInit {
   }
   ngOnInit(): void {
   }
-
 }
