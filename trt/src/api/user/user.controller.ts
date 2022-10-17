@@ -169,7 +169,7 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard())
-  @Post("ublock/:blocked")
+  @Post("unblock/:blocked")
   async unBlockUser(
     @Param("blocked") blocked: number,
     @GetUser() user: User
@@ -177,7 +177,7 @@ export class UserController {
     return this.service.unblockUser(blocked, user);
   }
   @UseGuards(AuthGuard())
-  async getMyBlockedUsers(@GetUser() user:User): Promise<Block[]>{
+  async getMyBlockedUsers(@GetUser() user: User): Promise<Block[]> {
     return await this.service.getBlockedusers(user);
   }
 }
