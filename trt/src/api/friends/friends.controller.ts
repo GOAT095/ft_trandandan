@@ -3,6 +3,7 @@ import {
   Get,
   Inject,
   Param,
+  ParseIntPipe,
   Post,
   UseGuards,
 } from "@nestjs/common";
@@ -23,7 +24,7 @@ export class FriendsController {
 
   @Post("sendRequest/:receiverId")
   async sendFriendRequest(
-    @Param("receiverId") receiverId: number,
+    @Param("receiverId", ParseIntPipe) receiverId: number,
     @GetUser() user: User
   ): Promise<FriendrequestEntity> {
     return this.friendService.sendFriendRequest(receiverId, user);
@@ -36,7 +37,7 @@ export class FriendsController {
 
   @Post("acceptRequest/:id")
   async acceptFriendRequest(
-    @Param("id") requstId: number,
+    @Param("id", ParseIntPipe) requstId: number,
     @GetUser() user: User
   ): Promise<boolean> {
     return this.friendService.acceptFriendRequest(requstId, user);
@@ -44,7 +45,7 @@ export class FriendsController {
 
   @Post("declineRequest/:id")
   async declinetFriendRequest(
-    @Param("id") requstId: number,
+    @Param("id", ParseIntPipe) requstId: number,
     @GetUser() user: User
   ): Promise<boolean> {
     return this.friendService.declineFriendRequest(requstId, user);

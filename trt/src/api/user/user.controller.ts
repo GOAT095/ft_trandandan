@@ -44,14 +44,14 @@ export class UserController {
 
   @UseGuards(AuthGuard())
   @Get("home")
-  async hellohome(@GetUser() user): Promise<string> {
+  async hellohome(@GetUser() user: User): Promise<string> {
     const name = JSON.stringify(user.name);
     return "hello" + name;
   }
 
   @UseGuards(AuthGuard())
   @Get("me")
-  async current(@GetUser() user): Promise<User> {
+  async current(@GetUser() user: User): Promise<User> {
     return user;
   }
 
@@ -75,10 +75,10 @@ export class UserController {
   //   }
   // }
   @UseGuards(AuthGuard())
-    @Get("myblocked")
-    async getMyBlockedUsers(@GetUser() user: User): Promise<Block[]> {
-      return await this.service.getBlockedusers(user);
-    }
+  @Get("myblocked")
+  async getMyBlockedUsers(@GetUser() user: User): Promise<Block[]> {
+    return await this.service.getBlockedusers(user);
+  }
   @Get(":id")
   public getUser(@Param("id", ParseIntPipe) id: number): Promise<User> {
     return this.service.getUserByid(id);
@@ -162,7 +162,7 @@ export class UserController {
         "this user doesnt have the rights to remove the user"
       );
   }
-  
+
   @UseGuards(AuthGuard())
   @Post("block/:blocked")
   async BlockUser(
@@ -180,6 +180,4 @@ export class UserController {
   ): Promise<Boolean> {
     return this.service.unblockUser(blocked, user);
   }
-
-  
 }
