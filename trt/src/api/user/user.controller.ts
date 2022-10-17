@@ -74,12 +74,16 @@ export class UserController {
   //     throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
   //   }
   // }
-
+  @UseGuards(AuthGuard())
+    @Get("myblocked")
+    async getMyBlockedUsers(@GetUser() user: User): Promise<Block[]> {
+      return await this.service.getBlockedusers(user);
+    }
   @Get(":id")
   public getUser(@Param("id", ParseIntPipe) id: number): Promise<User> {
     return this.service.getUserByid(id);
   }
-
+  //get with no route should always be under be careful !
   @UseGuards(AuthGuard())
   @Get()
   public getAllUsers(): Promise<User[]> {
@@ -158,7 +162,7 @@ export class UserController {
         "this user doesnt have the rights to remove the user"
       );
   }
-
+  
   @UseGuards(AuthGuard())
   @Post("block/:blocked")
   async BlockUser(
@@ -177,9 +181,5 @@ export class UserController {
     return this.service.unblockUser(blocked, user);
   }
 
-  @UseGuards(AuthGuard())
-  @Get("myblocked")
-  async getMyBlockedUsers(@GetUser() user: User): Promise<Block[]> {
-    return await this.service.getBlockedusers(user);
-  }
+  
 }

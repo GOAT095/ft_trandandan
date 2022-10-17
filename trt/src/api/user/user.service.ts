@@ -241,12 +241,11 @@ export class UserService {
     this.BlockRepo.delete(query.id);
     return true;
   }
-  async  getBlockedusers(user:User): Promise <Block[]>{
-    
+  async getBlockedusers(user: User): Promise<Block[]> {
     return await this.BlockRepo.find({
-      where: {blocker: user},
-      relations: ["blocking", "blockedby"]
-    })
+      where: { blocker: user },
+      relations: ["blocker", "blocked"],
+    });
     //needs tests not sure if relation is great
   }
 }
