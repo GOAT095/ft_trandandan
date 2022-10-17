@@ -246,6 +246,6 @@ export class UserService {
       where: { blocker: user },
       relations: ["blocker", "blocked"],
     });
-    //needs tests not sure if relation is great
+    //works now
   }
 }
