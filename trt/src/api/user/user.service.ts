@@ -14,11 +14,8 @@ import { UserStatus } from "./user.status.enum";
 import * as fs from "fs";
 import { JwtPayload } from "../auth/jwt.payload.interface";
 import { JwtService } from "@nestjs/jwt";
-import { hashPassword } from "../utils/bcrypt";
-import { GetUser } from "../auth/get-user.decorator";
 import { createHash, randomBytes } from "crypto";
 import { Block } from "./block.entity";
-import { query } from "express";
 // import { hashPassword } from '../utils/bcrypt';
 
 @Injectable()
@@ -240,5 +237,12 @@ export class UserService {
     }
     this.BlockRepo.delete(query.id);
     return true;
+  }
+  async getBlockedusers(user: User): Promise<Block[]> {
+    return await this.BlockRepo.find({
+      where: { blocker: user },
+      relations: ["blocker", "blocked"],
+    });
+    //works now
   }
 }

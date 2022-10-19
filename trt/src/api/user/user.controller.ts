@@ -44,14 +44,14 @@ export class UserController {
 
   @UseGuards(AuthGuard())
   @Get("home")
-  async hellohome(@GetUser() user): Promise<string> {
+  async hellohome(@GetUser() user: User): Promise<string> {
     const name = JSON.stringify(user.name);
     return "hello" + name;
   }
 
   @UseGuards(AuthGuard())
   @Get("me")
-  async current(@GetUser() user): Promise<User> {
+  async current(@GetUser() user: User): Promise<User> {
     return user;
   }
 
@@ -74,12 +74,16 @@ export class UserController {
   //     throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
   //   }
   // }
-
+  @UseGuards(AuthGuard())
+  @Get("myblocked")
+  async getMyBlockedUsers(@GetUser() user: User): Promise<Block[]> {
+    return await this.service.getBlockedusers(user);
+  }
   @Get(":id")
   public getUser(@Param("id", ParseIntPipe) id: number): Promise<User> {
     return this.service.getUserByid(id);
   }
-
+  //get with no route should always be under be careful !
   @UseGuards(AuthGuard())
   @Get()
   public getAllUsers(): Promise<User[]> {
@@ -169,7 +173,7 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard())
-  @Post("ublock/:blocked")
+  @Post("unblock/:blocked")
   async unBlockUser(
     @Param("blocked") blocked: number,
     @GetUser() user: User
