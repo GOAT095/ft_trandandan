@@ -101,7 +101,7 @@ export class ApiService {
   }
 
   unblockPlayer(playerId: string) {
-    return this.http.post<BlockObject>(`${this.apiUrl}/user/ublock/${playerId}`, {}, {withCredentials: true})
+    return this.http.post<BlockObject>(`${this.apiUrl}/user/unblock/${playerId}`, {}, {withCredentials: true})
     .pipe(catchError(this.handleError))
   }
 }

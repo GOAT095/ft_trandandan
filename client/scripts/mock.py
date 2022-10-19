@@ -68,7 +68,7 @@ class Api:
         return self.session.post(f"{self.url}/user/block/{user_id}").json()
 
     def unblock(self, user_id: str) -> bool:
-        return self.session.post(f"{self.url}/user/ublock/{user_id}").json()
+        return self.session.post(f"{self.url}/user/unblock/{user_id}").json()
 
 api = Api()
 
