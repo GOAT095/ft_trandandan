@@ -30,7 +30,7 @@
             *ngIf="player.twoFactor == true"
             (onClose)="onDialogButtonClose($event)"></app-action-button>
     </div>
-    <div *ngIf="privacy" class="nes-container with-title is-dark">
+    <div :hidden *ngIf="privacy" class="nes-container with-title is-dark">
         <span class="title">Privacy</span>
         <span>Blocked users:</span>
         <div class="setting block-list-item">

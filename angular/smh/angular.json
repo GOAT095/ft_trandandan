@@ -32,7 +32,8 @@
               "src/styles.less",
               "nes.css/css/nes.css"
             ],
-            "scripts": []
+            "scripts": [
+            ]
           },
           "configurations": {
             "production": {

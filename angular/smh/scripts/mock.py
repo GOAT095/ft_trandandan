@@ -144,5 +144,8 @@ class User:
     def unblock(self, user: "User") -> bool:
         return api.unblock(str(user.user_id))
 
+    def __repr__(self):
+        return f"<User: {self.user_id}"
+
 if __name__ == "__main__":
     pass

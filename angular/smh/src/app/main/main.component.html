@@ -1,4 +1,4 @@
-<div class="nes-container is-dark viewport layout">
+<div :hidden class="nes-container is-dark viewport layout">
     <nav>
         <div>
             <!--<span>Player info</span>-->
@@ -41,6 +41,76 @@
                 </section>
             </section>
         </div>
-        <app-player-settings [player]="player" (playerUpdateEvent)="updatePlayer($event)"></app-player-settings>
+        <!--<app-player-settings [player]="player" (playerUpdateEvent)="updatePlayer($event)"></app-player-settings>-->
     </div>
+</div>
+
+
+<div (keydown)="keyPress($event)">
+<nav>
+    <div cdkMenuBar>
+        <button [cdkMenuTriggerFor]="menu" cdkMenuItem>Menu</button>
+        <!--<button [cdkMenuTriggerFor]="edit" cdkMenuItem>Edit</button>
+        <button [cdkMenuTriggerFor]="format" cdkMenuItem>Format</button>-->
+    </div>
+    <ng-template #menu>
+        <div cdkMenu>
+            <button (click)="openSettingsDialog()" cdkMenuItem>Settings</button>
+            <hr />
+            <button [cdkMenuTriggerFor]="friends" cdkMenuItem>Friends <span>&#10148;</span></button>
+            <!--<button cdkMenuItem>Open</button>
+            <button cdkMenuItem>Make a Copy</button>-->
+            <button [cdkMenuTriggerFor]="game" cdkMenuItem>Game <span>&#10148;</span></button>
+            <button (click)="isChatOpen = !isChatOpen" cdkMenuItem>Chat</button>
+            <hr />
+            <button (click)="logout()" cdkMenuItem>Logout</button>
+        </div>
+    </ng-template>
+    
+    <ng-template #friends>
+        <div cdkMenu>
+            <button (click)="openFriendsListDialog()" cdkMenuItem>List</button>
+            <button (click)="openFriendsRequestsDialog()" cdkMenuItem>Requests {{ friendsRequestsCount }}</button>
+            <button (click)="openFriendsSearchDialog()" cdkMenuItem>Search</button>
+        </div>
+    </ng-template>
+    <ng-template #game>
+        <div cdkMenu>
+            <button (click)="gameStart()" cdkMenuItem>Start</button>
+            <button [cdkMenuTriggerFor]="game_view" cdkMenuItem>view <span>&#10148;</span></button>
+            <button (click)="openShortcutDialog()" 
+                    cdkMenuItem>Shortcuts</button>
+        </div>
+    </ng-template>
+    <ng-template #game_view>
+        <div cdkMenu>
+            <button [disabled]="gameView == 0" 
+                    [cdkMenuItemChecked]="gameView == 0"
+                    (cdkMenuItemTriggered)="toggleView()"
+                    cdkMenuItemRadio>Horizontal</button>
+            <button [disabled]="gameView == 1" 
+                    [cdkMenuItemChecked]="gameView == 1"
+                    (cdkMenuItemTriggered)="toggleView()"
+                    cdkMenuItemRadio>Vertical</button>
+        </div>
+    </ng-template>
+</nav>
+
+<app-pong-game></app-pong-game>
+
+<div id="chatbox">
+    <div class="chatbox-header" #chatbox_header>
+        <span class="label">Chat</span>
+        <button class="toggle" (click)="isChatOpen = !isChatOpen"
+                cdkOverlayOrigin #trigger="cdkOverlayOrigin">^</button>
+    </div>
+    <ng-template    [cdkConnectedOverlayOrigin]="chatbox_header"
+                    [cdkConnectedOverlayOpen]="isChatOpen"
+                    [cdkConnectedOverlayWidth]="500"
+                    cdkConnectedOverlay>
+        <div class="messages-box">
+            <p *ngFor="let message of chatMessages">* {{ message }}</p>
+        </div>
+    </ng-template>
+</div>
 </div>

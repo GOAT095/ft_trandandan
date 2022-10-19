@@ -35,3 +35,116 @@ div.layout {
 .chat {
     height: 100%;
 }
+
+// nav
+nav {
+    min-height: 10vh;
+}
+
+// ckd menu
+.cdk-menu-bar > .cdk-menu-item {
+    cursor: pointer;
+    border: none;
+
+    user-select: none;
+    min-width: 34px;
+    line-height: 26px;
+    padding: 0 16px;
+}
+
+.cdk-menu-bar > .cdk-menu-item:hover {
+    background-color: rgb(208, 208, 208);
+}
+
+.cdk-menu {
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 180px;
+    max-width: 280px;
+    background-color: rgb(255, 255, 255);
+    padding: 6px 0;
+}
+
+.cdk-menu hr {
+    width: 100%;
+    color: rgba(0, 0, 0, 0.12);
+}
+
+.cdk-menu .cdk-menu-group {
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.cdk-menu .cdk-menu-item {
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+
+    user-select: none;
+    min-width: 64px;
+    line-height: 36px;
+    padding: 0 16px;
+
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex: 1;
+}
+
+.cdk-menu-item > span {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.cdk-menu .cdk-menu-item:hover {
+    background-color: rgb(208, 208, 208);
+}
+
+.cdk-menu .cdk-menu-item[role='menuitemradio'][aria-checked='true'] {
+    background-color: rgb(208, 208, 208);
+}
+
+.cdk-menu .cdk-menu-item[role='menuitemcheckbox'][aria-checked='true'] {
+    background-color: rgb(208, 208, 208);
+}
+
+.cdk-menu .cdk-menu-item:active {
+    background-color: rgb(170, 170, 170);
+}
+
+.cdk-menu-bar > .cdk-menu-item[aria-expanded='true'],
+.cdk-menu-item[aria-expanded='true'] {
+    background-color: rgb(208, 208, 208) !important;
+}
+// end -- cdk menu
+
+
+// chatbox
+.chatbox-header {
+    width: 500px;
+    height:fit-content;
+
+    position:fixed;
+    bottom: 100px;
+    left: 50px;
+
+    // debug
+    //border: 2px dashed;
+
+    background-color: rgb(208, 208, 208) !important;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.chatbox-header > .toggle {
+    flex: 1;
+}
+
+.chatbox-header > .label {
+    flex: 10;
+    align-self: center;
+    margin-left: .5em;
+}

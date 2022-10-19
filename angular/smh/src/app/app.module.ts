@@ -29,6 +29,9 @@ import { LogoutButtonComponent } from './logout-button/logout-button.component';
 import { TwoFactorCheckComponent } from './two-factor-check/two-factor-check.component';
 import { MainNewDialogComponent } from './main-new-dialog/main-new-dialog.component';
 import { MainOfflineDialogComponent } from './main-offline-dialog/main-offline-dialog.component';
+import { PongGameComponent } from './pong-game/pong-game.component';
+import { GameHelpDialogComponent } from './game-help-dialog/game-help-dialog.component';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
   declarations: [
@@ -50,6 +53,8 @@ import { MainOfflineDialogComponent } from './main-offline-dialog/main-offline-d
     TwoFactorCheckComponent,
     MainNewDialogComponent,
     MainOfflineDialogComponent,
+    PongGameComponent,
+    GameHelpDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,7 +66,8 @@ import { MainOfflineDialogComponent } from './main-offline-dialog/main-offline-d
     NoopAnimationsModule,
     FormsModule,
     DialogModule,
-    CdkMenuModule
+    CdkMenuModule,
+    OverlayModule
   ],
   providers: [],
   bootstrap: [AppComponent],
@@ -73,7 +79,7 @@ import { MainOfflineDialogComponent } from './main-offline-dialog/main-offline-d
     PlayerFriendsComponent,
     PlayerInfoShortComponent,
     LogoutButtonComponent,
-    TwoFactorCheckComponent
+    TwoFactorCheckComponent,
   ]
 })
 export class AppModule { }

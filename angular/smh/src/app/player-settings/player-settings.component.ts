@@ -32,7 +32,11 @@ export class PlayerSettingsComponent implements OnInit {
   @Input()
   privacy : boolean = true
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, public dialogRef: DialogRef<string>, @Inject(DIALOG_DATA) public data: any) {
+    this.player = data.player;
+    this.privacy = data.privacy
+  }
+
   updateUsername(): void {
     this.api.updatePlayerUsername(this.username, this.player.id).subscribe(
       (data) => {
