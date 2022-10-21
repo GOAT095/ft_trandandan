@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { Md5 } from 'ts-md5';
 
 @Component({
@@ -21,7 +22,7 @@ export class PlayerInfoComponent implements OnInit {
   };
 
   gravatarUrl = 'https://www.gravatar.com/avatar'
-  apiUrl = 'http://localhost:3000'
+  apiUrl = environment.apiUrl;
   avatarSrc : string = this.getAvatarSrc();
 
   constructor() {}
