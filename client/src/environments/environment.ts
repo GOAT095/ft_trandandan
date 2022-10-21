@@ -7,6 +7,10 @@ Update with: apiUrl, oauthUrl see environment.example.ts
 */
 
 export const environment = {
+  /*
+  oauthUrl: "<fill with redirect url from intra api dashboard>",
+  */
+  apiUrl: "http://localhost:4200/api",
   production: false
 };
 

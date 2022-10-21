@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  apiUrl: "", // fill with the full backend url e.i: "http://localhost:3000"
+  apiUrl: "", // fill with the full backend url e.i: "http://localhost:4200/api"
   oauthUrl: "", // fill with the redirect url from the Intra Api dashboard e.i:
                 //  "https://api.intra.42.fr/oauth/authorize?client_id=<CLIENT_ID>&redirect_uri=<REDIRECT_URI>&response_type=code"
   production: false
