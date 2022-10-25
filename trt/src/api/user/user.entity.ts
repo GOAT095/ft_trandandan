@@ -1,10 +1,7 @@
 import { IsNotEmpty } from "class-validator";
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
   PrimaryColumn,
   OneToMany,
   Unique,
@@ -19,10 +16,10 @@ export class User {
   @IsNotEmpty()
   id: number;
 
-  @Column({ type: "varchar", length: 120 })
+  @Column({ type: "varchar", length: 120, unique: true })
   name: string;
 
-  @Column({ type: "varchar", length: 120, nullable: true })
+  @Column({ type: "varchar", length: 120, nullable: true,  unique: true })
   email: string;
 
   @Column({ type: "varchar", length: 254, nullable: true })

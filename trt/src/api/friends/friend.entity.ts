@@ -3,9 +3,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  PrimaryColumn,
   ManyToOne,
 } from 'typeorm';
 import { FriendStatus } from './friend-status.enum';

@@ -214,6 +214,7 @@ export class UserService {
     if (blockedId == Number(blocker.id)) {
       throw new ConflictException("can't block yourself"); // maybe not needed
     }
+    
     const blockedUser = await this.getUserByid(blockedId);
     if (!blockedUser) {
       throw new ConflictException("user to be blocked not found !");
