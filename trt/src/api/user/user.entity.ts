@@ -1,11 +1,6 @@
 import { IsNotEmpty } from "class-validator";
-import {
-  Entity,
-  Column,
-  PrimaryColumn,
-  OneToMany,
-  Unique,
-} from "typeorm";
+import { Entity, Column, PrimaryColumn, OneToMany, Unique } from "typeorm";
+import { Room } from "../chat/room.entity";
 import { FriendrequestEntity } from "../friends/friend.entity";
 import { Block } from "./block.entity";
 import { UserStatus } from "./user.status.enum";
@@ -19,7 +14,7 @@ export class User {
   @Column({ type: "varchar", length: 120, unique: true })
   name: string;
 
-  @Column({ type: "varchar", length: 120, nullable: true,  unique: true })
+  @Column({ type: "varchar", length: 120, nullable: true, unique: true })
   email: string;
 
   @Column({ type: "varchar", length: 254, nullable: true })
@@ -60,13 +55,7 @@ export class User {
 
   @OneToMany(() => Block, (Block) => Block.blocked)
   blockedby: Block[];
-  /*
-   * Create and Update Date Columns
-   */
 
-  //   @CreateDateColumn({ type: 'timestamp' })
-  //   public createdAt: Date;
-
-  //   @UpdateDateColumn({ type: 'timestamp' })
-  //   public updatedAt: Date;
+  @OneToMany(() => Room, (Room) => Room.user) // relation to room entity each user can have
+  room: Room[]; //multiple rooms
 }

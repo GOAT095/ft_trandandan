@@ -7,6 +7,9 @@ import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { Block } from './api/user/block.entity';
+import { Chat } from './api/chat/chat.entity';
+import { Room } from './api/chat/room.entity';
+
 @Module({
   imports: [
     MulterModule.register({
@@ -18,10 +21,10 @@ import { Block } from './api/user/block.entity';
       host: process.env.POSTGRES_HOST,
       port: Number(process.env.POSTGRES_PORT),
       database: process.env.POSTGRES_DB,
-      username: process.env.POSTGRES_USER,
+      username: 'admin',
       password: process.env.POSTGRES_PASS,
-      entities: [User, FriendrequestEntity, Block],
-      //logger: 'file',
+      entities: [User, FriendrequestEntity, Block, Chat, Room],
+      // logger: 'file',
       // logging: true,
       synchronize: true, // never use TRUE in production
     }),

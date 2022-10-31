@@ -1,16 +1,28 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { User } from "../user/user.entity";
+import { Room } from "./room.entity";
+@Entity("chat") // the chat what would be on a room and stocked on db
+export class Chat {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-@Entity('chat')
-export class Chat{
-    @PrimaryGeneratedColumn('uuid') //auto generated primary column
-    id: number
+  @Column()
+  username: string; // can use email
 
-    @Column()
-    username: string // can use email
+  @Column() //text li ktab l user
+  text: string;
 
-    @Column()  //text li ktab l user
-    text: string
+  @CreateDateColumn()
+  createdAt: Date; // for date/time at input of the text
 
-    @CreateDateColumn()
-    createdAt: Date; // for date/time at input of the text
+  @OneToOne(() => Room, (Room) => Room.chat) // each room has onw chat log
+  room: Room;
 }
