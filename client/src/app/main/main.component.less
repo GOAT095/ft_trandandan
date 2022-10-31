@@ -148,3 +148,31 @@ nav {
     align-self: center;
     margin-left: .5em;
 }
+
+// notification box
+.notification-header {
+    width: 700px;
+    height:fit-content;
+
+    position:fixed;
+    top: 100px;
+    right: 50px;
+
+    // debug
+    border: 2px dashed;
+
+    background-color: rgb(208, 208, 208) !important;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.notification-header > .toggle {
+    flex: 1;
+}
+
+.notification-header > .label {
+    flex: 10;
+    align-self: center;
+    margin-left: .5em;
+}

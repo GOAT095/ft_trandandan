@@ -102,7 +102,7 @@
     <div class="chatbox-header" #chatbox_header>
         <span class="label">Chat</span>
         <button class="toggle" (click)="isChatOpen = !isChatOpen"
-                cdkOverlayOrigin #trigger="cdkOverlayOrigin">^</button>
+                cdkOverlayOrigin #trigger="cdkOverlayOrigin">{{ isChatOpen ? '-' : '+' }}</button>
     </div>
     <ng-template    [cdkConnectedOverlayOrigin]="chatbox_header"
                     [cdkConnectedOverlayOpen]="isChatOpen"
@@ -113,4 +113,21 @@
         </div>
     </ng-template>
 </div>
+
+<div id="notification-box">
+    <div class="notification-header" #notification_header>
+        <span class="label">Notifications</span>
+        <button class="toggle" (click)="isNotificationBarOpen = !isNotificationBarOpen"
+                cdkOverlayOrigin #trigger="cdkOverlayOrigin">{{ isNotificationBarOpen ? '-' : '+' }}</button>
+    </div>
+    <ng-template    [cdkConnectedOverlayOrigin]="notification_header"
+                    [cdkConnectedOverlayOpen]="isNotificationBarOpen"
+                    [cdkConnectedOverlayWidth]="700"
+                    cdkConnectedOverlay>
+        <div class="notification-message-box">
+            <p *ngFor="let notification of notifications">* {{ notification.message }}</p>
+        </div>
+    </ng-template>
+</div>
+
 </div>

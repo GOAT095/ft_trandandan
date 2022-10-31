@@ -31,9 +31,14 @@ export class MainComponent implements OnInit {
   gameView = 0;
   friendsRequestsCount = 2;
   isChatOpen = false;
+  isNotificationBarOpen = false;
 
   chatMessages = [
     "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fugit unde ut deserunt, tenetur illo laboriosam, nemo, nihil molestias iste atque accusamus inventore dolore debitis porro deleniti cumque. Perferendis, dolor! Ipsum.",
+  ];
+  notifications = [
+    {"message": "foobar sent a friend request"},
+    {"message": "foobar invites you for a 1vs1"},
   ]
   constructor(private api: ApiService, private route: ActivatedRoute, public dialog: Dialog) {
 
