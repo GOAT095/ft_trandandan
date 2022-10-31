@@ -10,6 +10,7 @@ import { PlayerFriendRequestsComponent } from '../player-friend-requests/player-
 import { PlayerFriendsComponent } from '../player-friends/player-friends.component';
 import { PlayerSettingsComponent } from '../player-settings/player-settings.component';
 import { CdkOverlayOrigin } from '@angular/cdk/overlay';
+import { WsService } from '../ws.service';
 
 @Component({
   selector: 'app-main',
@@ -40,7 +41,7 @@ export class MainComponent implements OnInit {
     {"message": "foobar sent a friend request"},
     {"message": "foobar invites you for a 1vs1"},
   ]
-  constructor(private api: ApiService, private route: ActivatedRoute, public dialog: Dialog) {
+  constructor(private api: ApiService, private route: ActivatedRoute, public dialog: Dialog, public ws: WsService) {
 
     api.getPlayer().subscribe(
       (data) => {
