@@ -1,6 +1,7 @@
 import { IsNotEmpty } from "class-validator";
-import { Entity, Column, PrimaryColumn, OneToMany, Unique, ManyToMany, JoinTable } from "typeorm";
+import { Entity, Column, PrimaryColumn, OneToMany, Unique, ManyToMany, JoinTable, OneToOne } from "typeorm";
 import { Room } from "../chat/room.entity";
+import { roomUser } from "../chat/roomUser.entity";
 import { FriendrequestEntity } from "../friends/friend.entity";
 import { Block } from "./block.entity";
 import { UserStatus } from "./user.status.enum";
@@ -59,4 +60,7 @@ export class User {
   @ManyToMany(() => Room, (Room) => Room.user)
   @JoinTable()
   room: Room[]; //multiple rooms the user can be on 
+
+  @OneToOne(() => roomUser, (roomUser) => roomUser.user)
+  roomuser: roomUser
 }

@@ -10,6 +10,7 @@ import {
 import { User } from "../user/user.entity";
 import { Access_type } from "../utils/acces.type.enum";
 import { chatLogs } from "./chatLogs.entity";
+import { roomUser } from "./roomUser.entity";
 
 @Entity("room")
 export class Room {
@@ -30,4 +31,8 @@ export class Room {
 
   @OneToMany(() => chatLogs, (chatLogs) => chatLogs.room) //each chatLogs is made for one room
   chatLog: chatLogs[];
+
+  @OneToOne(() => roomUser, (roomUser) => roomUser.room)
+  roomUser: roomUser
 }
+
