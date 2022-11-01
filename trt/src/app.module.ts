@@ -7,7 +7,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { Block } from './api/user/block.entity';
-import { Chat } from './api/chat/chat.entity';
+import { Chat } from './api/chat/chatLogs.entity';
 import { Room } from './api/chat/room.entity';
 
 @Module({

@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import { Entity, Column, PrimaryColumn, OneToMany, Unique } from "typeorm";
+import { Entity, Column, PrimaryColumn, OneToMany, Unique, ManyToMany, JoinTable } from "typeorm";
 import { Room } from "../chat/room.entity";
 import { FriendrequestEntity } from "../friends/friend.entity";
 import { Block } from "./block.entity";
@@ -56,6 +56,7 @@ export class User {
   @OneToMany(() => Block, (Block) => Block.blocked)
   blockedby: Block[];
 
-  @OneToMany(() => Room, (Room) => Room.user) // relation to room entity each user can have
-  room: Room[]; //multiple rooms
+  @ManyToMany(() => Room, (Room) => Room.user)
+  @JoinTable()
+  room: Room[]; //multiple rooms the user can be on 
 }

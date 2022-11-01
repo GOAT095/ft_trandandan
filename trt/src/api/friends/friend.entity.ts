@@ -17,7 +17,7 @@ export class FriendrequestEntity {
   public FriendStatus: FriendStatus;
 
   @ManyToOne(() => User, (User) => User.sentFriendrequests)
-  requestSender: User;
+  requestSender: User; // user can have multiple friends
 
   @ManyToOne(() => User, (User) => User.receivedFriendrequests)
   requestReceiver: User;

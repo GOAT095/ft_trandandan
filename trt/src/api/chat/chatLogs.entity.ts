@@ -9,8 +9,8 @@ import {
 } from "typeorm";
 import { User } from "../user/user.entity";
 import { Room } from "./room.entity";
-@Entity("chat") // the chat what would be on a room and stocked on db
-export class Chat {
+@Entity("chatLogs") // the chatLogs what would be on a room and stocked on db
+export class chatLogs {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -18,11 +18,11 @@ export class Chat {
   username: string; // can use email
 
   @Column() //text li ktab l user
-  text: string;
+  message: string; //1 message
 
   @CreateDateColumn()
   createdAt: Date; // for date/time at input of the text
 
-  @OneToOne(() => Room, (Room) => Room.chat) // each room has onw chat log
+  @ManyToOne(() => Room, (Room) => Room.chatLog) // each room has onw chat log
   room: Room;
 }

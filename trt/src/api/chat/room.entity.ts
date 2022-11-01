@@ -1,12 +1,15 @@
 import {
   Column,
   Entity,
+  ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { User } from "../user/user.entity";
-import { Chat } from "./chat.entity";
+import { Access_type } from "../utils/acces.type.enum";
+import { chatLogs } from "./chatLogs.entity";
 
 @Entity("room")
 export class Room {
@@ -16,12 +19,15 @@ export class Room {
   @Column()
   channelName: string;
 
+  @Column()
+  access_type: Access_type
+
   @Column({ default: null })
   password: string;
 
-  @ManyToOne(() => User, (User) => User.room)
-  user: User;
+  @ManyToMany(() => User, (User) => User.room)
+  user: User[];
 
-  @OneToOne(() => Chat, (Chat) => Chat.room) //each chat is made for one room
-  chat: Chat;
+  @OneToMany(() => chatLogs, (chatLogs) => chatLogs.room) //each chatLogs is made for one room
+  chatLog: chatLogs[];
 }
