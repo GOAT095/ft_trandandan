@@ -23,6 +23,6 @@ export class chatLogs {
   @CreateDateColumn()
   createdAt: Date; // for date/time at input of the text
 
-  @ManyToOne(() => Room, (Room) => Room.chatLog) // each room has onw chat log
+  @ManyToOne(() => Room, (Room) => Room.chatLog) // each room has its onw chat log
   room: Room;
 }

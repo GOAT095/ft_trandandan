@@ -26,7 +26,7 @@ import { Room } from "./room.entity";
   room: Room;
 
   @Column()
-  prmission: user_perm; // the perm that the user above have towards the room above
+  permission: user_perm; // the perm that the user above have towards the room above
 
   @Column({ default: "NULL"})
   restriction: restriction;
