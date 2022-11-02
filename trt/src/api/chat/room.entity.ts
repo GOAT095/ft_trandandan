@@ -20,7 +20,7 @@ export class Room {
   @Column()
   channelName: string;
 
-  @Column({default: null})
+  @Column({default: Access_type.public})
   access_type: Access_type
 
   @Column({ default: null })

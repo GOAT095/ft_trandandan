@@ -29,13 +29,12 @@ import { Room } from "./room.entity";
   permission: user_perm; // the perm that the user above have towards the room above
 
   @Column({ default: "NULL"})
-  restriction: restriction;
+  restriction: restriction; // no restriction NULL is set to the property
 
   @CreateDateColumn()
   restrictedAt: Date; // the date he got restricted
 
   @Column({default : 0})
   restrictionDuration: number;
-
 
 }
