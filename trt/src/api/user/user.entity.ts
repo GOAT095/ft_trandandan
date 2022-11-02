@@ -39,6 +39,9 @@ export class User {
   @Column({ nullable: true })
   twoFactorAuthenticationSecret: string;
 
+  @Column({ default: [1.0, 0.0, 0.0] })
+  Pcolor: number[]; //paddle color for customization
+
   @OneToMany(
     () => FriendrequestEntity,
     (FriendrequestEntity) => FriendrequestEntity.requestSender

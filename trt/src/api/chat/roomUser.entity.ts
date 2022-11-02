@@ -23,7 +23,7 @@ import { Room } from "./room.entity";
   user: User;
 
   @OneToOne(() => Room,(Room) => Room.roomUser)
-  room: Room;
+  room: Room; 
 
   @Column()
   permission: user_perm; // the perm that the user above have towards the room above
