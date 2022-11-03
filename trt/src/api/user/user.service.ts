@@ -214,7 +214,7 @@ export class UserService {
     if (blockedId == Number(blocker.id)) {
       throw new ConflictException("can't block yourself"); // maybe not needed
     }
-    
+
     const blockedUser = await this.getUserByid(blockedId);
     if (!blockedUser) {
       throw new ConflictException("user to be blocked not found !");
@@ -241,7 +241,7 @@ export class UserService {
   }
   async getBlockedusers(user: User): Promise<Block[]> {
     return await this.BlockRepo.find({
-      where: { blocker: user },
+      where: { blocker: { id: user.id } },
       relations: ["blocker", "blocked"],
     });
     //works now

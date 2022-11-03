@@ -101,8 +101,11 @@ export class FriendsService {
     // user.id =
     return await this.repository.find({
       where: [
-        { requestReceiver: user, FriendStatus: FriendStatus.accepted },
-        { requestSender: user, FriendStatus: FriendStatus.accepted },
+        {
+          requestReceiver: { id: user.id },
+          FriendStatus: FriendStatus.accepted,
+        },
+        { requestSender: { id: user.id }, FriendStatus: FriendStatus.accepted },
       ],
       relations: ["requestSender", "requestReceiver"],
     });
