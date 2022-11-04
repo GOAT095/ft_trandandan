@@ -20,7 +20,7 @@ import { roomUser } from "./api/chat/roomUser.entity";
       host: process.env.POSTGRES_HOST,
       port: Number(process.env.POSTGRES_PORT),
       database: process.env.POSTGRES_DB,
-      username: "admin",
+      username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASS,
       entities: [User, FriendrequestEntity, Block, chatLogs, Room, roomUser],
       // logger: 'file',
