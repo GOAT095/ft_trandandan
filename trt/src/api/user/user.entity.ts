@@ -1,5 +1,14 @@
 import { IsNotEmpty } from "class-validator";
-import { Entity, Column, PrimaryColumn, OneToMany, Unique, ManyToMany, JoinTable, OneToOne } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  OneToMany,
+  Unique,
+  ManyToMany,
+  JoinTable,
+  OneToOne,
+} from "typeorm";
 import { Room } from "../chat/room.entity";
 import { roomUser } from "../chat/roomUser.entity";
 import { FriendrequestEntity } from "../friends/friend.entity";
@@ -39,7 +48,7 @@ export class User {
   @Column({ nullable: true })
   twoFactorAuthenticationSecret: string;
 
-  @Column({ default: [1.0, 0.0, 0.0] })
+  @Column("int", { array: true, default: [1.0, 0.0, 0.0] })
   Pcolor: number[]; //paddle color for customization
 
   @OneToMany(
@@ -62,8 +71,8 @@ export class User {
 
   @ManyToMany(() => Room, (Room) => Room.user)
   @JoinTable() //bidirectionnal (@JoinTable must be only on one side of the relation)
-  room: Room[]; //multiple rooms the user can be on 
+  room: Room[]; //multiple rooms the user can be on
 
-  @OneToMany(() => roomUser, (roomUser) => roomUser.user)
+  @OneToOne(() => roomUser, (roomUser) => roomUser.user)
   roomuser: roomUser // link to roomuser table to get all info
 }
