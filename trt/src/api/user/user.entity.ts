@@ -1,14 +1,17 @@
 import { IsNotEmpty } from "class-validator";
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
   PrimaryColumn,
   OneToMany,
   Unique,
+  ManyToMany,
+  JoinTable,
+  OneToOne,
+  ManyToOne,
 } from "typeorm";
+import { Room } from "../chat/room.entity";
+import { roomUser } from "../chat/roomUser.entity";
 import { FriendrequestEntity } from "../friends/friend.entity";
 import { Block } from "./block.entity";
 import { UserStatus } from "./user.status.enum";
@@ -19,10 +22,10 @@ export class User {
   @IsNotEmpty()
   id: number;
 
-  @Column({ type: "varchar", length: 120 })
+  @Column({ type: "varchar", length: 120, unique: true })
   name: string;
 
-  @Column({ type: "varchar", length: 120, nullable: true })
+  @Column({ type: "varchar", length: 120, nullable: true, unique: true })
   email: string;
 
   @Column({ type: "varchar", length: 254, nullable: true })
@@ -46,6 +49,9 @@ export class User {
   @Column({ nullable: true })
   twoFactorAuthenticationSecret: string;
 
+  @Column("int", { array: true, default: [1.0, 0.0, 0.0] })
+  Pcolor: number[]; //paddle color for customization
+
   @OneToMany(
     () => FriendrequestEntity,
     (FriendrequestEntity) => FriendrequestEntity.requestSender
@@ -63,13 +69,11 @@ export class User {
 
   @OneToMany(() => Block, (Block) => Block.blocked)
   blockedby: Block[];
-  /*
-   * Create and Update Date Columns
-   */
 
-  //   @CreateDateColumn({ type: 'timestamp' })
-  //   public createdAt: Date;
+  @ManyToMany(() => Room, (Room) => Room.user)
+  @JoinTable() //bidirectionnal (@JoinTable must be only on one side of the relation)
+  room: Room[]; //multiple rooms the user can be on
 
-  //   @UpdateDateColumn({ type: 'timestamp' })
-  //   public updatedAt: Date;
+  @OneToMany(() => roomUser, (roomUser) => roomUser.user)
+  roomuser: roomUser // link to roomuser table to get all info
 }
