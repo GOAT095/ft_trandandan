@@ -19,7 +19,7 @@ import { Room } from "./room.entity";
   @PrimaryGeneratedColumn()
   id: number;
   
-  @OneToOne(() => User,(User) => User.roomuser)
+  @ManyToOne(() => User,(User) => User.roomuser)
   user: User;
 
   @OneToOne(() => Room,(Room) => Room.roomUser)

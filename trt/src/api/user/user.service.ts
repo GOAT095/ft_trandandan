@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  Get,
   Inject,
   Injectable,
   NotFoundException,

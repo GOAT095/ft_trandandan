@@ -9,8 +9,7 @@ import { FriendrequestEntity } from "./friend.entity";
 import { User } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 import { FriendStatus } from "./friend-status.enum";
-import { Repository, UpdateResult } from "typeorm";
-import { GetUser } from "../auth/get-user.decorator";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class FriendsService {
@@ -101,8 +100,8 @@ export class FriendsService {
     // user.id =
     return await this.repository.find({
       where: [
-        { requestReceiver: user, FriendStatus: FriendStatus.accepted },
-        { requestSender: user, FriendStatus: FriendStatus.accepted },
+        { requestReceiver: {id:user.id}, FriendStatus: FriendStatus.accepted },
+        { requestSender: {id:user.id}, FriendStatus: FriendStatus.accepted },
       ],
       relations: ["requestSender", "requestReceiver"],
     });
