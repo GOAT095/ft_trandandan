@@ -8,6 +8,7 @@ import {
   ManyToMany,
   JoinTable,
   OneToOne,
+  ManyToOne,
 } from "typeorm";
 import { Room } from "../chat/room.entity";
 import { roomUser } from "../chat/roomUser.entity";
@@ -73,6 +74,6 @@ export class User {
   @JoinTable() //bidirectionnal (@JoinTable must be only on one side of the relation)
   room: Room[]; //multiple rooms the user can be on
 
-  @OneToOne(() => roomUser, (roomUser) => roomUser.user)
+  @ManyToOne(() => roomUser, (roomUser) => roomUser.user)
   roomuser: roomUser // link to roomuser table to get all info
 }
