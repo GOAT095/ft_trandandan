@@ -74,6 +74,6 @@ export class User {
   @JoinTable() //bidirectionnal (@JoinTable must be only on one side of the relation)
   room: Room[]; //multiple rooms the user can be on
 
-  @ManyToOne(() => roomUser, (roomUser) => roomUser.user)
+  @OneToMany(() => roomUser, (roomUser) => roomUser.user)
   roomuser: roomUser // link to roomuser table to get all info
 }
