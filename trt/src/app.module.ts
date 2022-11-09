@@ -8,6 +8,9 @@ import { Block } from "./api/user/block.entity";
 import { chatLogs } from "./api/chat/chatLogs.entity";
 import { Room } from "./api/chat/room.entity";
 import { roomUser } from "./api/chat/roomUser.entity";
+import { WsGateway } from './ws/ws.gateway';
+import { ChatController } from './api/chat/chat.controller';
+import { RoomService } from "./api/chat/room/room.service";
 
 @Module({
   imports: [
@@ -28,6 +31,8 @@ import { roomUser } from "./api/chat/roomUser.entity";
       synchronize: true, // never use TRUE in production
     }),
   ],
+  providers: [WsGateway, RoomService],
+  controllers: [ChatController],
   // controllers: [AppController],
   // providers: [AppService],
 })
