@@ -3,6 +3,7 @@ import { environment } from 'src/environments/environment';
 import { Md5 } from 'ts-md5';
 
 import { ApiService } from '../api.service';
+import { WsService } from '../ws.service';
 
 @Component({
   selector: 'app-player-info-short',
@@ -27,7 +28,9 @@ export class PlayerInfoShortComponent implements OnInit {
   apiUrl = environment.apiUrl;
   avatarSrc : string = this.getAvatarSrc();
 
-  constructor(public api: ApiService) {}
+  @Input() type: string = "normal";
+
+  constructor(public api: ApiService, public ws: WsService) {}
 
   getGravatarSrc(): string {
     let md5 = new Md5();
@@ -69,6 +72,14 @@ export class PlayerInfoShortComponent implements OnInit {
       }
     )
   }
+  inviteFor1vs1() {
+    this.ws.notify('1vs1', {'message': `${this.player.name} has invited you to a game.`})
+  }
+
+  isChat(): boolean {
+    return this.type == 'chat';
+  }
+
   ngOnInit(): void {
   }
 

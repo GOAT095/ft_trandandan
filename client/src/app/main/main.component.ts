@@ -9,7 +9,7 @@ import { MainOfflineDialogComponent } from '../main-offline-dialog/main-offline-
 import { PlayerFriendRequestsComponent } from '../player-friend-requests/player-friend-requests.component';
 import { PlayerFriendsComponent } from '../player-friends/player-friends.component';
 import { PlayerSettingsComponent } from '../player-settings/player-settings.component';
-import { CdkOverlayOrigin } from '@angular/cdk/overlay';
+import { CdkOverlayOrigin, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { WsService } from '../ws.service';
 
 @Component({
@@ -36,11 +36,24 @@ export class MainComponent implements OnInit {
 
   chatMessages = [
     "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fugit unde ut deserunt, tenetur illo laboriosam, nemo, nihil molestias iste atque accusamus inventore dolore debitis porro deleniti cumque. Perferendis, dolor! Ipsum.",
+    "Common sense is not so common"
   ];
   notifications = [
     {"message": "foobar sent a friend request"},
     {"message": "foobar invites you for a 1vs1"},
   ]
+
+  // input
+  chatMessage : string = '';
+
+  // overlay
+  positions = [
+    new ConnectionPositionPair(
+      { originX: 'start', originY: 'top'},
+      { overlayX: 'start', overlayY: 'bottom'}
+    ),
+  ];
+
   constructor(private api: ApiService, private route: ActivatedRoute, public dialog: Dialog, public ws: WsService) {
 
     api.getPlayer().subscribe(
@@ -63,6 +76,8 @@ export class MainComponent implements OnInit {
     // init messages
     //for (let i = 0; i < 10; i++) {
     //}
+    ws.handleNotify();
+    ws.handleChatMessage();
     console.debug('Initialized MainComponent', this.player);
   }
 
@@ -158,6 +173,13 @@ export class MainComponent implements OnInit {
   }
   openFriendsRequestsDialog(): void {
     const dialogRef = this.dialog.open<string>(PlayerFriendRequestsComponent)
+  }
+
+  sendChatMessage(): void {
+    this.ws.postToChat('global', this.chatMessage, this.player);
+    // TODO:
+    // - clean current message
+    this.chatMessage = '';
   }
 
   ngOnInit(): void {

@@ -1,5 +1,6 @@
 import { Component, Injectable } from '@angular/core';
 import { ApiService } from './api.service';
+import { WsService } from './ws.service';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +9,5 @@ import { ApiService } from './api.service';
 })
 export class AppComponent {
   title = 'ft_transcendence';
-  constructor(public api: ApiService) {}
+  constructor(public api: ApiService, public ws: WsService) {}
 }

@@ -101,15 +101,21 @@
 <div id="chatbox">
     <div class="chatbox-header" #chatbox_header>
         <span class="label">Chat</span>
+        <input placeholder="Type ..." type="text" [(ngModel)]="chatMessage" (keyup.enter)="sendChatMessage()"/>
         <button class="toggle" (click)="isChatOpen = !isChatOpen"
                 cdkOverlayOrigin #trigger="cdkOverlayOrigin">{{ isChatOpen ? '-' : '+' }}</button>
     </div>
     <ng-template    [cdkConnectedOverlayOrigin]="chatbox_header"
                     [cdkConnectedOverlayOpen]="isChatOpen"
                     [cdkConnectedOverlayWidth]="500"
+                    [ckdConnectedOverlayPositions]="positions"
                     cdkConnectedOverlay>
         <div class="messages-box">
-            <p *ngFor="let message of chatMessages">* {{ message }}</p>
+            <!--<p *ngFor="let message of chatMessages">* {{ message }}</p>-->
+            <div class="message-layout" *ngFor="let message of ws.chatMessages">
+                <app-player-info-short [player]="message.player" [type]="'chat'"></app-player-info-short>
+                <p class="message-message">{{ message.message }}</p>
+            </div>
         </div>
     </ng-template>
 </div>
@@ -125,7 +131,8 @@
                     [cdkConnectedOverlayWidth]="700"
                     cdkConnectedOverlay>
         <div class="notification-message-box">
-            <p *ngFor="let notification of notifications">* {{ notification.message }}</p>
+            <!--<p *ngFor="let notification of notifications">* {{ notification.message }}</p>-->
+            <p *ngFor="let notification of ws.notifications">* {{ notification.data.message }}</p>
         </div>
     </ng-template>
 </div>

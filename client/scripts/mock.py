@@ -1,10 +1,23 @@
+from enum import Enum
 import requests
+import socketio
 import random
+import json
 from faker import Faker
+
+
+class ROOM_ACCESS_TYPE(str, Enum):
+    PRIVATE = "private"
+    PROTECTED = "protected"
+    PUBLIC = "public"
+    DIRECT_MESSAGE = "dm"
+
 
 fake = Faker()
 
 user_id = random.randint(int(1e5), int(1e7))
+
+sio = socketio.Client()
 
 
 def get_random_user_id() -> int:
@@ -70,7 +83,77 @@ class Api:
     def unblock(self, user_id: str) -> bool:
         return self.session.post(f"{self.url}/user/unblock/{user_id}").json()
 
+    def new_room(
+        self, name: str, owner: int, type: ROOM_ACCESS_TYPE, password: str = ""
+    ) -> dict:
+        return self.session.post(
+            f"{self.url}/chat/room/",
+            headers={"Content-Type": "application/json"},
+            data=json.dumps(
+                {
+                    "name": name,
+                    "owner": owner,
+                    "type": type,
+                }
+            ),
+        ).json()
+
+    def join_room(self, room: Room) -> dict:
+        return self.session.post(f"{self.url}/chat/room/{room.id}/join").json()
+
+    def leave_room(self, room: Room) -> dict:
+        return self.session.post(f"{self.url}/chat/room/{room.id}/leave").json()
+
+    def get_room(self, room_id: int) -> dict:
+        return self.session.post(f"{self.url}/chat/room/{room_id}").json()
+
+    def kick_player(self, user: User, room: Room) -> dict:
+        return self.session.post(
+            f"{self.url}/chat/room/{room.id}/kick/{user.user_id}"
+        ).json()
+
+    def mute_player(self, user: User, room: Room) -> dict:
+        return self.session.post(
+            f"{self.url}/chat/room/{room.id}/mute/{user.user_id}"
+        ).json()
+
+    def ban_player(self, user: User, room: Room) -> dict:
+        return self.session.post(
+            f"{self.url}/chat/room/{room.id}/ban/{user.user_id}"
+        ).json()
+
+    def give_admin_to(self, user: User, room: Room) -> dict:
+        return self.session.post(
+            f"{self.url}/chat/room/{room.id}/set-as-admin/{user.user_id}"
+        ).json()
+
+    def change_password_on_room(self, room: Room, new_password: str) -> dict:
+        return self.session.post(
+            f"{self.url}/chat/room/{room.id}/key",
+            headers={"Content-Type": "application/json"},
+            data=json.dumps({"password": new_password}),
+        ).json()
+
+    def disable_password_on_room(self, room: Room) -> dict:
+        return self.session.post(f"{self.url}/chat/room/{room.id}/key/disable").json()
+
+
 api = Api()
+
+
+class Room:
+    def __init__(self, data, **kwargs):
+        self.name = data.get("name")
+        self.owner = data.get("owner")
+        self.type = ROOM_ACCESS_TYPE(data.get("type"))
+        self.id = data.get("id")
+        self.data = data
+
+    def refresh(self):
+        self.__init__(api.get_room(self.id))
+
+    def __repr__(self):
+        return f"<{self.name}: {self.type}>"
 
 
 class User:
@@ -103,12 +186,13 @@ class User:
         self.user_name: str = kwargs.get("user_name", fake.user_name())
         self.user_id: int = kwargs.get("user_id", get_random_user_id())
         self.email: str = kwargs.get("email", fake.email())
-        new = ("user_name" in kwargs)
+        new = "user_name" in kwargs
         self.token = generate_api_token(
             data=dict(id=self.user_id, name=self.user_name, email=self.email),
             new=new,
         )
-        if new: self.refresh()
+        if new:
+            self.refresh()
 
     def send_friend_request_to(self, user: "User") -> None:
         api.session.cookies.clear()
@@ -144,8 +228,68 @@ class User:
     def unblock(self, user: "User") -> bool:
         return api.unblock(str(user.user_id))
 
+    def create_room(self, **kwargs) -> Room:
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        data = api.new_room(
+            name=kwargs.get("name", " ".join(fake.words()[1:]).title()),
+            owner=self.user_id,
+            type=ROOM_ACCESS_TYPE.PUBLIC,
+        )
+        room = Room(data)
+        return room
+
+    def join_room(self, room: Room) -> Room:
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        return Room(api.join_room(room))
+
+    def leave_room(self, room: Room):
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        api.leave_room(room)
+
+    def kick_player(self, user, room):
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        api.kick_player(room, user)
+
+    def mute_player(self, user, room):
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        api.mute_player(room, user)
+
+    def ban_player(self, user, room):
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        api.ban_player(room, user)
+
+    def give_admin_to(self, user, room):
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        api.give_admin_to(room, user)
+
+    def change_password_on_room(self, room, new_password):
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        api.change_password_on_room(room, new_password)
+
+    def disable_password_on_room(self, room):
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        api.disable_password_on_room(room)
+
+    def post_message_to_room(self, room):
+        # TODO: impl using sio
+        pass
+
+    def send_message_to_user(self, user):
+        # TODO: impl using sio
+        pass
+
     def __repr__(self):
         return f"<User: {self.user_id}"
+
 
 if __name__ == "__main__":
     pass
