@@ -1,0 +1,66 @@
+<div class="nes-container is-dark is-centered with-title">
+    <span class="title">Room</span>
+    <div class="nes-container with-title is-dark">
+        <span class="title">New</span>
+        <div class="setting group">
+            <form id="new-room-form">
+            <div class="setting group-child">
+                <span>Name</span>
+                <input class="nes-input" type="text" name="name" required [(ngModel)]="name"/>
+                <!--<button class="nes-btn is-primary" (click)="updateUsername()"> Save </button>-->
+            </div>
+            <div class="setting group-child">
+                <label for="new-room-type-select">Type</label>
+                <!--<div>
+                    <input id="new-room-type-public" class="nes-input" type="radio" value="Public" [(ngModel)]="type" checked/>
+                    <label for="new-room-type-public">Public</label>
+                </div>
+                <div>
+                    <input id="new-room-type-private" class="nes-input" type="radio" value="Private" [(ngModel)]="type" checked/>
+                    <label for="new-room-type-private">Private</label>
+                </div>
+                <div>
+                    <input id="new-room-type-protected" class="nes-input" type="radio" value="Protected" [(ngModel)]="type" checked/>
+                    <label for="new-room-type-protected">Protected</label>
+                </div>-->
+                <div class="nes-select">
+                    <select required id="new-room-type-select" name="type" [(ngModel)]="type">
+                        <option value="" disabled selected hidden>Select ...</option>
+                        <option value="public">Public</option>
+                        <option value="private">Private</option>
+                        <option value="protected">Protected</option>
+                    </select>
+                </div>
+
+            </div>
+            <div *ngIf="type == 'protected'" required class="setting group-child">
+                <span>Password</span>
+                <input class="nes-input" name="password" type="password" [(ngModel)]="password"/>
+            </div>
+
+            <input class="nes-btn is-success" type="submit" (click)="newRoom()" for="new-room-form" value="Create !"/>
+            </form>
+        </div>
+    </div>
+    <div :hidden class="nes-container with-title is-dark">
+        <span class="title">Security</span>
+        <span>Two factor auth: </span>
+        <!--<app-action-button
+            *ngIf="player.twoFactor == true"
+            (onClose)="onDialogButtonClose($event)"></app-action-button>-->
+    </div>
+    <!--<div :hidden *ngIf="privacy" class="nes-container with-title is-dark">
+        <span class="title">Privacy</span>
+        <span>Blocked users:</span>
+        <div class="setting block-list-item">
+            <button class="nes-btn is-error">Unblock!</button>
+        </div>
+        <div class="setting block-list-item">
+            <button class="nes-btn is-error">Unblock!</button>
+        </div>
+        <div class="setting block-list-item">
+            <button class="nes-btn is-error">Unblock!</button>
+        </div>
+    </div>-->
+
+</div>

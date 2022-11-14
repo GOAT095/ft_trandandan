@@ -1,0 +1,33 @@
+<div class="nes-container is-dark">
+    <div class="room-view">
+        <div class="nes-container is-dark room-list" 
+            id="room-listbox"
+            cdkListbox
+            [cdkListboxValue]="selectedRoomId"
+            (cdkListboxValueChange)="selectedRoomId = $event.value">
+            <div *ngFor="let room of rooms"
+                class="room-element" [cdkOption]="room.id">
+                <!--<img *ngIf="rooms[i].type == 'protected'" src="assets/padlock.png" width="24" height="24">-->
+                <span>{{room.name}}</span>
+                <!--<button class="nes-btn is-primary">Join !</button>-->
+            </div>
+        </div>
+        <div class="chat-box nes-container with-title is-dark">
+            <label class="title">{{ rooms[selectedRoomId[0]] ? rooms[selectedRoomId[0]].name : null }}</label>
+            <div class="chat-messages-view">
+                <div class="messages-box">
+                    <!--<p *ngFor="let message of chatMessages">* {{ message }}</p>-->
+                    <div class="message-layout" *ngFor="let message of ws.roomChatMessages[selectedRoomId[0]]">
+                        <app-player-info-short [player]="message.player" [type]="'chat'"></app-player-info-short>
+                        <p class="message-message">{{ message.message }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-message-input">
+                <input class="nes-input is-dark" type="text"
+                        placeholder="Chat ..." (keyup.enter)="sendChatMessage()"
+                        [(ngModel)]="chatMessage"/>
+            </div>
+        </div>
+    </div>
+</div>

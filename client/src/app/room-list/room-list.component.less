@@ -1,0 +1,74 @@
+div.room-view {
+    display: flex;
+    flex-direction: row;
+
+    // debug
+    //border: 2px dashed orchid;
+}
+
+div.room-list {
+    flex: 1;
+
+    // debug
+    //border: 2px dashed darksalmon;
+}
+
+div.room-element {
+    padding-bottom: .5em;
+    padding-left: 1em;
+    padding-top: .5em;
+}
+
+div.room-element.cdk-option-active {
+    background-color: grey; 
+}
+
+div.chat-box {
+    flex: 3;
+    // debug
+    //border: 2px dashed beige;
+
+    // children
+    display: flex;
+    flex-direction: column;
+}
+
+div.chat-messages-view {
+    //flex: 5;
+
+    min-height: 70vh;
+    min-width: 60vw;
+    // debug
+    //border: 2px dashed yellow;
+}
+
+div.chat-messages-input {
+    //flex: 1;
+
+    // debug
+    //border: 2px dashed yellowgreen;
+}
+
+.message-layout {
+    display: flex;
+    flex-direction: row;
+    margin-top: .5em;
+
+    // debug
+    //border: 2px dashed;
+}
+
+.message-layout > img {
+    margin-right: .5em;
+    width: 24px !important;
+    height: 24px !important;
+}
+
+p.message-message {
+    align-self: center;
+
+    margin-top: .25em;
+    margin-left: .5em;
+
+    //border: 1px dashed;
+}

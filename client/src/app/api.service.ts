@@ -105,4 +105,26 @@ export class ApiService {
     return this.http.post<BlockObject>(`${this.apiUrl}/user/unblock/${playerId}`, {}, {withCredentials: true})
     .pipe(catchError(this.handleError))
   }
+
+  getPublicAndProtectedRooms() {
+    return this.http.get<any>(`${this.apiUrl}/chat/room`,
+      {withCredentials: true}
+    ).pipe(catchError(this.handleError))
+  }
+
+  createRoom(room: any) {
+    return this.http.post<any>(`${this.apiUrl}/chat/room`, room, {withCredentials: true})
+    .pipe(catchError(this.handleError));
+  }
+
+  getPlayerActiveRooms(playerId: string) {
+    return this.http.get<any>(`${this.apiUrl}/chat/room/player/${playerId}`, {withCredentials: true})
+    .pipe(catchError(this.handleError));
+  }
+
+  joinRoom(roomId: string, playerId: string) {
+    return this.http.post<any>(`${this.apiUrl}/chat/room/${roomId}/join`, {'playerId': playerId}, {withCredentials: true})
+    .pipe(catchError(this.handleError));
+  }
+
 }

@@ -29,12 +29,16 @@ interface ServerToClientEvents {
   withAck: (d: string, callback: (e: number) => void) => void;
   notification: (data: any, callback: (data: any) => void) => void;
   chatMessage: (data: any, callback: (data: any) => void) => void;
+  roomChatMessage: (data: any, callback: (data: any) => void) => void;
+  directMessage: (data: any, callback: (data: any) => void) => void;
 }
 
 interface ClientToServerEvents {
   hello: () => void;
   notification: (data: any) => void;
   chatMessage: (data: any) => void;
+  roomChatMessage: (data: any) => void;
+  directMessage: (data: any) => void;
 }
 
 interface InterServerEvents {

@@ -9,8 +9,12 @@ import { MainOfflineDialogComponent } from '../main-offline-dialog/main-offline-
 import { PlayerFriendRequestsComponent } from '../player-friend-requests/player-friend-requests.component';
 import { PlayerFriendsComponent } from '../player-friends/player-friends.component';
 import { PlayerSettingsComponent } from '../player-settings/player-settings.component';
-import { CdkOverlayOrigin, ConnectionPositionPair } from '@angular/cdk/overlay';
+import { CdkOverlayOrigin, ConnectionPositionPair, OverlayPositionBuilder } from '@angular/cdk/overlay';
 import { WsService } from '../ws.service';
+import { RoomSearchComponent } from '../room-search/room-search.component';
+import { NewRoomComponent } from '../new-room/new-room.component';
+import { RoomListComponent } from '../room-list/room-list.component';
+import { FriendsListComponent } from '../friends-list/friends-list.component';
 
 @Component({
   selector: 'app-main',
@@ -54,7 +58,9 @@ export class MainComponent implements OnInit {
     ),
   ];
 
-  constructor(private api: ApiService, private route: ActivatedRoute, public dialog: Dialog, public ws: WsService) {
+
+  constructor(private api: ApiService, private route: ActivatedRoute, public dialog: Dialog, public ws: WsService,
+    ) {
 
     api.getPlayer().subscribe(
       (data) => {
@@ -68,6 +74,12 @@ export class MainComponent implements OnInit {
             }
           }
         )
+        // initialize WsService
+        ws.initialize(this.player);
+        ws.handleNotify();
+        ws.handleChatMessage();
+        ws.handleRoomChatMessage();
+        ws.handleDirectMessage();
       },
       (error) => {
         this.openOfflineDialog(error.statusText);
@@ -76,9 +88,7 @@ export class MainComponent implements OnInit {
     // init messages
     //for (let i = 0; i < 10; i++) {
     //}
-    ws.handleNotify();
-    ws.handleChatMessage();
-    console.debug('Initialized MainComponent', this.player);
+   console.debug('Initialized MainComponent', this.player);
   }
 
   openOfflineDialog(errorStr: string): void {
@@ -166,13 +176,33 @@ export class MainComponent implements OnInit {
   }
 
   openFriendsListDialog(): void {
-    const dialogRef = this.dialog.open<string>(PlayerFriendsComponent);
+    const dialogRef = this.dialog.open<string>(FriendsListComponent, {
+      data: {player: this.player}
+    });
   }
   openFriendsSearchDialog(): void {
     const dialogRef = this.dialog.open<string>(PlayerFriendsComponent);
   }
   openFriendsRequestsDialog(): void {
     const dialogRef = this.dialog.open<string>(PlayerFriendRequestsComponent)
+  }
+
+  openRoomsSearchDialog(): void {
+    const dialogRef = this.dialog.open<string>(RoomSearchComponent, {
+      data: {player: this.player}
+    });
+  }
+
+  openNewRoomDialog(): void {
+    const dialogRef = this.dialog.open<string>(NewRoomComponent, {
+      data: {player: this.player}
+    });
+  }
+
+  openRoomListDialog(): void {
+    const dialogRef = this.dialog.open<string>(RoomListComponent, {
+      data: {player: this.player}
+    });
   }
 
   sendChatMessage(): void {

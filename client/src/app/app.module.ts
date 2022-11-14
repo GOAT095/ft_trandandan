@@ -8,6 +8,7 @@ import { DialogModule } from '@angular/cdk/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CdkMenuModule } from '@angular/cdk/menu';
+import {CdkListboxModule} from '@angular/cdk/listbox'; 
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -32,6 +33,10 @@ import { MainOfflineDialogComponent } from './main-offline-dialog/main-offline-d
 import { PongGameComponent } from './pong-game/pong-game.component';
 import { GameHelpDialogComponent } from './game-help-dialog/game-help-dialog.component';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { RoomSearchComponent } from './room-search/room-search.component';
+import { NewRoomComponent } from './new-room/new-room.component';
+import { RoomListComponent } from './room-list/room-list.component';
+import { FriendsListComponent } from './friends-list/friends-list.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +60,10 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MainOfflineDialogComponent,
     PongGameComponent,
     GameHelpDialogComponent,
+    RoomSearchComponent,
+    NewRoomComponent,
+    RoomListComponent,
+    FriendsListComponent,
   ],
   imports: [
     BrowserModule,
@@ -67,6 +76,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     FormsModule,
     DialogModule,
     CdkMenuModule,
+    CdkListboxModule,
     OverlayModule
   ],
   providers: [],

@@ -12,6 +12,21 @@ class ROOM_ACCESS_TYPE(str, Enum):
     PUBLIC = "public"
     DIRECT_MESSAGE = "dm"
 
+class Room:
+    def __init__(self, data, **kwargs):
+        self.name = data.get("name")
+        self.owner = data.get("owner")
+        self.type = ROOM_ACCESS_TYPE(data.get("type"))
+        self.id = data.get("id")
+        self.data = data
+
+    def refresh(self):
+        self.__init__(api.get_room(self.id))
+
+    def __repr__(self):
+        return f"<{self.name}: {self.type}>"
+
+
 
 fake = Faker()
 
@@ -98,8 +113,33 @@ class Api:
             ),
         ).json()
 
-    def join_room(self, room: Room) -> dict:
-        return self.session.post(f"{self.url}/chat/room/{room.id}/join").json()
+    def new_protected_room(
+        self, name: str, owner: int, type: ROOM_ACCESS_TYPE, password: str = ""
+    ) -> dict:
+        return self.session.post(
+            f"{self.url}/chat/room/",
+            headers={"Content-Type": "application/json"},
+            data=json.dumps(
+                {
+                    "name": name,
+                    "owner": owner,
+                    "type": type,
+                    "password": password
+                }
+            ),
+        ).json()
+
+
+    def join_room(self, player: 'User', room: Room) -> dict:
+        return self.session.post(
+            f"{self.url}/chat/room/{room.id}/join",
+            headers={"Content-Type": "application/json"},
+            data=json.dumps(
+                {
+                    "playerId": player.user_id
+                }
+            )
+            ).json()
 
     def leave_room(self, room: Room) -> dict:
         return self.session.post(f"{self.url}/chat/room/{room.id}/leave").json()
@@ -107,22 +147,22 @@ class Api:
     def get_room(self, room_id: int) -> dict:
         return self.session.post(f"{self.url}/chat/room/{room_id}").json()
 
-    def kick_player(self, user: User, room: Room) -> dict:
+    def kick_player(self, user: "User", room: Room) -> dict:
         return self.session.post(
             f"{self.url}/chat/room/{room.id}/kick/{user.user_id}"
         ).json()
 
-    def mute_player(self, user: User, room: Room) -> dict:
+    def mute_player(self, user: "User", room: Room) -> dict:
         return self.session.post(
             f"{self.url}/chat/room/{room.id}/mute/{user.user_id}"
         ).json()
 
-    def ban_player(self, user: User, room: Room) -> dict:
+    def ban_player(self, user: "User", room: Room) -> dict:
         return self.session.post(
             f"{self.url}/chat/room/{room.id}/ban/{user.user_id}"
         ).json()
 
-    def give_admin_to(self, user: User, room: Room) -> dict:
+    def give_admin_to(self, user: "User", room: Room) -> dict:
         return self.session.post(
             f"{self.url}/chat/room/{room.id}/set-as-admin/{user.user_id}"
         ).json()
@@ -140,20 +180,6 @@ class Api:
 
 api = Api()
 
-
-class Room:
-    def __init__(self, data, **kwargs):
-        self.name = data.get("name")
-        self.owner = data.get("owner")
-        self.type = ROOM_ACCESS_TYPE(data.get("type"))
-        self.id = data.get("id")
-        self.data = data
-
-    def refresh(self):
-        self.__init__(api.get_room(self.id))
-
-    def __repr__(self):
-        return f"<{self.name}: {self.type}>"
 
 
 class User:
@@ -234,15 +260,28 @@ class User:
         data = api.new_room(
             name=kwargs.get("name", " ".join(fake.words()[1:]).title()),
             owner=self.user_id,
-            type=ROOM_ACCESS_TYPE.PUBLIC,
+            type=kwargs.get("type", ROOM_ACCESS_TYPE.PUBLIC),
         )
         room = Room(data)
         return room
 
+    def create_protected_room(self, **kwargs) -> Room:
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        data = api.new_protected_room(
+            name=kwargs.get("name", " ".join(fake.words()[1:]).title()),
+            owner=self.user_id,
+            type=ROOM_ACCESS_TYPE.PROTECTED,
+            password=kwargs.get("password", "foobar32")
+        )
+        room = Room(data)
+        return room
+
+
     def join_room(self, room: Room) -> Room:
         api.session.cookies.clear()
         api.session.cookies.set("auth-cookie", self.token)
-        return Room(api.join_room(room))
+        return Room(api.join_room(self, room))
 
     def leave_room(self, room: Room):
         api.session.cookies.clear()

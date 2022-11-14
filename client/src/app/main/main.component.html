@@ -62,6 +62,7 @@
             <button cdkMenuItem>Make a Copy</button>-->
             <button [cdkMenuTriggerFor]="game" cdkMenuItem>Game <span>&#10148;</span></button>
             <button (click)="isChatOpen = !isChatOpen" cdkMenuItem>Chat</button>
+            <button [cdkMenuTriggerFor]="rooms" cdkMenuItem>Rooms <span>&#10148;</span></button> 
             <hr />
             <button (click)="logout()" cdkMenuItem>Logout</button>
         </div>
@@ -94,6 +95,13 @@
                     cdkMenuItemRadio>Vertical</button>
         </div>
     </ng-template>
+    <ng-template #rooms>
+        <div cdkMenu>
+            <button (click)="openRoomListDialog()" cdkMenuItem>List</button>
+            <button (click)="openRoomsSearchDialog()" cdkMenuItem>Search</button>
+            <button (click)="openNewRoomDialog()" cdkMenuItem>New</button>
+        </div>
+    </ng-template>
 </nav>
 
 <app-pong-game></app-pong-game>
@@ -108,7 +116,7 @@
     <ng-template    [cdkConnectedOverlayOrigin]="chatbox_header"
                     [cdkConnectedOverlayOpen]="isChatOpen"
                     [cdkConnectedOverlayWidth]="500"
-                    [ckdConnectedOverlayPositions]="positions"
+                    [cdkConnectedOverlayPositions]="positions"
                     cdkConnectedOverlay>
         <div class="messages-box">
             <!--<p *ngFor="let message of chatMessages">* {{ message }}</p>-->
