@@ -29,6 +29,11 @@ export class ChatController {
         return this.room.find({'type': [Access_type.public, Access_type.protected]});
     }
 
+    @Get('room/player/:playerId')
+    listPlayerActiveRooms(@Param('playerId') playerId: number) {
+        return this.room.find({'members': Number(playerId)});
+    }
+
     // v1: done
     // TODO: filter direct messages by current user id
     @Get('room/dm')
@@ -98,14 +103,19 @@ export class ChatController {
     @Post('room/:roomId/join')
     joinRoom(@Param('roomId') roomId: number, @Body() body: any) {
         var playerId = 53993; // TODO: get current player Id
-        return this.room.update(roomId, 'members', playerId)
+        // temporary get playerId from body
+        console.log(body);
+        console.log(Number(body.playerId));
+        console.log(roomId);
+        return this.room.update(Number(roomId), 'members', Number(body.playerId));
     }
 
     // Authorization: LoggedIn
-    @Post('room/:roomId/join')
+    @Post('room/:roomId/leave')
     leaveRoom(@Param('roomId') roomId: number, @Body() body: any) {
         var playerId = 53993; // TODO: get current player Id
-        return this.room.update(roomId, 'members', playerId, true)
+        // temporary get playerId from body
+        return this.room.update(roomId, 'members', Number(body.playerId), true);
     }
 
 }

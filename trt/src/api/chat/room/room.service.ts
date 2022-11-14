@@ -62,15 +62,33 @@ export class RoomService {
                 if (key in room) {
                     if (typeof searchObject[key] == typeof []) {
                         for (const value of searchObject[key]) {
-                            if (room[key] == value) {
-                                results.push(room);
+                            if (typeof room[key] == typeof []) {
+                                if (room[key].includes(value)) {
+                                    results.push(room);
+                                }
+                            }
+                            else {
+                                if (room[key] == value) {
+                                    results.push(room);
+                                }
                             }
                         }
                     }
                     else {
                         // assume primitive type and compare
-                        if (room[key] == searchObject[key]) {
-                            results.push(room); // TODO: do not pass the password attribute 
+                        //if (room[key] == searchObject[key]) {
+                        //    results.push(room); // TODO: do not pass the password attribute 
+                        //}
+                        let value = searchObject[key];
+                        if (typeof room[key] == typeof []) {
+                            if (room[key].includes(value)) {
+                                results.push(room);
+                            }
+                        }
+                        else {
+                            if (room[key] == value) {
+                                results.push(room);
+                            }
                         }
                     }
                 }
