@@ -76,6 +76,23 @@ export class PlayerInfoShortComponent implements OnInit {
     this.ws.notify('1vs1', {'message': `${this.player.name} has invited you to a game.`})
   }
 
+  showProfile() {
+    // TODO: Open player profile
+    console.log('open player profile');
+  }
+
+  openProfile() {
+
+  }
+
+  showPlayerMatchHistory() {
+
+  }
+
+  addAsAdmin() {
+
+  }
+
   isChat(): boolean {
     return this.type == 'chat';
   }

@@ -33,7 +33,7 @@ import { MainOfflineDialogComponent } from './main-offline-dialog/main-offline-d
 import { PongGameComponent } from './pong-game/pong-game.component';
 import { GameHelpDialogComponent } from './game-help-dialog/game-help-dialog.component';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { RoomSearchComponent } from './room-search/room-search.component';
+import { RoomSearchComponent, RoomPasswordPromptComponent } from './room-search/room-search.component';
 import { NewRoomComponent } from './new-room/new-room.component';
 import { RoomListComponent } from './room-list/room-list.component';
 import { FriendsListComponent } from './friends-list/friends-list.component';
@@ -64,6 +64,7 @@ import { FriendsListComponent } from './friends-list/friends-list.component';
     NewRoomComponent,
     RoomListComponent,
     FriendsListComponent,
+    RoomPasswordPromptComponent,
   ],
   imports: [
     BrowserModule,

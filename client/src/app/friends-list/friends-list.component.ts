@@ -26,6 +26,7 @@ export class FriendsListComponent implements OnInit {
   };
 
   friends: Player[] = [];
+  blockList: string[] = [];
 
   public selectedPlayerId: readonly number[] = [];
   selected: boolean = false;
@@ -53,7 +54,15 @@ export class FriendsListComponent implements OnInit {
         }
       }
     )
- 
+    api.getPlayerBlockList().subscribe(
+      (blockList) => {
+        blockList.forEach(element => {
+          console.log(element.blocked);
+          this.blockList.push(element.blocked.id);
+          //console.log('blockList', this.blockList);
+        })
+      }
+    )
   }
 
   onSelect() {

@@ -30,6 +30,8 @@ export class RoomListComponent implements OnInit {
   public selectedRoomId: readonly number[] = [-1,];
   selected: boolean = false;
 
+  blockList: string[] = [];
+
   chatMessage: string = '';
 
   @ViewChild(CdkListbox) roomListbox!: CdkListbox;
@@ -52,6 +54,16 @@ export class RoomListComponent implements OnInit {
         }
       }
     )
+    // get player blockList
+    api.getPlayerBlockList().subscribe(
+        (blockList) => {
+          blockList.forEach(element => {
+            console.log(element.blocked);
+            this.blockList.push(element.blocked.id);
+            //console.log('blockList', this.blockList);
+          })
+        }
+      )
   }
 
   onSelect() {

@@ -57,6 +57,7 @@ export class WsService {
   }
   handleChatMessage() {
     this.socket?.on('chatMessage', (data) => {
+      console.log(data);
       this.chatMessages.push(data)
     })
   }

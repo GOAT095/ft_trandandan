@@ -122,7 +122,11 @@
             <!--<p *ngFor="let message of chatMessages">* {{ message }}</p>-->
             <div class="message-layout" *ngFor="let message of ws.chatMessages">
                 <app-player-info-short [player]="message.player" [type]="'chat'"></app-player-info-short>
-                <p class="message-message">{{ message.message }}</p>
+                <p *ngIf="blockList.includes(message.player.id); else renderMessage"
+                    class="message-message">message was hidden</p>
+                <ng-template #renderMessage>
+                    <p class="message-message">{{ message.message }}</p>
+                </ng-template>
             </div>
         </div>
     </ng-template>

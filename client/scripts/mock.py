@@ -141,6 +141,19 @@ class Api:
             )
             ).json()
 
+    def join_protected_room(self, player: 'User', room: Room, password: str) -> dict:
+        return self.session.post(
+            f"{self.url}/chat/room/{room.id}/join",
+            headers={"Content-Type": "application/json"},
+            data=json.dumps(
+                {
+                    "playerId": player.user_id,
+                    "password": password
+                }
+            )
+            ).json()
+
+
     def leave_room(self, room: Room) -> dict:
         return self.session.post(f"{self.url}/chat/room/{room.id}/leave").json()
 
@@ -282,6 +295,12 @@ class User:
         api.session.cookies.clear()
         api.session.cookies.set("auth-cookie", self.token)
         return Room(api.join_room(self, room))
+
+    def join_protected_room(self, room: Room, password: str) -> Room:
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        return Room(api.join_protected_room(self, room, password))
+
 
     def leave_room(self, room: Room):
         api.session.cookies.clear()

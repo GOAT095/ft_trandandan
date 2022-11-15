@@ -15,8 +15,15 @@ div.room-list {
 
 div.room-element {
     padding-bottom: .5em;
-    padding-left: 1em;
+    padding-left: .5em;
     padding-top: .5em;
+
+    display: flex;
+    flex-direction: row;
+}
+
+div.room-element > app-player-info-short {
+    margin-right: .5em;
 }
 
 div.room-element.cdk-option-active {

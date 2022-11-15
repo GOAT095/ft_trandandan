@@ -106,6 +106,11 @@ export class ApiService {
     .pipe(catchError(this.handleError))
   }
 
+  getPlayerBlockList() {
+    return this.http.get<BlockObject[]>(`${this.apiUrl}/user/myblocked`, {withCredentials: true})
+    .pipe(catchError(this.handleError))
+  }
+
   getPublicAndProtectedRooms() {
     return this.http.get<any>(`${this.apiUrl}/chat/room`,
       {withCredentials: true}
@@ -126,5 +131,12 @@ export class ApiService {
     return this.http.post<any>(`${this.apiUrl}/chat/room/${roomId}/join`, {'playerId': playerId}, {withCredentials: true})
     .pipe(catchError(this.handleError));
   }
+
+  joinProtectedRoom(roomId: string, playerId: string, password: string) {
+    return this.http.post<any>(`${this.apiUrl}/chat/room/${roomId}/join-protected`,
+    {'playerId': playerId, 'password': password}, {withCredentials: true})
+    .pipe(catchError(this.handleError));
+  }
+
 
 }

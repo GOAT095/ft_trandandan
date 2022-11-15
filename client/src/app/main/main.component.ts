@@ -33,6 +33,8 @@ export class MainComponent implements OnInit {
     twoFactor: false
   };
 
+  blockList: string[] = [];
+
   gameView = 0;
   friendsRequestsCount = 2;
   isChatOpen = false;
@@ -74,6 +76,16 @@ export class MainComponent implements OnInit {
             }
           }
         )
+        // get player blockList
+        api.getPlayerBlockList().subscribe(
+            (blockList) => {
+              blockList.forEach(element => {
+                console.log(element.blocked);
+                this.blockList.push(element.blocked.id);
+                //console.log('blockList', this.blockList);
+              })
+            }
+          )
         // initialize WsService
         ws.initialize(this.player);
         ws.handleNotify();
