@@ -110,6 +110,19 @@ export class ChatController {
         return this.room.update(Number(roomId), 'members', Number(body.playerId));
     }
 
+    @Post('room/:roomId/join-protected')
+    joinProtectedRoom(@Param('roomId') roomId: number, @Body() body: any) {
+        this.room.checkRoomPassword(Number(roomId), body.password);
+        var playerId = 53993; // TODO: get current player Id
+        // temporary get playerId from body
+        console.log(body);
+        console.log(Number(body.playerId));
+        console.log(roomId);
+        // TODO: check password hash
+        return this.room.update(Number(roomId), 'members', Number(body.playerId));
+    }
+
+ 
     // Authorization: LoggedIn
     @Post('room/:roomId/leave')
     leaveRoom(@Param('roomId') roomId: number, @Body() body: any) {

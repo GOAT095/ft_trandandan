@@ -1,6 +1,7 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateRoomDto } from 'src/api/dto/user.dto';
 import { Access_type } from '../../utils/acces.type.enum';
+import { hashSync, compareSync } from 'bcryptjs';
 
 export interface MutedPlayer {
     id: number;
@@ -41,7 +42,8 @@ export class RoomService {
         if (newRoom.type == Access_type.protected) {
             // password should be set
             if (room.password != null) {
-                newRoom.password = room.password;
+                //newRoom.password = room.password;
+                newRoom.password = hashSync(room.password, 8);
             }
             else {
                 // TODO: fail: throw the right exception
@@ -53,6 +55,13 @@ export class RoomService {
 
         this.rooms.push(newRoom);
         return newRoom;
+    }
+
+    checkRoomPassword(roomId: number, password: string) {
+        let room = this.findById(roomId);
+        if (!compareSync(password, room.password)) {
+            throw new UnauthorizedException({'error': 'Channel password check failed'});
+        }
     }
 
     find(searchObject: any) : Room[] {
