@@ -60,7 +60,7 @@ export class UserService {
     const twofa = (await this.getUserByid(d.id)).twoFactor;
     if (!twofa) {
       const payload: JwtPayload = { id };
-      const accesToken = this.JwtService.sign(payload, { expiresIn: "1d" });
+      const accesToken = this.JwtService.sign(payload, { expiresIn: "7d" });
       // console.log(accesToken);
       res.cookie('auth-cookie', accesToken, { httpOnly: false});
       //res.header("auth-token", accesToken);
@@ -166,7 +166,7 @@ export class UserService {
     });
   }
 
-  async updateavatar(user: User, file: any): Promise<User> {
+  async updateavatar(user: User, file: any): Promise<Boolean> {
     console.log(file);
     const type = file.mimetype.split("/")[1];
     console.log(type);
@@ -177,10 +177,9 @@ export class UserService {
         if (Error) throw Error;
       }
     );
-
     user.avatar = process.env.UPLOAD_PATH + "/" + user.name + "." + type;
     this.repository.save(user);
-    return user;
+    return true;
   }
 
   //game stuff

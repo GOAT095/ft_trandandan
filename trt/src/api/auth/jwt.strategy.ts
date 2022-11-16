@@ -22,8 +22,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
           }
           const res = data
             .split(';')
-            .find((c) => c.trim().startsWith('auth-cookie='));
-          if (res) return res.split('=')[1];
+            .find((c: string) => c.trim().startsWith('auth-cookie='));
+          if (res)return res.split('=')[1]; // after auth-cookie= is the token needed
           return null;
         },
       ]),
