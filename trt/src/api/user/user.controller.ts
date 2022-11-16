@@ -113,7 +113,7 @@ export class UserController {
     )
     file: Express.Multer.File,
     @GetUser() user: User
-  ): Promise<User> {
+  ): Promise<Boolean> {
     return this.service.updateavatar(user, file);
   }
 
