@@ -16,7 +16,7 @@ import { JwtModule } from "@nestjs/jwt";
 @Module({
   imports: [
     MulterModule.register({
-      dest: "./upload",
+      dest: "./uploadfile",
     }),
     UserModule,
     JwtModule,

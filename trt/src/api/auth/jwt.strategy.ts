@@ -14,22 +14,22 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly userRepository: Repository<User>,
   ) {
     super({
-      // jwtFromRequest: ExtractJwt.fromExtractors([
-      //   (request: any) => {
-      //     const data = request?.headers.cookie;
-      //     if (!data) {
-      //       return null;
-      //     }
-      //     const res = data
-      //       .split(';')
-      //       .find((c: string) => c.trim().startsWith('auth-cookie='));
-      //     if (res)return res.split('=')[1]; // after auth-cookie= is the token needed
-      //     return null;
-      //   },
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: any) => {
+          const data = request?.headers.cookie;
+          if (!data) {
+            return null;
+          }
+          const res = data
+            .split(';')
+            .find((c: string) => c.trim().startsWith('auth-cookie='));
+          if (res)return res.split('=')[1]; // after auth-cookie= is the token needed
+          return null;
+        },
         
-      // ]),
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
+      ]),
+      // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      // ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET,
     });
   }
