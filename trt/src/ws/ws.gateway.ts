@@ -1,24 +1,36 @@
 import { SubscribeMessage, WebSocketGateway, WebSocketServer} from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { RoomService } from 'src/api/chat/room/room.service';
+import { JwtService } from '@nestjs/jwt';
 
 @WebSocketGateway({cors: {origin: '*'}})
 export class WsGateway {
 
-  constructor(public room: RoomService) {}
+  constructor(public room: RoomService, public jwt: JwtService) {}
 
   @WebSocketServer()
   private server: Server;
 
   clients = [];
 
+  // TODO: get user from auth (jwt)
+  // TODO: check if user is the database !
   handleConnection(client: any) {
-    this.clients.push(client)
-    console.log('new client', client);
+    console.log('new client', client.id);
+    console.log('client token', client.handshake.auth.token);
+    let payload : any = (this.jwt.decode(client.handshake.auth.token));
+    if (payload.id != client.handshake.auth.id) {
+      client.disconnect();
+    }
+    else {
+      this.clients.push(client)
+    }
   }
 
   handleDisconnect(client: any) {
     // TODO
+    this.clients.splice(this.clients.indexOf(client));
+    console.log('disconnected client', client.id);
   }
 
   broadcast(event: string, data: any) {
@@ -34,18 +46,21 @@ export class WsGateway {
     return 'Hello world!';
   }
 
+  // TODO: send to only the receiver !
   @SubscribeMessage('notification')
   handleNotification(client: any, payload: any) {
     console.log(payload);
     this.broadcast('notification', payload);
   }
 
+  // Global chat handler
   @SubscribeMessage('chatMessage')
   handleChatMessage(client: any, payload: any) {
     console.log(payload);
     this.broadcast('chatMessage', payload);
   }
 
+  // Group chat handler (Room/Channel)
   @SubscribeMessage('roomChatMessage')
   handleRoomChatMessage(client: any, payload: any) {
     console.log(payload);
@@ -62,6 +77,7 @@ export class WsGateway {
     }
   }
 
+  // Direct Message handler
   @SubscribeMessage('directMessage')
   handleDirectMessage(client: any, payload: any) {
     console.log(payload);

@@ -19,8 +19,21 @@ export class CreateRoomDto {
   @IsNotEmpty()
   public name: string;
 
+  @IsString()
+  @IsEnum(Access_type)
+  public type: Access_type;
+
+  @IsString()
+  @MinLength(8)
+  @MaxLength(32)
+  @IsOptional()
+  public password: string;
+}
+
+export class UpdateRoomDto {
+  @IsString()
   @IsNotEmpty()
-  public owner: number;
+  public name: string;
 
   @IsString()
   @IsEnum(Access_type)

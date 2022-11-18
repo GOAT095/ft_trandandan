@@ -11,6 +11,7 @@ import { roomUser } from "./api/chat/roomUser.entity";
 import { WsGateway } from './ws/ws.gateway';
 import { ChatController } from './api/chat/chat.controller';
 import { RoomService } from "./api/chat/room/room.service";
+import { JwtModule } from "@nestjs/jwt";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { RoomService } from "./api/chat/room/room.service";
       dest: "./upload",
     }),
     UserModule,
+    JwtModule,
     TypeOrmModule.forRoot({
       type: "postgres",
       host: process.env.POSTGRES_HOST,

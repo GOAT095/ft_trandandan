@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import { CreateRoomDto } from 'src/api/dto/user.dto';
 import { Access_type } from '../../utils/acces.type.enum';
 import { hashSync, compareSync } from 'bcryptjs';
+import { User } from '../../user/user.entity';
 
 export interface MutedPlayer {
     id: number;
@@ -24,16 +25,16 @@ export class RoomService {
     rooms : Room[] = [];
 
     // TODO: define an uuid
-    createRoom(room: CreateRoomDto) : Room {
+    createRoom(room: CreateRoomDto, user: User) : Room {
         // init
         var newRoom : Room = {
             id: this.rooms.length,
             name: room.name,
-            owner: room.owner,
+            owner: user.id,
             type: room.type,
             // add owner to members, admins
-            members: [room.owner,],
-            admins: [room.owner,],
+            members: [user.id,],
+            admins: [user.id,],
             banList: [],
             muteList: [],
         };
@@ -57,12 +58,32 @@ export class RoomService {
         return newRoom;
     }
 
+    resetRoomPassword(roomId: number, password: string) {
+        let room = this.findById(roomId);
+        room.password = hashSync(password, 8);
+    }
+
     checkRoomPassword(roomId: number, password: string) {
         let room = this.findById(roomId);
         if (!compareSync(password, room.password)) {
             throw new UnauthorizedException({'error': 'Channel password check failed'});
         }
     }
+
+    checkIsOwner(roomId: number, user: User) {
+        let room = this.findById(roomId);
+        if (!(room.owner == user.id)) {
+            throw new UnauthorizedException({'error': 'This action requires owner privilege'})
+        }
+    }
+
+    checkIsAdmin(roomId: number, user: User) {
+        let room = this.findById(roomId);
+        if (!(room.admins.includes(user.id))) {
+            throw new UnauthorizedException({'error': 'This action requires admin privilege'})
+        }
+    }
+
 
     find(searchObject: any) : Room[] {
         var results : Room[] = [];

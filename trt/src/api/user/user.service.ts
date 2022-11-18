@@ -15,6 +15,7 @@ import { JwtPayload } from "../auth/jwt.payload.interface";
 import { JwtService } from "@nestjs/jwt";
 import { createHash, randomBytes } from "crypto";
 import { Block } from "./block.entity";
+import { Response } from "express";
 // import { hashPassword } from '../utils/bcrypt';
 
 @Injectable()
@@ -43,12 +44,13 @@ export class UserService {
     return await this.repository.find();
   }
 
-  async giveaccess(name: string, @Res() res) {
+  async giveaccess(name: string, @Res() res: Response) {
     const id = (await this.getUserByName(name)).id;
     const payload: JwtPayload = { id };
     const accesToken = this.JwtService.sign(payload, { expiresIn: "1d" });
-    res.cookie("auth-cookie", accesToken, { httpOnly: true });
-    res.redirect("http://localhost:4200/default");
+    res.cookie("auth-cookie", accesToken, { httpOnly: false });
+    //res.header("auth-token", accesToken);
+    res.redirect(`http://localhost:4200/default?auth-token=${accesToken}`);
     res.send();
   }
 
@@ -61,6 +63,7 @@ export class UserService {
       const accesToken = this.JwtService.sign(payload, { expiresIn: "1d" });
       // console.log(accesToken);
       res.cookie('auth-cookie', accesToken, { httpOnly: true});
+      //res.header("auth-token", accesToken);
       res.redirect(`http://localhost:4200/default?new=${new_user}`);
       // return accesToken;
     } else {
