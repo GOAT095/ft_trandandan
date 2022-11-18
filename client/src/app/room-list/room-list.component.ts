@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, Inject, ViewChild, ElementRef} from '@angular/core';
 import { ApiService } from '../api.service';
 import {Dialog, DialogRef, DIALOG_DATA} from '@angular/cdk/dialog';
-import { CdkListbox } from '@angular/cdk/listbox';
+import { CdkListbox, ListboxValueChangeEvent } from '@angular/cdk/listbox';
 import { WsService } from '../ws.service';
+import { RoomSettingsComponent } from '../room-settings/room-settings.component';
 
 @Component({
   selector: 'app-room-list',
@@ -36,7 +37,7 @@ export class RoomListComponent implements OnInit {
 
   @ViewChild(CdkListbox) roomListbox!: CdkListbox;
 
-  constructor(public api: ApiService,
+  constructor(public api: ApiService, public dialog: Dialog,
     public dialogRef: DialogRef<string>, @Inject(DIALOG_DATA) public dialog_data: any,
     public ws: WsService) {
   //constructor(public api: ApiService, private ref: ElementRef, public ws: WsService) {
@@ -70,6 +71,10 @@ export class RoomListComponent implements OnInit {
     console.log('select');
   }
 
+  select(event: ListboxValueChangeEvent<number>) {
+    console.log(event);
+  }
+
   sendChatMessage(): void {
     this.ws.postToRoom(this.rooms[this.selectedRoomId[0]], this.chatMessage, this.player);
     // TODO:
@@ -77,6 +82,11 @@ export class RoomListComponent implements OnInit {
     this.chatMessage = '';
   }
 
+  openRoomSettingsDialog() {
+    this.dialog.open<string>(RoomSettingsComponent, {
+      data: {player: this.player, room: this.rooms[this.selectedRoomId[0]]}
+    });
+  }
 
   ngOnInit(): void {
   }

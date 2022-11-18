@@ -122,6 +122,16 @@ export class ApiService {
     .pipe(catchError(this.handleError));
   }
 
+  updateRoom(roomId: number, name: string, type: string) {
+    return this.http.post<any>(`${this.apiUrl}/chat/room/${roomId}`, {'name': name, 'type': type})
+    .pipe(catchError(this.handleError));
+  }
+
+  updateRoomPassword(roomId: number, name: string, type: string, password: string) {
+    return this.http.post<any>(`${this.apiUrl}/chat/room/${roomId}`, {'name': name, 'type': type, 'password': password})
+    .pipe(catchError(this.handleError));
+  }
+
   getPlayerActiveRooms(playerId: string) {
     return this.http.get<any>(`${this.apiUrl}/chat/room/player/${playerId}`, {withCredentials: true})
     .pipe(catchError(this.handleError));

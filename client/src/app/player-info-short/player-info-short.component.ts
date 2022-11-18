@@ -93,6 +93,18 @@ export class PlayerInfoShortComponent implements OnInit {
 
   }
 
+  kickPlayer() {
+
+  }
+
+  banPlayer() {
+
+  }
+
+  mutePlayer() {
+
+  }
+
   isChat(): boolean {
     return this.type == 'chat';
   }

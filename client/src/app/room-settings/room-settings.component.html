@@ -1,0 +1,27 @@
+<div class="nes-container is-dark is-centered with-title">
+    <span class="title">Room Settings</span>
+    <div class="setting group">
+        <form id="new-room-form">
+        <div class="setting group-child">
+            <span>Name</span>
+            <input class="nes-input" type="text" name="name" required [(ngModel)]="room.name"/>
+        </div>
+        <div class="setting group-child">
+            <label for="new-room-type-select">Type</label>
+            <div class="nes-select">
+                <select required id="new-room-type-select" name="type" [(ngModel)]="room.type">
+                    <option value="" disabled selected hidden>Select ...</option>
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                    <option value="protected">Protected</option>
+                </select>
+            </div>
+        </div>
+        <div *ngIf="room.type == 'protected'" required class="setting group-child">
+            <span>Change password</span>
+            <input class="nes-input" name="password" type="password" [(ngModel)]="room.password"/>
+        </div>
+        <input class="nes-btn is-success" type="submit" (click)="update()" for="new-room-form" value="Save !"/>
+        </form>
+    </div>
+</div>

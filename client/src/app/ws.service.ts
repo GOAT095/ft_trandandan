@@ -17,7 +17,13 @@ export class WsService {
 
   }
   initialize(player: Player) {
-    this.socket = io("http://localhost:3000", {auth: {'id': player.id}});
+    // from: https://gist.github.com/rendro/525bbbf85e84fa9042c2?permalink_comment_id=3076403#gistcomment-3076403
+    let cookies = Object.fromEntries(document.cookie.split(/; */).map(c => {
+      const [ key, ...v ] = c.split('=');
+      return [ key, decodeURIComponent(v.join('=')) ];
+    }));
+
+    this.socket = io("http://localhost:3000", {auth: {'id': player.id, 'token': cookies['auth-cookie']}});
     this.socket.on("connect", () => {
         const engine = this.socket?.io.engine;
         console.log(engine?.transport.name); // in most cases, prints "polling"

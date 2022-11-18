@@ -129,6 +129,31 @@ class Api:
             ),
         ).json()
 
+    def update_room(self, room: 'Room', name: str, type: ROOM_ACCESS_TYPE) -> dict:
+        return self.session.post(
+            f"{self.url}/chat/room/{room.id}",
+            headers={"Content-Type": "application/json"},
+            data=json.dumps(
+                {
+                    "name": name,
+                    "type": type,
+                }
+            )
+        ).json()
+
+    def update_room_password(self, room: 'Room', name: str, type: ROOM_ACCESS_TYPE, password: str) -> dict:
+        return self.session.post(
+            f"{self.url}/chat/room/{room.id}",
+            headers={"Content-Type": "application/json"},
+            data=json.dumps(
+                {
+                    "name": name,
+                    "type": type,
+                    "password": password
+                }
+            )
+        ).json()
+
 
     def join_room(self, player: 'User', room: Room) -> dict:
         return self.session.post(
@@ -290,6 +315,18 @@ class User:
         room = Room(data)
         return room
 
+    def update_room(self, room, **kwargs) -> Room:
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+
+        password = kwargs.get('password', '')
+        data = {}
+
+        if password:
+            data = api.update_room_password(room, name=kwargs.get('name', room.name), type=kwargs.get('type', room.type), password=password)
+        else:
+            data = api.update_room(room, name=kwargs.get('name', room.name), type=kwargs.get('type', room.type))
+        return Room(data)
 
     def join_room(self, room: Room) -> Room:
         api.session.cookies.clear()

@@ -37,6 +37,7 @@ import { RoomSearchComponent, RoomPasswordPromptComponent } from './room-search/
 import { NewRoomComponent } from './new-room/new-room.component';
 import { RoomListComponent } from './room-list/room-list.component';
 import { FriendsListComponent } from './friends-list/friends-list.component';
+import { RoomSettingsComponent } from './room-settings/room-settings.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { FriendsListComponent } from './friends-list/friends-list.component';
     RoomListComponent,
     FriendsListComponent,
     RoomPasswordPromptComponent,
+    RoomSettingsComponent,
   ],
   imports: [
     BrowserModule,
