@@ -109,7 +109,7 @@ export class UserService {
   }
   async updateUsername(id: number, username: string): Promise<User> {
     const user = await this.getUserByid(id);
-    if (!user) throw new NotFoundException(`user with id ${id} not found`);
+    if (!user) throw new NotFoundException(`user not found`);
     const tmp = await this.repository.findOne({
       where: { name: username },
     });
@@ -164,6 +164,7 @@ export class UserService {
   }
 
   async updateavatar(user: User, file: any): Promise<Boolean> {
+    if(!user)throw new NotFoundException(`user not found`);
     console.log(file);
     const type = file.mimetype.split("/")[1];
     console.log(type);

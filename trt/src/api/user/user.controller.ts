@@ -83,7 +83,7 @@ export class UserController {
   public getUser(@Param("id", ParseIntPipe) id: number): Promise<User> {
     return this.service.getUserByid(id);
   }
-  //get with no route should always be under be careful !
+  //get/post... with no route should always be under be careful !
   @UseGuards(AuthGuard())
   @Get()
   public getAllUsers(): Promise<User[]> {
