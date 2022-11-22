@@ -20,6 +20,7 @@ import {
   FileTypeValidator,
   Res,
   Req,
+  BadRequestException,
 } from "@nestjs/common";
 import { CreateUserDto } from "../dto/user.dto";
 import { User } from "./user.entity";
@@ -34,6 +35,8 @@ import { Express } from "express";
 import { diskStorage } from "multer";
 import { json } from "stream/consumers";
 import { Block } from "./block.entity";
+import { extname } from "path";
+import * as fs from "fs";
 
 @Controller("user")
 export class UserController {
@@ -97,23 +100,38 @@ export class UserController {
     FileInterceptor("image", {
       storage: diskStorage({
         destination: "./public/uploadfile",
+        // filename:(req, image, callback) =>{
+        //   const ext = extname(image.originalname);
+        //   const filename = GetUser().name + `${ext}`
+        //   callback(null, filename)
+        // }
       }),
     })
-  )
+  ) 
   async updateavatar(
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 12000000 }),
-          new FileTypeValidator({
-            fileType: /(gif|jpe?g|tiff?|png|webp|bmp|jpg)/,
-          }),
-        ],
+        // validators: [
+        //   new MaxFileSizeValidator({ maxSize: 12000000 }),
+        //   new FileTypeValidator({
+        //     fileType: /(gif|jpe?g|tiff?|png|webp|bmp)/,
+        //   }),
+        // ],
       })
     )
     file: Express.Multer.File,
     @GetUser() user: User
   ): Promise<Boolean> {
+    if(file.size > 12000000){
+      fs.unlink(file.path, (erro) =>{})
+      throw new BadRequestException('file size is too large');
+    }
+    const type = file.mimetype.split("/")[1];
+    if(!type.match(/(gif|jpe?g|tiff?|png|webp|bmp)/))
+    {
+      fs.unlink(file.path, (erro) =>{})
+      throw new BadRequestException('file exthension is not supported');
+    }
     return this.service.updateavatar(user, file);
   }
 

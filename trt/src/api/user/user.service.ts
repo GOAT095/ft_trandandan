@@ -171,7 +171,7 @@ export class UserService {
     fs.rename(
       file.path,
       file.destination + "/" + user.name + "." + type,
-      (Error) => {
+      (Error) => {   //callback if error
         if (Error) throw Error;
       }
     );
