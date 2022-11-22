@@ -8,7 +8,7 @@ async function bootstrap() {
     origin: 'http://localhost:4200',
     credentials: true,
   } });
-  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.useStaticAssets(join(__dirname, '..', 'public')); // set static assets for avatar uploads
   await app.listen(3000);
 }
 bootstrap();

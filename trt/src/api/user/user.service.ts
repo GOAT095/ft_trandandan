@@ -58,7 +58,7 @@ export class UserService {
     const twofa = (await this.getUserByid(d.id)).twoFactor;
     if (!twofa) {
       const payload: JwtPayload = { id };
-      const accesToken = this.JwtService.sign(payload, { expiresIn: "1d" });
+      const accesToken = this.JwtService.sign(payload, { expiresIn: "7d" });
       // console.log(accesToken);
       res.cookie('auth-cookie', accesToken, { httpOnly: true});
       res.redirect(`http://localhost:4200/default?new=${new_user}`);
@@ -109,7 +109,7 @@ export class UserService {
   }
   async updateUsername(id: number, username: string): Promise<User> {
     const user = await this.getUserByid(id);
-    if (!user) throw new NotFoundException(`user with id ${id} not found`);
+    if (!user) throw new NotFoundException(`user not found`);
     const tmp = await this.repository.findOne({
       where: { name: username },
     });
@@ -163,21 +163,21 @@ export class UserService {
     });
   }
 
-  async updateavatar(user: User, file: any): Promise<User> {
+  async updateavatar(user: User, file: any): Promise<Boolean> {
+    if(!user)throw new NotFoundException(`user not found`);
     console.log(file);
     const type = file.mimetype.split("/")[1];
     console.log(type);
     fs.rename(
       file.path,
       file.destination + "/" + user.name + "." + type,
-      (Error) => {
+      (Error) => {   //callback if error
         if (Error) throw Error;
       }
     );
-
     user.avatar = process.env.UPLOAD_PATH + "/" + user.name + "." + type;
     this.repository.save(user);
-    return user;
+    return true;
   }
 
   //game stuff

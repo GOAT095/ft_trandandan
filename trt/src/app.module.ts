@@ -12,7 +12,7 @@ import { roomUser } from "./api/chat/roomUser.entity";
 @Module({
   imports: [
     MulterModule.register({
-      dest: "./upload",
+      dest: "./uploadfile",
     }),
     UserModule,
     TypeOrmModule.forRoot({

@@ -16,8 +16,8 @@ import { GetUser } from './get-user.decorator';
 import { JwtPayload } from './jwt.payload.interface';
 import { twoFactorAuthenticatorService } from './twoFactorAuthentication.service';
 
+//https://wanago.io/2021/03/08/api-nestjs-two-factor-authentication/
 @Controller('2fa')
-//   @UseInterceptors(ClassSerializerInterceptor)
 export class TwoFactorAuthenticationController {
   @Inject(JwtService)
   private readonly JwtService: JwtService;
@@ -34,7 +34,7 @@ export class TwoFactorAuthenticationController {
     @Body('token') token: string,
     @Res() res,
   ) {
-    console.log(twoFactorAuthenticationCode);
+    //console.log(twoFactorAuthenticationCode);
     // get the user.`id` based on the md5 token
     let user : User;
     let id : number;

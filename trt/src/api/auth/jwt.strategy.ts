@@ -22,11 +22,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
           }
           const res = data
             .split(';')
-            .find((c) => c.trim().startsWith('auth-cookie='));
-          if (res) return res.split('=')[1];
+            .find((c: string) => c.trim().startsWith('auth-cookie='));
+          if (res)return res.split('=')[1]; // after auth-cookie= is the token needed
           return null;
         },
+        
       ]),
+      // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), //old bearer token for tests without cookie headache
+      // ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET,
     });
   }
