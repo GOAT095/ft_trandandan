@@ -303,6 +303,18 @@ class User:
         room = Room(data)
         return room
 
+    def create_private_room(self, **kwargs) -> Room:
+        api.session.cookies.clear()
+        api.session.cookies.set("auth-cookie", self.token)
+        data = api.new_room(
+            name=kwargs.get("name", " ".join(fake.words()[1:]).title()),
+            owner=self.user_id,
+            type=kwargs.get("type", ROOM_ACCESS_TYPE.PRIVATE),
+        )
+        room = Room(data)
+        return room
+
+
     def create_protected_room(self, **kwargs) -> Room:
         api.session.cookies.clear()
         api.session.cookies.set("auth-cookie", self.token)

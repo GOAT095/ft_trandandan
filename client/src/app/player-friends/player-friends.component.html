@@ -5,7 +5,7 @@
         <input #searchbox type="search" [value]="query" (keyup)="onKey(searchbox.value)"/>
         <div class="list">
             <ng-template ngFor let-item [ngForOf]="searchResults" let-i="index">
-                <app-player-info-short [player]="item" class="list-item"></app-player-info-short>
+                <app-player-info-short [me]="me" [player]="item" class="list-item"></app-player-info-short>
             </ng-template>
         </div>
     </div>
@@ -13,17 +13,8 @@
         <span class="title">List</span>
         <div class="list">
             <ng-template ngFor let-item [ngForOf]="friends" let-i="index">
-                <app-player-info-short [player]="item" class="list-item"></app-player-info-short>
+                <app-player-info-short [me]="me" [player]="item" class="list-item"></app-player-info-short>
             </ng-template>
-            <!--
-            <app-player-info-short class="list-item"></app-player-info-short>
-            <app-player-info-short class="list-item"></app-player-info-short>
-            <app-player-info-short class="list-item"></app-player-info-short>
-            <app-player-info-short class="list-item"></app-player-info-short>
-            <app-player-info-short class="list-item"></app-player-info-short>
-            <app-player-info-short class="list-item"></app-player-info-short>
-            <app-player-info-short class="list-item"></app-player-info-short>
-            -->
         </div>
     </div>
 </div>

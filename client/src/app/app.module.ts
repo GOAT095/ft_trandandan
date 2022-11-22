@@ -38,6 +38,7 @@ import { NewRoomComponent } from './new-room/new-room.component';
 import { RoomListComponent } from './room-list/room-list.component';
 import { FriendsListComponent } from './friends-list/friends-list.component';
 import { RoomSettingsComponent } from './room-settings/room-settings.component';
+import { OauthDialogComponent } from './oauth-dialog/oauth-dialog.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { RoomSettingsComponent } from './room-settings/room-settings.component';
     FriendsListComponent,
     RoomPasswordPromptComponent,
     RoomSettingsComponent,
+    OauthDialogComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,15 @@
+<div class="nes-container is-dark with-title is-centered">
+    <!--<label class="title">Choose login provider:</label>-->
+    <label class="title">Login</label>
+    <div class="oauth-providers">
+        <!--<label class="intra-42">42</label>-->
+        <button (click)="loginWithGithub()" class="nes-btn is-primary">
+            <i class="nes-icon github is-large"></i>
+            Github
+        </button>
+        <button (click)="loginWith42Intra()" class="nes-btn is-primary">
+            <i class="nes-icon is-large"><label>42</label></i>
+            Intra
+        </button>
+    </div>
+</div>

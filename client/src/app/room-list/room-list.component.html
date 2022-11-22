@@ -31,7 +31,7 @@
                 <div class="messages-box">
                     <!--<p *ngFor="let message of chatMessages">* {{ message }}</p>-->
                     <div class="message-layout" *ngFor="let message of ws.roomChatMessages[selectedRoomId[0]]">
-                        <app-player-info-short [player]="message.player" [type]="'room'"></app-player-info-short>
+                        <app-player-info-short [me]="player" [player]="message.player" [type]="'room'"></app-player-info-short>
                         <p *ngIf="blockList.includes(message.player.id); else renderMessage"
                             class="message-message">message was hidden</p>
                         <ng-template #renderMessage>

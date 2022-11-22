@@ -1,5 +1,6 @@
 import { APP_INITIALIZER, Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class WsService {
       return [ key, decodeURIComponent(v.join('=')) ];
     }));
 
-    this.socket = io("http://localhost:3000", {auth: {'id': player.id, 'token': cookies['auth-cookie']}});
+    this.socket = io(environment.baseUrl, {auth: {'id': player.id, 'token': cookies['auth-cookie']}});
     this.socket.on("connect", () => {
         const engine = this.socket?.io.engine;
         console.log(engine?.transport.name); // in most cases, prints "polling"
@@ -53,8 +54,8 @@ export class WsService {
       console.log(this.socket?.id)
     })
   }
-  notify(type: string, data: any) {
-    this.socket?.emit("notification", {"type": type, "data": data});
+  notify(type: string, data: any, receiver: Player) {
+    this.socket?.emit("notification", {"type": type, "data": data, "receiver": receiver});
   }
   handleNotify() {
     this.socket?.on('notification', (data) => {
