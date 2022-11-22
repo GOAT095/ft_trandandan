@@ -79,6 +79,9 @@ export class UserController {
   async getMyBlockedUsers(@GetUser() user: User): Promise<Block[]> {
     return await this.service.getBlockedusers(user);
   }
+
+  // TODO:
+  //  ~ Use Interceptor: Exclude
   @Get(":id")
   public getUser(@Param("id", ParseIntPipe) id: number): Promise<User> {
     return this.service.getUserByid(id);

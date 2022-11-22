@@ -62,9 +62,9 @@ export class UserService {
       const payload: JwtPayload = { id };
       const accesToken = this.JwtService.sign(payload, { expiresIn: "1d" });
       // console.log(accesToken);
-      res.cookie('auth-cookie', accesToken, { httpOnly: true});
+      res.cookie('auth-cookie', accesToken, { httpOnly: false});
       //res.header("auth-token", accesToken);
-      res.redirect(`http://localhost:4200/default?new=${new_user}`);
+      res.redirect(`${process.env.APP_URL}/default?new=${new_user}`);
       // return accesToken;
     } else {
       console.log("2fa");
@@ -73,7 +73,7 @@ export class UserService {
       // we use a simple md5 string mapping
       let token = createHash("md5").update(randomBytes(128)).digest("hex");
       this.tokens[token] = id; // save it
-      res.redirect(`http://localhost:4200/2fa-step?token=${token}`);
+      res.redirect(`${process.env.APP_URL}/2fa-step?token=${token}`);
     }
     return;
   }

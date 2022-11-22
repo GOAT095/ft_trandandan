@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  Req,
   Res,
   UseGuards,
 } from "@nestjs/common";
@@ -18,6 +19,10 @@ import Authenticator from "api42client";
 import { User } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 import { GetUser } from "./get-user.decorator";
+import { appendFile } from "fs";
+import { createOAuthAppAuth } from "@octokit/auth-oauth-app";
+import { Octokit } from "octokit";
+import { Request, Response } from "express";
 
 @Controller("auth")
 export class AuthController {
@@ -27,6 +32,34 @@ export class AuthController {
   @Get("loginAs/:name")
   async loginAs(@Param("name") name: string, @Res() res: any) {
     this.userservice.giveaccess(name, res);
+  }
+
+  @Get("github/redirect")
+  async getGithubAuthedUser(@Req() request: Request, @Query() query: any, @Res() res: Response) {
+    // https://github.com/login/oauth/authorize?client_id=761b6d85a92c80e1666c
+    const auth = createOAuthAppAuth({
+      clientType: "oauth-app",
+      clientId: "761b6d85a92c80e1666c",
+      clientSecret: "1f488584fac0c37b138471dcf93fd4d74e05eee0",
+    })
+    console.log(query);
+    const userAuthenticationFromWebFlow = await auth({
+      type: "oauth-user",
+      code: query.code,
+    });
+    console.log(userAuthenticationFromWebFlow);
+    console.log('/github/redirect');
+    const octokit = new Octokit({auth: userAuthenticationFromWebFlow.token});
+    const data = await octokit.rest.users.getAuthenticated();
+    console.log(data);
+    let user = {
+      'login': data.data.login,
+      'email': null,
+      'avatar': data.data.avatar_url,
+      'id': data.data.id
+    }
+    //console.log(user);
+    this.userservice.createaccess(user, res);
   }
 
   @Get("redirect")

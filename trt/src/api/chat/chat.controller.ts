@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, ValidationPipe, Get, BadRequestException, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Param, ValidationPipe, Get, BadRequestException, Patch, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { CreateRoomDto, PasswordDto, RoomAdminstrationDto, UpdateRoomDto } from '../dto/user.dto';
 import { Access_type } from '../utils/acces.type.enum';
 import { RoomService, Room } from './room/room.service';
@@ -15,9 +15,10 @@ export class ChatController {
 
     // Authorization: LoggedIN
     // v1: done
+    @UseInterceptors(ClassSerializerInterceptor)
     @Post('room')
     createRoom(@Body() body: CreateRoomDto, @GetUser() user: User) {
-        // TODO: validate that a password is present if type is protected
+        // ~TODO: validate that a password is present if type is protected
         if (body.type == Access_type.protected) {
             if (body.password == null) {
                 throw new BadRequestException({'error': 'Creating a protected channel requires setting a password.'});
@@ -30,6 +31,7 @@ export class ChatController {
 
     // Authorization: LoggedIN, Owner
     // v1: done
+    @UseInterceptors(ClassSerializerInterceptor)
     @Post('room/:roomId')
     update(@Param('roomId') roomId: number, @Body() body: UpdateRoomDto, @GetUser() user: User) {
         this.room.checkIsOwner(roomId, user);
@@ -46,11 +48,13 @@ export class ChatController {
 
 
     // v1: done
+    @UseInterceptors(ClassSerializerInterceptor)
     @Get('room')
-    listPublicAndProtectedRooms() {
+    listPublicAndProtectedRooms() : Room[] {
         return this.room.find({'type': [Access_type.public, Access_type.protected]});
     }
 
+    @UseInterceptors(ClassSerializerInterceptor)
     @Get('room/player/:playerId')
     listPlayerActiveRooms(@Param('playerId') playerId: number, @GetUser() user: User) {
         return this.room.find({'members': user.id});
@@ -59,41 +63,48 @@ export class ChatController {
     // Not Used (so far)
     // v1: done
     // TODO: filter direct messages by current user id
-    @Get('room/dm')
-    listDirectMessages() {
-        return this.room.find({'type': Access_type.direct_message})
-    }
+    //@Get('room/dm')
+    //listDirectMessages() {
+    //    return this.room.find({'type': Access_type.direct_message})
+    //}
 
     // Authorization: RoomOwner | RoomAdmin
-    // TODO: check : can't ban room owner !
+    // ~TODO: check : can't ban room owner !
     // v1: done
+    @UseInterceptors(ClassSerializerInterceptor)
     @Post('room/:roomId/ban/:playerId')
     banPlayer(@Param() action: RoomAdminstrationDto, @GetUser() user: User) {
         this.room.checkIsAdmin(action.roomId, user);
+        this.room.checkIsNotOwner(action.roomId, Number(action.playerId));
         return this.room.update(action.roomId, 'banList', Number(action.playerId));
     }
 
     // Authorization: RoomOwner | RoomAdmin
-    // TODO: check : can't mute room owner !
+    // ~TODO: check : can't mute room owner !
     // v1: done
+    @UseInterceptors(ClassSerializerInterceptor)
     @Post('room/:roomId/mute/:playerId')
     mutePlayer(@Param() action: RoomAdminstrationDto, @GetUser() user: User) {
         this.room.checkIsAdmin(action.roomId, user);
+        this.room.checkIsNotOwner(action.roomId, Number(action.playerId));
         return this.room.update(action.roomId, 'muteList', {'id': Number(action.playerId), 'start': new Date()})
     }
 
     // Authorization: RoomOwner | RoomAdmin
-    // TODO: check : can't kick room owner !
+    // ~TODO: check : can't kick room owner !
     // remove from members list
     // v1: done
+    @UseInterceptors(ClassSerializerInterceptor)
     @Post('room/:roomId/kick/:playerId')
     kickPlayer(@Param() action: RoomAdminstrationDto, @GetUser() user: User) {
         this.room.checkIsAdmin(action.roomId, user);
+        this.room.checkIsNotOwner(action.roomId, Number(action.playerId));
         return this.room.update(action.roomId, 'members', Number(action.playerId), true);
     }
 
     // Authorization: RoomOwner
     // v1: done
+    @UseInterceptors(ClassSerializerInterceptor)
     @Post('room/:roomId/set-as-admin/:playerId')
     setAsAdmin(@Param() action: RoomAdminstrationDto, @GetUser() user: User) {
         this.room.checkIsOwner(action.roomId, user);
@@ -101,26 +112,29 @@ export class ChatController {
     }
 
     // Authorization: LoggedIN
-    // TODO:
-    //  - this route is accessible only if:
-    //      - room is public/protected
-    //      - room is private and the currently logged in user is a member
+    // ~TODO:
+    //  ~ this route is accessible only if:
+    //      ~ room is public/protected
+    //      ~ room is private and the currently logged in user is a member
     // v1: done
+    @UseInterceptors(ClassSerializerInterceptor)
     @Get('room/:roomId')
-    details(@Param('roomId') roomId: number) {
+    details(@Param('roomId') roomId: number, @GetUser() user: User) {
+        this.room.checkRoomIsAccessible(Number(roomId), user);
         return this.room.findById(roomId);
     }
 
     // Not Used (so far)
     // Authorization: LoggedIN
     // TODO: check for access, member (private/dms)
-    @Get('room/:roomId/messages')
-    messages(@Param('roomId') roomId: number) {
-        return {'roomId': roomId}
-    }
+    //@Get('room/:roomId/messages')
+    //messages(@Param('roomId') roomId: number) {
+    //    return {'roomId': roomId}
+    //}
 
     // Authorization: RoomOwner
     // v1: done
+    @UseInterceptors(ClassSerializerInterceptor)
     @Post('room/:roomId/key')
     setKey(@Param('roomId') roomId: number, @Body() body: PasswordDto, @GetUser() user: User) { 
         this.room.checkIsOwner(roomId, user);
@@ -129,6 +143,7 @@ export class ChatController {
 
     // Authorization: RoomOwner
     // v1: done
+    @UseInterceptors(ClassSerializerInterceptor)
     @Post('room/:roomId/key/disable')
     disableKeyAccess(@Param('roomId') roomId: number, @Body() body: any, @GetUser() user: User) {
         this.room.checkIsOwner(roomId, user);
@@ -137,36 +152,28 @@ export class ChatController {
 
     // Authorization: LoggedIn
     // Access: room is public, or protected
-    // TODO: check room is public
+    // ~TODO: check room is public or protected
+    @UseInterceptors(ClassSerializerInterceptor)
     @Post('room/:roomId/join')
     joinRoom(@Param('roomId') roomId: number, @Body() body: any, @GetUser() user: User) {
-        var playerId = 53993; // TODO: get current player Id
-        // temporary get playerId from body
-        console.log(body);
-        console.log(Number(body.playerId));
-        console.log(roomId);
+        this.room.checkRoomIsPublic(roomId);
         return this.room.update(Number(roomId), 'members', user.id);
     }
 
-    // TODO: check room is protected
+    // ~TODO: check room is protected
+    @UseInterceptors(ClassSerializerInterceptor)
     @Post('room/:roomId/join-protected')
     joinProtectedRoom(@Param('roomId') roomId: number, @Body() body: any, @GetUser() user: User) {
+        this.room.checkRoomIsProtected(roomId);
         this.room.checkRoomPassword(Number(roomId), body.password);
-        var playerId = 53993; // TODO: get current player Id
-        // temporary get playerId from body
-        console.log(body);
-        console.log(Number(body.playerId));
-        console.log(roomId);
-        // TODO: check password hash
         return this.room.update(Number(roomId), 'members', user.id);
     }
 
  
     // Authorization: LoggedIn
+    @UseInterceptors(ClassSerializerInterceptor)
     @Post('room/:roomId/leave')
     leaveRoom(@Param('roomId') roomId: number, @Body() body: any, @GetUser() user: User) {
-        var playerId = 53993; // TODO: get current player Id
-        // temporary get playerId from body
         return this.room.update(roomId, 'members', user.id, true);
     }
 

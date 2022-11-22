@@ -3,21 +3,27 @@ import { CreateRoomDto } from 'src/api/dto/user.dto';
 import { Access_type } from '../../utils/acces.type.enum';
 import { hashSync, compareSync } from 'bcryptjs';
 import { User } from '../../user/user.entity';
+import { Exclude } from 'class-transformer';
 
 export interface MutedPlayer {
     id: number;
     start: Date;
 }
-export interface Room {
+export class Room {
   id: number;
   name: string;
   owner: number;
   type: Access_type;
+  @Exclude()
   password?: string;
   members: number[];
   admins: number[];
   banList: number[];
   muteList: MutedPlayer[];
+
+  constructor(partial: Partial<Room>) {
+    Object.assign(this, partial);
+  }
 };
 
 @Injectable()
@@ -27,7 +33,7 @@ export class RoomService {
     // TODO: define an uuid
     createRoom(room: CreateRoomDto, user: User) : Room {
         // init
-        var newRoom : Room = {
+        var newRoom : Room = new Room({
             id: this.rooms.length,
             name: room.name,
             owner: user.id,
@@ -37,7 +43,7 @@ export class RoomService {
             admins: [user.id,],
             banList: [],
             muteList: [],
-        };
+        });
 
         // TODO: set the password if type is protected
         if (newRoom.type == Access_type.protected) {
@@ -77,6 +83,13 @@ export class RoomService {
         }
     }
 
+    checkIsNotOwner(roomId: number, userId: number) {
+        let room = this.findById(roomId);
+        if ((room.owner == userId)) {
+            throw new UnauthorizedException({'error': 'This action is not allowed'})
+        }
+    }
+
     checkIsAdmin(roomId: number, user: User) {
         let room = this.findById(roomId);
         if (!(room.admins.includes(user.id))) {
@@ -84,6 +97,33 @@ export class RoomService {
         }
     }
 
+    checkRoomIsAccessible(roomId: number, user: User) {
+        let room = this.findById(roomId);
+        if (room.type == Access_type.private && (!room.members.includes(user.id))) {
+            throw new UnauthorizedException({'error': 'This action is not allowed'});
+        }
+    }
+
+    checkRoomIsPublicOrProtected(roomId: number) {
+        let room = this.findById(roomId);
+        if (room.type == Access_type.direct_message || room.type == Access_type.private) {
+            throw new UnauthorizedException({'error': 'This action is not allowed'});
+        }
+    }
+
+    checkRoomIsPublic(roomId: number) {
+        let room = this.findById(roomId);
+        if (room.type != Access_type.public) {
+            throw new UnauthorizedException({'error': 'This action is not allowed'});
+        }
+    }
+
+    checkRoomIsProtected(roomId: number) {
+        let room = this.findById(roomId);
+        if (room.type != Access_type.protected) {
+            throw new UnauthorizedException({'error': 'This action is not allowed'});
+        }
+    }
 
     find(searchObject: any) : Room[] {
         var results : Room[] = [];
