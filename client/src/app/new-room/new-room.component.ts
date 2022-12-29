@@ -42,7 +42,8 @@ export class NewRoomComponent implements OnInit {
           'owner': this.player.id,
           'password': this.password
         }).subscribe(
-          (resp) => {console.log(resp);}
+          //(resp) => {console.log(resp);}
+          (resp) => {this.dialogRef.close('created');}
         );
         break;
       }
@@ -52,7 +53,8 @@ export class NewRoomComponent implements OnInit {
           'type': this.type,
           'owner': this.player.id,
         }).subscribe(
-          (resp) => {console.log(resp);}
+          //(resp) => {console.log(resp);}
+          (resp) => {this.dialogRef.close('created');}
         );
       }
     }

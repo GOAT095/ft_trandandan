@@ -86,6 +86,13 @@ export class MainComponent implements OnInit {
               })
             }
           )
+        // get player friends requests
+        api.getFriendRequests().subscribe(
+          (data) => {
+            this.friendsRequestsCount = data.length;
+          }
+          )
+
         // initialize WsService
         ws.initialize(this.player);
         ws.handleNotify();
