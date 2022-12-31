@@ -8,6 +8,7 @@ import { Block } from "./api/user/block.entity";
 import { chatLogs } from "./api/chat/chatLogs.entity";
 import { Room } from "./api/chat/room.entity";
 import { roomUser } from "./api/chat/roomUser.entity";
+import { GameGateway } from "./api/game/game.gateway";
 
 @Module({
   imports: [
@@ -29,6 +30,6 @@ import { roomUser } from "./api/chat/roomUser.entity";
     }),
   ],
   // controllers: [AppController],
-  // providers: [AppService],
+  providers: [GameGateway],
 })
 export class AppModule {}
