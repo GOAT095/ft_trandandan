@@ -1,5 +1,5 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../api.service';
@@ -222,6 +222,10 @@ export class MainComponent implements OnInit {
     const dialogRef = this.dialog.open<string>(RoomListComponent, {
       data: {player: this.player}
     });
+  }
+
+  openSpectateDialog(): void {
+
   }
 
   sendChatMessage(): void {

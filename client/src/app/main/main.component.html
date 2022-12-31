@@ -81,6 +81,8 @@
             <button [cdkMenuTriggerFor]="game_view" cdkMenuItem>view <span>&#10148;</span></button>
             <button (click)="openShortcutDialog()" 
                     cdkMenuItem>Shortcuts</button>
+            <button (click)="openSpectateDialog()"
+                    cdkMenuItem>Spectate</button>
         </div>
     </ng-template>
     <ng-template #game_view>

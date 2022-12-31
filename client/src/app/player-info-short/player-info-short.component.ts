@@ -1,8 +1,11 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { Component, Input, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Md5 } from 'ts-md5';
 
 import { ApiService } from '../api.service';
+import { PlayerInfoComponent } from '../player-info/player-info.component';
+import { PlayerMatchHistoryComponent } from '../player-match-history/player-match-history.component';
 import { WsService } from '../ws.service';
 
 @Component({
@@ -43,7 +46,7 @@ export class PlayerInfoShortComponent implements OnInit {
   };
 
 
-  constructor(public api: ApiService, public ws: WsService) {}
+  constructor(public api: ApiService, public ws: WsService, public dialog: Dialog) {}
 
   getGravatarSrc(): string {
     let md5 = new Md5();
@@ -91,15 +94,16 @@ export class PlayerInfoShortComponent implements OnInit {
 
   showProfile() {
     // TODO: Open player profile
-    console.log('open player profile');
+    //console.log('open player profile');
+    this.dialog.open(PlayerInfoShortComponent);
   }
 
   openProfile() {
-
+    this.dialog.open(PlayerInfoComponent);
   }
 
   showPlayerMatchHistory() {
-
+    this.dialog.open(PlayerMatchHistoryComponent);
   }
 
   addAsAdmin() {

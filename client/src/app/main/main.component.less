@@ -150,8 +150,13 @@ nav {
 }
 
 div.messages-box {
-	overflow: scroll;
-	scrollbar-width: thin;
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.messages-box::-webkit-scrollbar {
+    background: transparent;
+    width: 0px;
 }
 
 .message-layout {
@@ -162,6 +167,7 @@ div.messages-box {
     // debug
     //border: 2px dashed;
 }
+
 
 .message-layout > img {
     margin-right: .5em;
@@ -194,6 +200,7 @@ p.message-message {
 
     display: flex;
     flex-direction: row;
+
 }
 
 .notification-header > .toggle {
