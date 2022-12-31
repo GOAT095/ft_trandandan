@@ -35,11 +35,10 @@ export class AuthController {
 
   @Get("github/redirect")
   async getGithubAuthedUser(@Req() request: Request, @Query() query: any, @Res() res: Response) {
-    // https://github.com/login/oauth/authorize?client_id=761b6d85a92c80e1666c
     const auth = createOAuthAppAuth({
       clientType: "oauth-app",
-      clientId: "761b6d85a92c80e1666c",
-      clientSecret: "1f488584fac0c37b138471dcf93fd4d74e05eee0",
+      clientId: process.env.githubClientID,
+      clientSecret: process.env.githubClientSecret,
     })
     console.log(query);
     const userAuthenticationFromWebFlow = await auth({

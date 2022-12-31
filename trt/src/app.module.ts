@@ -12,6 +12,7 @@ import { WsGateway } from './ws/ws.gateway';
 import { ChatController } from './api/chat/chat.controller';
 import { RoomService } from "./api/chat/room/room.service";
 import { JwtModule } from "@nestjs/jwt";
+import { GameGateway } from "./api/game/game.gateway";
 
 @Module({
   imports: [
@@ -33,9 +34,8 @@ import { JwtModule } from "@nestjs/jwt";
       synchronize: true, // never use TRUE in production
     }),
   ],
-  providers: [WsGateway, RoomService],
+  providers: [WsGateway, RoomService, GameGateway],
   controllers: [ChatController],
   // controllers: [AppController],
-  // providers: [AppService],
 })
 export class AppModule {}

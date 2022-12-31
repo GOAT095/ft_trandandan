@@ -28,6 +28,8 @@ services:
       POSTGRES_DB: $POSTGRES_DB
       UPLOAD_PATH: $UPLOAD_PATH
       APP_URL: $APP_URL
+      githubClientID: $githubClientID
+      githubClientSecret: $githubClientSecret
     depends_on:
       - db
 
