@@ -13,6 +13,7 @@ import {
 import { Room } from "../chat/room.entity";
 import { roomUser } from "../chat/roomUser.entity";
 import { FriendrequestEntity } from "../friends/friend.entity";
+import { Gamehistoryclass } from "../game/game.entity";
 import { Block } from "./block.entity";
 import { UserStatus } from "./user.status.enum";
 
@@ -46,6 +47,16 @@ export class User {
   @Column({ default: 0 })
   maxStreaks: number;
 
+  @OneToMany(
+    () => Gamehistoryclass,
+    (Gamehistoryclass) => Gamehistoryclass.playerOne
+  )
+  p1: Gamehistoryclass[];
+  @OneToMany(
+    () => Gamehistoryclass,
+    (Gamehistoryclass) => Gamehistoryclass.playerTwo
+  )
+  p2: Gamehistoryclass[];
   @Column({ default: "online" })
   status: UserStatus;
 
