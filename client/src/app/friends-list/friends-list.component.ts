@@ -3,6 +3,7 @@ import { ApiService } from '../api.service';
 import {Dialog, DialogRef, DIALOG_DATA} from '@angular/cdk/dialog';
 import { CdkListbox, CdkOption } from '@angular/cdk/listbox';
 import { WsService } from '../ws.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-friends-list',
@@ -34,6 +35,7 @@ export class FriendsListComponent implements OnInit {
   chatMessage: string = '';
 
   @ViewChild(CdkListbox) playerListbox!: CdkListbox;
+  @ViewChild('chat_messages_view') chat_messages_view!: ElementRef<HTMLDivElement>;
 
   constructor(public api: ApiService,
     public dialogRef: DialogRef<string>, @Inject(DIALOG_DATA) public dialog_data: any,
@@ -52,6 +54,13 @@ export class FriendsListComponent implements OnInit {
         if (this.friends.length > 0) {
           //this.playerListbox.select(new CdkOption<unknown>());
         }
+        // listen to ws.events
+        ws.newDirectMessageEvent.subscribe((data) => {
+          this.chat_messages_view.nativeElement.scrollTop = this.chat_messages_view.nativeElement.scrollHeight;
+          setTimeout(() => {
+            this.chat_messages_view.nativeElement.scrollTop = this.chat_messages_view.nativeElement.scrollHeight;
+          }, environment.chatRefreshTime)
+        })
       }
     )
     api.getPlayerBlockList().subscribe(

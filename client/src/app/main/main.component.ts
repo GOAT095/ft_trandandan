@@ -1,5 +1,5 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../api.service';
@@ -15,6 +15,7 @@ import { RoomSearchComponent } from '../room-search/room-search.component';
 import { NewRoomComponent } from '../new-room/new-room.component';
 import { RoomListComponent } from '../room-list/room-list.component';
 import { FriendsListComponent } from '../friends-list/friends-list.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-main',
@@ -60,8 +61,10 @@ export class MainComponent implements OnInit {
     ),
   ];
 
+  @ViewChild('messages_box') messages_box!: ElementRef<HTMLDivElement>;
 
-  constructor(private api: ApiService, private route: ActivatedRoute, public dialog: Dialog, public ws: WsService,
+  constructor(
+    private api: ApiService, private route: ActivatedRoute, public dialog: Dialog, public ws: WsService,
     ) {
 
     api.getPlayer().subscribe(
@@ -99,6 +102,12 @@ export class MainComponent implements OnInit {
         ws.handleChatMessage();
         ws.handleRoomChatMessage();
         ws.handleDirectMessage();
+        ws.newMessageEvent.subscribe((data) => {
+          this.messages_box.nativeElement.scrollTop = this.messages_box.nativeElement.scrollHeight;
+          setTimeout(() => {
+            this.messages_box.nativeElement.scrollTop = this.messages_box.nativeElement.scrollHeight;
+          }, environment.chatRefreshTime)
+        })
       },
       (error) => {
         this.openOfflineDialog(error.statusText);
@@ -233,6 +242,12 @@ export class MainComponent implements OnInit {
     // TODO:
     // - clean current message
     this.chatMessage = '';
+    /*
+    this.messages_box.nativeElement.scrollTop = this.messages_box.nativeElement.scrollHeight;
+    setTimeout(() => {
+      this.messages_box.nativeElement.scrollTop = this.messages_box.nativeElement.scrollHeight;
+    }, 1500)
+    */
   }
 
   ngOnInit(): void {

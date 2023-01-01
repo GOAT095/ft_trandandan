@@ -4,6 +4,7 @@ import {Dialog, DialogRef, DIALOG_DATA} from '@angular/cdk/dialog';
 import { CdkListbox, ListboxValueChangeEvent } from '@angular/cdk/listbox';
 import { WsService } from '../ws.service';
 import { RoomSettingsComponent } from '../room-settings/room-settings.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-room-list',
@@ -36,6 +37,7 @@ export class RoomListComponent implements OnInit {
   chatMessage: string = '';
 
   @ViewChild(CdkListbox) roomListbox!: CdkListbox;
+  @ViewChild('chat_messages_view') chat_messages_view!: ElementRef<HTMLDivElement>
 
   constructor(public api: ApiService, public dialog: Dialog,
     public dialogRef: DialogRef<string>, @Inject(DIALOG_DATA) public dialog_data: any,
@@ -53,6 +55,13 @@ export class RoomListComponent implements OnInit {
           //console.log(this.roomListbox);
           //console.log(this.ref.nativeElement.getElementById())
         }
+        // listen to ws.events
+        ws.newRoomMessageEvent.subscribe((data) => {
+          this.chat_messages_view.nativeElement.scrollTop = this.chat_messages_view.nativeElement.scrollHeight;
+          setTimeout(() => {
+            this.chat_messages_view.nativeElement.scrollTop = this.chat_messages_view.nativeElement.scrollHeight;
+          }, environment.chatRefreshTime)
+        })
       }
     )
     // get player blockList

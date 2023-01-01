@@ -1,6 +1,7 @@
 import { APP_INITIALIZER, Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,10 @@ export class WsService {
   chatMessages : any[] = [];
   roomChatMessages: any = {};
   directMessages: any = {};
+
+  newMessageEvent = new Subject<any[]>;
+  newDirectMessageEvent = new Subject<any[]>;
+  newRoomMessageEvent = new Subject<any[]>;
 
   constructor() {
 
@@ -66,6 +71,7 @@ export class WsService {
     this.socket?.on('chatMessage', (data) => {
       console.log(data);
       this.chatMessages.push(data)
+      this.newMessageEvent.next(data);
     })
   }
   postToRoom(room: any, message: string, player: Player) {
@@ -84,6 +90,7 @@ export class WsService {
       }
       this.roomChatMessages[room.id].push(message);
       console.log(this.roomChatMessages);
+      this.newRoomMessageEvent.next(data);
     })
   }
   sendDirectMessage(receiver: Player, message: string, player: Player) {
@@ -99,6 +106,7 @@ export class WsService {
       }
       this.directMessages[player.id].push(message);
       console.log(this.directMessages);
+      this.newDirectMessageEvent.next(data);
     })
   }
 }

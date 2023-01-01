@@ -27,7 +27,7 @@
                     (click)="openRoomSettingsDialog()" 
                     src="assets/gear.png" width=24 height=24/>
             </div>
-            <div class="chat-messages-view">
+            <div class="chat-messages-view" #chat_messages_view>
                 <div class="messages-box">
                     <!--<p *ngFor="let message of chatMessages">* {{ message }}</p>-->
                     <div class="message-layout" *ngFor="let message of ws.roomChatMessages[selectedRoomId[0]]">

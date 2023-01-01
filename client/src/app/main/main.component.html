@@ -120,7 +120,7 @@
                     [cdkConnectedOverlayWidth]="500"
                     [cdkConnectedOverlayPositions]="positions"
                     cdkConnectedOverlay>
-        <div class="messages-box">
+        <div class="messages-box" #messages_box>
             <!--<p *ngFor="let message of chatMessages">* {{ message }}</p>-->
             <div class="message-layout" *ngFor="let message of ws.chatMessages">
                 <app-player-info-short [me]="player" [player]="message.player" [type]="'chat'"></app-player-info-short>

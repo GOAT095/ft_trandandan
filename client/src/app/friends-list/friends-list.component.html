@@ -15,7 +15,7 @@
         </div>
         <div class="chat-box nes-container with-title is-dark">
             <label class="title">{{ friends[selectedPlayerId[0]] ? friends[selectedPlayerId[0]].name : null }}</label>
-            <div class="chat-messages-view">
+            <div class="chat-messages-view" #chat_messages_view>
                 <div *ngIf="selectedPlayerId.length > 0" class="messages-box">
                     <!--<p *ngFor="let message of chatMessages">* {{ message }}</p>-->
                     <div *ngIf="blockList.includes(friends[selectedPlayerId[0]].id); else renderMessages;">

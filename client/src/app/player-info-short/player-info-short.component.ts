@@ -95,11 +95,21 @@ export class PlayerInfoShortComponent implements OnInit {
   showProfile() {
     // TODO: Open player profile
     //console.log('open player profile');
-    this.dialog.open(PlayerInfoShortComponent);
+    let dialogRef = this.dialog.open(PlayerInfoShortComponent, {
+      data: {me: this.me, player: this.player}
+    });
+    if (dialogRef.componentInstance != null) {
+      dialogRef.componentInstance.player = this.player;
+    }
   }
 
   openProfile() {
-    this.dialog.open(PlayerInfoComponent);
+    let dialogRef = this.dialog.open(PlayerInfoComponent, {
+      data: {me: this.me, player: this.player}
+    });
+    if (dialogRef.componentInstance != null) {
+      dialogRef.componentInstance.player = this.player;
+    }
   }
 
   showPlayerMatchHistory() {
