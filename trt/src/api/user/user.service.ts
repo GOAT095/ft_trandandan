@@ -16,6 +16,7 @@ import { JwtService } from "@nestjs/jwt";
 import { createHash, randomBytes } from "crypto";
 import { Block } from "./block.entity";
 import { Response } from "express";
+import { use } from "passport";
 // import { hashPassword } from '../utils/bcrypt';
 
 @Injectable()
@@ -189,12 +190,17 @@ export class UserService {
       console.log(user);
     }
     user.wins += 1;
+    user.streaks += 1;
+    if (user.streaks > user.maxStreaks){
+      user.maxStreaks = user.streaks;
+    }
     await this.repository.save(user);
     return await this.getUserByid(user.id);
   }
 
   async addloss(user: User): Promise<User> {
     user.losses += 1;
+    user.streaks = 0;
     await this.repository.save(user);
     return await this.getUserByid(user.id);
   }
@@ -204,6 +210,15 @@ export class UserService {
 
     return;
   }
+
+  async updateStatus(id: number, status: UserStatus): Promise<User> {
+    const user = await this.getUserByid(id);
+    if (!user) throw new NotFoundException(`user not found`);
+    user.status = status;
+    await this.repository.save(user);
+    return await this.getUserByid(id);
+  }
+
   async get_online_users(): Promise<User[]> {
     return await this.repository.find({ where: { status: UserStatus.online } });
   }

@@ -40,6 +40,12 @@ export class User {
   @Column({ default: 0 })
   lvl: number;
 
+  @Column({ default: 0 })
+  streaks: number;
+
+  @Column({ default: 0 })
+  maxStreaks: number;
+
   @Column({ default: "online" })
   status: UserStatus;
 

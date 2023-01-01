@@ -35,6 +35,7 @@ import { GameGateway } from "./api/game/game.gateway";
     }),
   ],
   providers: [WsGateway, RoomService, GameGateway],
+  //providers: [WsGateway, RoomService],
   controllers: [ChatController],
   // controllers: [AppController],
 })

@@ -1,6 +1,9 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
+import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/api/user/user.service';
+
 
 
 function toRadians(angle : number) : number
@@ -65,13 +68,6 @@ enum Serve
   PTWO
 };
 
-enum Player
-{
-  PONE = 0,
-  PTWO,
-  SPECTATOR
-};
-
 enum Winner
 {
   NONE = 0,
@@ -110,7 +106,7 @@ function inverseServingPlayer(state : GameState) : GameState
     state.ballPosition = [state.p1Position[0] + (ballRadius * 2.0), state.p1Position[1], state.p1Position[2]];
     state.ballDirection = [1.0, 0.0, 0.0];
   }
-  return state
+  return state;
 }
 
 function equalStates(state1: GameState, state2: GameState) : boolean
@@ -175,20 +171,39 @@ class GameState
 
 let RoomName : string = "ROOM";
 
+class User
+{
+  id : number;
+  socketID : string;
+
+  constructor(ID : number, sID : string)
+  {
+    this.id = ID;
+    this.socketID = sID;
+  }
+
+  isValidUser(): boolean
+  {
+    if (this.socketID == "NONE" || this.id == 0)
+      return (false);
+    return (true);
+  }
+};
+
 class Room
 {
-  name : string;
-  playerOne : string;
-  playerTwo : string;
+  id : string;
+  playerOne : User;
+  playerTwo : User;
   spectators : string[];
   gameStates : GameState[];
 
   constructor()
   {
-    this.name = RoomName + "1";
-    RoomName = this.name;
-    this.playerOne = "PLAYERONE";
-    this.playerTwo = "PLAYERTWO";
+    this.id = RoomName + "1";
+    RoomName = this.id;
+    this.playerOne = new User(0, "NONE");
+    this.playerTwo = new User(0, "NONE");
     this.gameStates = new Array<GameState>();
     this.gameStates.push(new GameState());
     this.spectators = new Array<string>();
@@ -205,108 +220,179 @@ class Room
 @WebSocketGateway({namespace: 'GAME', cors:{ origin: '*', }})
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private logger : Logger;
-  private socketIDs : string[];
-  // private gameState : GameState;
-  // private ball : Ball;
+  private users : User[];
+ 
+  constructor(public jwt : JwtService, public user : UserService) {}
+  
   private server : Server;
   private rooms : Room[];
 
   @WebSocketServer()
   afterInit(server: Server) {
     this.logger = new Logger("GameLogger");
-    this.socketIDs = new Array<string>();
+    this.users = new Array<User>();
     this.server = server;
     this.rooms = new Array<Room>();
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
-    this.socketIDs.push(client.id);
-    
+  async handleConnection(client: Socket, ...args: any[]) {
+    //TODO(yassine) : Get The User ID Here.
+    let payload : any = (this.jwt.decode(client.handshake.auth.token));
+    if (payload.id != client.handshake.auth.id) {
+      client.disconnect();
+    }
+    else {
+      let user = await this.user.getUserByid(payload.id);
+      if (user == null) {
+        client.disconnect();
+      }
+      else {
+        let newUser : User = new User(user.id, client.id);
+        this.users.push(newUser);
+      }
+    }
   }
 
   handleDisconnect(client: Socket) {
-    for (let i = 0; i < this.socketIDs.length; ++i)
+  
+    let roomIndex : number = 0; 
+    for (; roomIndex < this.rooms.length; ++roomIndex)
     {
-      if (this.socketIDs[i] == client.id)
-        this.socketIDs.splice(i, 1);
-    }
-    for (let roomsIndex : number = 0; roomsIndex < this.rooms.length; ++roomsIndex)
-    {
-      if (this.rooms[roomsIndex].playerOne == client.id)
+      //SPECTATOR
+      for (let specIndex : number = 0; specIndex < this.rooms[roomIndex].spectators.length; specIndex++)
       {
-        this.rooms[roomsIndex].playerOne = "PLAYERONE";
-        this.rooms[roomsIndex].gameStates[0].gameStart = false;
+        if (client.id == this.rooms[roomIndex].spectators[specIndex])
+        {
+          client.leave(this.rooms[roomIndex].id);
+          this.rooms[roomIndex].spectators.splice(specIndex, 1);
+        }
       }
-      if (this.rooms[roomsIndex].playerTwo == client.id)
+
+      //PLAYER
+
+      //case nobody joined the game nothing to be done
+
+
+      //case you quit within the game.
+
+
+      //case you quit after the game ended.
+    }
+
+  }
+
+  @SubscribeMessage('RequestGame')
+  handleRequestGame(client: Socket, userID : string) : void
+  {
+
+    //check if the socket id exists in the users table first.
+   
+  }
+
+  @SubscribeMessage('SpectateGameRequest')
+  handleSpectateGame(client: Socket, roomId: string) : void
+  {
+    for (let roomIndex : number = 0; roomIndex < this.rooms.length; roomIndex++)
+    {
+      if (this.rooms[roomIndex].id == roomId)
       {
-        this.rooms[roomsIndex].playerTwo = "PLAYERTWO";
-        this.rooms[roomsIndex].gameStates[0].gameStart = false;
+        this.rooms[roomIndex].spectators.push(client.id);
+        client.join(this.rooms[roomIndex].id);
       }
-      
-    }
-    for (let roomsIndex : number = 0; roomsIndex < this.rooms.length; ++roomsIndex)
-    {
-      if (this.rooms[roomsIndex].playerOne == "PLAYERONE" && this.rooms[roomsIndex].playerTwo == "PLAYERTWO")
-        this.rooms.splice(roomsIndex, 1);
-    }
-    this.logger.debug(client.id);
-    this.logger.debug("==============DISSCONECT==============");
-    for (let roomIndex = 0; roomIndex < this.rooms.length; roomIndex++)
-    {
-      this.logger.debug("\n" + "\tIndex: " + roomIndex + "\n" +
-                        "\tP1 Id : " + this.rooms[roomIndex].playerOne + "\n" +
-                        "\tP2 Id : " + this.rooms[roomIndex].playerTwo + "\n");
     }
   }
 
   @SubscribeMessage('connectionMSG')
   handleMessage(client: Socket, type: string): void
   {
-    if (type == "PLAYER")
+    let userIndex : number = 0;
+    for (; this.users.length; userIndex++)
     {
-      let clientAddedToRoom : boolean = false;
-      let roomIndex : number = 0;
-      for ( ; roomIndex < this.rooms.length; ++roomIndex)
+      if (this.users[userIndex].socketID == client.id)
+        break;
+     }
+     if (userIndex == this.users.length)
+    {
+      client.disconnect();
+      return ;
+    }
+
+    let userAddedToRoom : boolean = false;
+    let roomIndex : number = 0;
+    for ( ; roomIndex < this.rooms.length; ++roomIndex)
+    {
+      if (!this.rooms[roomIndex].playerOne.isValidUser())
       {
-        if (this.rooms[roomIndex].playerOne == "PLAYERONE")
-        {
-          this.rooms[roomIndex].playerOne = client.id;
-          client.join(this.rooms[roomIndex].name);
-          client.to(this.rooms[roomIndex].name).emit('PlayerRole', Player.PONE);
-          clientAddedToRoom = true;
-          break;
-        }
-        if (this.rooms[roomIndex].playerTwo == "PLAYERTWO")
-        {
-          this.rooms[roomIndex].playerTwo = client.id;
-          client.join(this.rooms[roomIndex].name);
-          client.to(this.rooms[roomIndex].name).emit('PlayerRole', Player.PTWO);
-          clientAddedToRoom = true;
-          break;
-        }
+        this.rooms[roomIndex].playerOne.id = this.users[userIndex].id;
+        this.rooms[roomIndex].playerOne.socketID = this.users[userIndex].socketID;
+        client.join(this.rooms[roomIndex].id);
+        userAddedToRoom = true;
+        break;
       }
-      if (!clientAddedToRoom)
+      if (!this.rooms[roomIndex].playerTwo.isValidUser())
       {
-        let room : Room = new Room();
-        room.playerOne = client.id;
-        this.rooms.push(room);
-        roomIndex = this.rooms.length - 1;
-        client.join(this.rooms[roomIndex].name);
-        client.to(this.rooms[roomIndex].name).emit('PlayerRole', Player.PONE);
+        this.rooms[roomIndex].playerTwo.id = this.users[userIndex].id;
+        this.rooms[roomIndex].playerTwo.socketID = this.users[userIndex].socketID;
+        client.join(this.rooms[roomIndex].id);
+        userAddedToRoom = true;
+        break;
       }
-      if (this.rooms[roomIndex].playerOne != "PLAYERONE" && this.rooms[roomIndex].playerTwo != "PLAYERTWO")
+    }
+    if (!userAddedToRoom)
+    {
+      let room : Room = new Room();
+      room.playerOne.id = this.users[userIndex].id;
+      room.playerOne.socketID = this.users[userIndex].socketID;
+      this.rooms.push(room);
+      roomIndex = this.rooms.length - 1;
+      client.join(this.rooms[roomIndex].id);
+    }
+    if (this.rooms[roomIndex].playerOne.id != 0 &&
+      this.rooms[roomIndex].playerTwo.id != 0)
       {
         this.rooms[roomIndex].reInitializeGameState();
-        this.server.to(this.rooms[roomIndex].name).emit('ClientMSG', this.rooms[roomIndex].gameStates[0]);
+        this.server.to(this.rooms[roomIndex].id).emit('ClientMSG', this.rooms[roomIndex].gameStates[0]);
       }
-    }
-    this.logger.debug("==============CONNECTION==============");
-    for (let roomIndex = 0; roomIndex < this.rooms.length; roomIndex++)
-    {
-      this.logger.debug("\n" + "\tIndex: " + roomIndex + "\n" +
-                        "\tP1 Id : " + this.rooms[roomIndex].playerOne + "\n" +
-                        "\tP2 Id : " + this.rooms[roomIndex].playerTwo + "\n");
-    }
+
+      //NOTE(Yassine) : OLD CODE.
+      // if (type == "PLAYER")
+    // {
+    //   let clientAddedToRoom : boolean = false;
+    //   let roomIndex : number = 0;
+    //   for ( ; roomIndex < this.rooms.length; ++roomIndex)
+    //   {
+    //     if (this.rooms[roomIndex].playerOne == "PLAYERONE")
+    //     {
+    //       this.rooms[roomIndex].playerOne = client.id;
+    //       client.join(this.rooms[roomIndex].name);
+    //       client.to(this.rooms[roomIndex].name).emit('PlayerRole', Player.PONE);
+    //       clientAddedToRoom = true;
+    //       break;
+    //     }
+    //     if (this.rooms[roomIndex].playerTwo == "PLAYERTWO")
+    //     {
+    //       this.rooms[roomIndex].playerTwo = client.id;
+    //       client.join(this.rooms[roomIndex].name);
+    //       client.to(this.rooms[roomIndex].name).emit('PlayerRole', Player.PTWO);
+    //       clientAddedToRoom = true;
+    //       break;
+    //     }
+    //   }
+    //   if (!clientAddedToRoom)
+    //   {
+    //     let room : Room = new Room();
+    //     room.playerOne = client.id;
+    //     this.rooms.push(room);
+    //     roomIndex = this.rooms.length - 1;
+    //     client.join(this.rooms[roomIndex].name);
+    //     client.to(this.rooms[roomIndex].name).emit('PlayerRole', Player.PONE);
+    //   }
+    //   if (this.rooms[roomIndex].playerOne != "PLAYERONE" && this.rooms[roomIndex].playerTwo != "PLAYERTWO")
+    //   {
+    //     this.rooms[roomIndex].reInitializeGameState();
+    //     this.server.to(this.rooms[roomIndex].name).emit('ClientMSG', this.rooms[roomIndex].gameStates[0]);
+    //   }
+    // }
   }
 
   @SubscribeMessage('keysState')
@@ -320,7 +406,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       let currentState : GameState = this.rooms[roomIndex].gameStates[this.rooms[roomIndex].gameStates.length - 1];
       if (currentState.winner == Winner.NONE)
       {
-        if (this.rooms[roomIndex].playerOne == client.id)
+        if (this.rooms[roomIndex].playerOne.socketID == client.id)
         {
           if (keyStates[2].state == "DOWN" &&
           currentState.gameStart == false &&
@@ -358,7 +444,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             }
           }
         }
-        if (this.rooms[roomIndex].playerTwo == client.id)
+        if (this.rooms[roomIndex].playerTwo.socketID == client.id)
         {
           if (keyStates[2].state == "DOWN" &&
           currentState.gameStart == false &&
@@ -396,7 +482,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             }
           }
         }
-        if (currentState.gameStart == true && client.id == this.rooms[roomIndex].playerOne)
+        if (currentState.gameStart == true && client.id == this.rooms[roomIndex].playerOne.socketID)
         {
           currentState.ballPosition = addV3(mulV3f(currentState.ballDirection, ballMovementStep * TICK_UPDATE), currentState.ballPosition);
           if (currentState.ballPosition[0] < (-fieldDimensions[0] / 2.0) - (3.0 * ballRadius))
@@ -407,6 +493,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             if (currentState.score[1] >= ENDSCORE)
             {
               currentState.winner = Winner.PTWO;
+              client.disconnect();
             }
           }
           if (currentState.ballPosition[0] > (fieldDimensions[0] / 2.0) + (3.0 * ballRadius))
@@ -417,6 +504,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             if (currentState.score[0] >= ENDSCORE)
             {
               currentState.winner = Winner.PONE;
+              client.disconnect();
             }
           }
           if (currentState.ballPosition[2] + ballRadius > fieldDimensions[2] / 2.0)
@@ -472,7 +560,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         {
           this.rooms[roomIndex].gameStates.splice(0, 1);
         }
-        this.server.to(this.rooms[roomIndex].name).emit('ClientMSG', this.rooms[roomIndex].gameStates[0]);
+        this.server.to(this.rooms[roomIndex].id).emit('ClientMSG', this.rooms[roomIndex].gameStates[0]);
         }
     }    
   }
