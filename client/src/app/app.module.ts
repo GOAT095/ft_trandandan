@@ -40,6 +40,9 @@ import { FriendsListComponent } from './friends-list/friends-list.component';
 import { RoomSettingsComponent } from './room-settings/room-settings.component';
 import { OauthDialogComponent } from './oauth-dialog/oauth-dialog.component';
 import { PlayerMatchHistoryComponent } from './player-match-history/player-match-history.component';
+import { GameSpectateComponent } from './game-spectate/game-spectate.component';
+import { SwiperModule } from 'swiper/angular';
+import { GameInviteComponent } from './game-invite/game-invite.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +74,8 @@ import { PlayerMatchHistoryComponent } from './player-match-history/player-match
     RoomSettingsComponent,
     OauthDialogComponent,
     PlayerMatchHistoryComponent,
+    GameSpectateComponent,
+    GameInviteComponent,
   ],
   imports: [
     BrowserModule,
@@ -84,7 +89,8 @@ import { PlayerMatchHistoryComponent } from './player-match-history/player-match
     DialogModule,
     CdkMenuModule,
     CdkListboxModule,
-    OverlayModule
+    OverlayModule,
+    SwiperModule
   ],
   providers: [],
   bootstrap: [AppComponent],

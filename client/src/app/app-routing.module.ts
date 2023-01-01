@@ -7,6 +7,8 @@ import { PlayerFriendRequestsComponent } from './player-friend-requests/player-f
 import { PlayerFriendsComponent } from './player-friends/player-friends.component';
 import { PlayerInfoComponent } from './player-info/player-info.component';
 import { PlayerMatchHistoryComponent } from './player-match-history/player-match-history.component';
+import { GameSpectateComponent } from './game-spectate/game-spectate.component';
+import { PongGameComponent } from './pong-game/pong-game.component';
 
 const routes: Routes = [
   { path: '2fa-step', component: TwoFactorCheckComponent},
@@ -15,7 +17,9 @@ const routes: Routes = [
   { path: 'friends/search', component: PlayerFriendsComponent},
   { path: 'friends/requests', component: PlayerFriendRequestsComponent},
   { path: 'profile', component: PlayerInfoComponent},
-  { path: 'history', component: PlayerMatchHistoryComponent}
+  { path: 'history', component: PlayerMatchHistoryComponent},
+  { path: 'spectate', component: GameSpectateComponent},
+  { path: 'game', component: PongGameComponent}
 ];
 
 @NgModule({

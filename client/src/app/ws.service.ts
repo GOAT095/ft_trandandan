@@ -18,6 +18,7 @@ export class WsService {
   newMessageEvent = new Subject<any[]>;
   newDirectMessageEvent = new Subject<any[]>;
   newRoomMessageEvent = new Subject<any[]>;
+  newGameInviteEvent = new Subject<any[]>;
 
   constructor() {
 
@@ -65,6 +66,9 @@ export class WsService {
   handleNotify() {
     this.socket?.on('notification', (data) => {
       this.notifications.push(data);
+      if (data.type == '1vs1') {
+        this.newGameInviteEvent.next(data);
+      }
     });
   }
   handleChatMessage() {

@@ -1,0 +1,41 @@
+div.game-spectate-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    overflow-y: scroll;
+    max-height: 80vh;
+    max-width: 90vw;
+
+    scrollbar-width: thin;
+}
+
+div.game-spectate-element {
+    display: flex;
+    flex-direction: column;
+    min-height: 4em;
+    margin: 2em;
+
+    // debug
+    //border: 2px dashed green;
+}
+
+div.game-spectate-element-header {
+    display: flex;
+    flex-direction: row;
+}
+
+div.game-spectate-element-player-2 {
+    align-self: flex-end;
+    flex: 1;
+}
+
+div.game-spectate-element-player-1 {
+    align-self: flex-start;
+    flex: 1;
+}
+
+img {
+    max-width: 400px;
+}
+//app-pong-game

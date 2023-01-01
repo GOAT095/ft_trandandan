@@ -16,6 +16,8 @@ import { NewRoomComponent } from '../new-room/new-room.component';
 import { RoomListComponent } from '../room-list/room-list.component';
 import { FriendsListComponent } from '../friends-list/friends-list.component';
 import { environment } from 'src/environments/environment';
+import { GameSpectateComponent } from '../game-spectate/game-spectate.component';
+import { GameInviteComponent } from '../game-invite/game-invite.component';
 
 @Component({
   selector: 'app-main',
@@ -62,11 +64,11 @@ export class MainComponent implements OnInit {
   ];
 
   @ViewChild('messages_box') messages_box!: ElementRef<HTMLDivElement>;
+  mode :number = 1;
 
   constructor(
     private api: ApiService, private route: ActivatedRoute, public dialog: Dialog, public ws: WsService,
     ) {
-
     api.getPlayer().subscribe(
       (data) => {
         this.player = data;
@@ -102,11 +104,17 @@ export class MainComponent implements OnInit {
         ws.handleChatMessage();
         ws.handleRoomChatMessage();
         ws.handleDirectMessage();
+        // listen to ws.events
         ws.newMessageEvent.subscribe((data) => {
-          this.messages_box.nativeElement.scrollTop = this.messages_box.nativeElement.scrollHeight;
-          setTimeout(() => {
+          if (this.messages_box != null) {
             this.messages_box.nativeElement.scrollTop = this.messages_box.nativeElement.scrollHeight;
-          }, environment.chatRefreshTime)
+            setTimeout(() => {
+              this.messages_box.nativeElement.scrollTop = this.messages_box.nativeElement.scrollHeight;
+            }, environment.chatRefreshTime)
+          }
+        })
+        ws.newGameInviteEvent.subscribe((data) => {
+          this.dialog.open(GameInviteComponent);
         })
       },
       (error) => {
@@ -234,8 +242,21 @@ export class MainComponent implements OnInit {
   }
 
   openSpectateDialog(): void {
-
+    // list available games
+    let dialogRef = this.dialog.open(GameSpectateComponent);
+    if (dialogRef.componentInstance != null) {
+      dialogRef.componentInstance.type = 'swiper';
+    }
   }
+
+  showSpectateDialog(): void {
+    // pick the latest online game
+    let dialogRef = this.dialog.open(GameSpectateComponent);
+    if (dialogRef.componentInstance != null) {
+      dialogRef.componentInstance.type = 'flex';
+    }
+  }
+
 
   sendChatMessage(): void {
     this.ws.postToChat('global', this.chatMessage, this.player);

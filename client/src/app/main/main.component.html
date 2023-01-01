@@ -79,6 +79,7 @@
         <div cdkMenu>
             <button (click)="gameStart()" cdkMenuItem>Start</button>
             <button [cdkMenuTriggerFor]="game_view" cdkMenuItem>view <span>&#10148;</span></button>
+            <button [cdkMenuTriggerFor]="game_mode" cdkMenuItem>mode <span>&#10148;</span></button>
             <button (click)="openShortcutDialog()" 
                     cdkMenuItem>Shortcuts</button>
             <button (click)="openSpectateDialog()"
@@ -95,6 +96,18 @@
                     [cdkMenuItemChecked]="gameView == 1"
                     (cdkMenuItemTriggered)="toggleView()"
                     cdkMenuItemRadio>Vertical</button>
+        </div>
+    </ng-template>
+    <ng-template #game_mode>
+        <div cdkMenu>
+            <button [disabled]="mode == 1" 
+                    [cdkMenuItemChecked]="mode == 1"
+                    (cdkMenuItemTriggered)="mode = 1"
+                    cdkMenuItemRadio>Custom</button>
+            <button [disabled]="mode == 0" 
+                    [cdkMenuItemChecked]="mode == 0"
+                    (cdkMenuItemTriggered)="mode = 0"
+                    cdkMenuItemRadio>Classic</button>
         </div>
     </ng-template>
     <ng-template #rooms>
@@ -149,6 +162,10 @@
             <p *ngFor="let notification of ws.notifications">* {{ notification.data.message }}</p>
         </div>
     </ng-template>
+</div>
+
+<div id="spectate">
+    <button class="nes-btn" (click)="showSpectateDialog()">spectate</button>
 </div>
 
 </div>
