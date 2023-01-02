@@ -43,6 +43,18 @@ services:
       POSTGRES_PASSWORD: $POSTGRES_PASS
     volumes:
       - db-data:/var/lib/postgresql/data
+
+  client:
+    build: ./client/client
+    container_name: client
+    restart: always
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./client/client:/usr/src/client
+    depends_on:
+      - users
+
 # phpMyAdmin just for development in case we need a look up to database
 
 # phpmyadmin:
