@@ -10,6 +10,7 @@ import { twoFactorAuthenticatorService } from "../auth/twoFactorAuthentication.s
 import { FriendrequestEntity } from "../friends/friend.entity";
 import { FriendsController } from "../friends/friends.controller";
 import { FriendsService } from "../friends/friends.service";
+import { Gamehistoryclass } from "../game/game.entity";
 import { Block } from "./block.entity";
 import { UserController } from "./user.controller";
 import { User } from "./user.entity";
@@ -17,7 +18,7 @@ import { UserService } from "./user.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, FriendrequestEntity, Block]),
+    TypeOrmModule.forFeature([User, FriendrequestEntity, Block, Gamehistoryclass]),
     PassportModule.register({ defaultStrategy: "jwt" }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
