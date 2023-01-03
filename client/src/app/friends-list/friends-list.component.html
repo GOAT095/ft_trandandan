@@ -9,7 +9,10 @@
                 class="room-element" [cdkOption]="index">
                 <!--<img *ngIf="rooms[i].type == 'protected'" src="assets/padlock.png" width="24" height="24">-->
                 <app-player-info-short [me]="player" [player]="friend" [type]="'chat'"></app-player-info-short>
-                <span>{{friend.name}}</span>
+                <span class="nes-badge is-icon">
+                    <span *ngIf="friend.status == 'online'" class="is-success"> </span>
+                    <span class="">{{friend.name}}</span>
+                </span>
                 <!--<button class="nes-btn is-primary">Join !</button>-->
             </div>
         </div>
