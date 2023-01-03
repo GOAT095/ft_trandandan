@@ -3,6 +3,8 @@ import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/api/user/user.service';
+import { RoomDto } from '../dto/user.dto';
+import { runInThisContext } from 'vm';
 
 
 
@@ -174,17 +176,17 @@ let RoomName : string = "ROOM";
 class User
 {
   id : number;
-  socketID : string;
+  socket : Socket;
 
-  constructor(ID : number, sID : string)
+  constructor(ID : number, s : Socket)
   {
     this.id = ID;
-    this.socketID = sID;
+    this.socket = s;
   }
 
   isValidUser(): boolean
   {
-    if (this.socketID == "NONE" || this.id == 0)
+    if (this.socket != null || this.id == 0)
       return (false);
     return (true);
   }
@@ -195,18 +197,18 @@ class Room
   id : string;
   playerOne : User;
   playerTwo : User;
-  spectators : string[];
+  spectators : Socket[];
   gameStates : GameState[];
 
   constructor()
   {
     this.id = RoomName + "1";
     RoomName = this.id;
-    this.playerOne = new User(0, "NONE");
-    this.playerTwo = new User(0, "NONE");
+    this.playerOne = new User(0, null);
+    this.playerTwo = new User(0, null);
     this.gameStates = new Array<GameState>();
     this.gameStates.push(new GameState());
-    this.spectators = new Array<string>();
+    this.spectators = new Array<Socket>();
   }
 
   reInitializeGameState(): void
@@ -221,8 +223,10 @@ class Room
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private logger : Logger;
   private users : User[];
+  public jwt : JwtService;
+  public userService : UserService;
  
-  constructor(public jwt : JwtService, public user : UserService) {}
+  //constructor(public jwt : JwtService, public user : UserService) {}
   
   private server : Server;
   private rooms : Room[];
@@ -233,24 +237,32 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.users = new Array<User>();
     this.server = server;
     this.rooms = new Array<Room>();
+    this.jwt = new JwtService();
+    this.userService = new UserService();
   }
 
   async handleConnection(client: Socket, ...args: any[]) {
     //TODO(yassine) : Get The User ID Here.
-    let payload : any = (this.jwt.decode(client.handshake.auth.token));
-    if (payload.id != client.handshake.auth.id) {
-      client.disconnect();
-    }
-    else {
-      let user = await this.user.getUserByid(payload.id);
-      if (user == null) {
-        client.disconnect();
-      }
-      else {
-        let newUser : User = new User(user.id, client.id);
-        this.users.push(newUser);
-      }
-    }
+    this.logger.debug("FRONT : " + client.handshake.auth.token);
+    // let payload : any = (this.jwt.decode(client.handshake.auth.token));
+    // if (payload == null)
+    // {
+    //   client.disconnect();
+    //   return ;
+    // }
+    // if (payload.id != client.handshake.auth.id) {
+    //   client.disconnect();
+    // }
+    // else {
+    //   let user = await this.user.getUserByid(payload.id);
+    //   if (user == null) {
+    //     client.disconnect();
+    //   }
+    //   else {
+    //     let newUser : User = new User(user.id, client.id);
+    //     this.users.push(newUser);
+    //   }
+    // }
   }
 
   handleDisconnect(client: Socket) {
@@ -261,7 +273,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       //SPECTATOR
       for (let specIndex : number = 0; specIndex < this.rooms[roomIndex].spectators.length; specIndex++)
       {
-        if (client.id == this.rooms[roomIndex].spectators[specIndex])
+        if (client.id == this.rooms[roomIndex].spectators[specIndex].id)
         {
           client.leave(this.rooms[roomIndex].id);
           this.rooms[roomIndex].spectators.splice(specIndex, 1);
@@ -269,14 +281,61 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       }
 
       //PLAYER
+      
+      //NOTE(yassine): case nobody joined the game nothing to be done
+      if ((this.rooms[roomIndex].playerOne.socket.id == client.id && !this.rooms[roomIndex].playerTwo.isValidUser()) ||
+      this.rooms[roomIndex].playerTwo.socket.id == client.id && !this.rooms[roomIndex].playerOne.isValidUser())
+      {
+        client.leave(this.rooms[roomIndex].id);
 
-      //case nobody joined the game nothing to be done
-
+        for (let specIndex : number = 0; specIndex < this.rooms[roomIndex].spectators.length; specIndex++)
+        {
+          this.rooms[roomIndex].spectators[specIndex].leave(this.rooms[roomIndex].id);
+          this.rooms[roomIndex].spectators[specIndex].disconnect();
+        }
+        this.rooms.splice(roomIndex, 1);
+        return ;
+      }
 
       //case you quit within the game.
+      if (client.id == this.rooms[roomIndex].playerOne.socket.id && this.rooms[roomIndex].gameStates[0].winner == Winner.NONE)
+      {
+        this.rooms[roomIndex].gameStates[0].winner = Winner.PTWO;
+        //TODO(Yassine):send end Event.
+        //TODO(yassine):update the database
+        for (let specIndex : number = 0; specIndex < this.rooms[roomIndex].spectators.length; specIndex++)
+        {
+          this.rooms[roomIndex].spectators[specIndex].leave(this.rooms[roomIndex].id);
+          this.rooms[roomIndex].spectators[specIndex].disconnect();
+        }
 
+        return;
+      }
+      if (client.id == this.rooms[roomIndex].playerTwo.socket.id && this.rooms[roomIndex].gameStates[0].winner == Winner.NONE)
+      {
+        this.rooms[roomIndex].gameStates[0].winner = Winner.PONE;
+        //TODO(yassine):update the database.
+        //TODO(Yassine):send end Event.
+        for (let specIndex : number = 0; specIndex < this.rooms[roomIndex].spectators.length; specIndex++)
+        {
+          this.rooms[roomIndex].spectators[specIndex].leave(this.rooms[roomIndex].id);
+          this.rooms[roomIndex].spectators[specIndex].disconnect();
+        }
 
+        return;
+      }
       //case you quit after the game ended.
+      if (client.id == this.rooms[roomIndex].playerOne.socket.id && this.rooms[roomIndex].gameStates[0].winner != Winner.NONE)
+      {
+        //TODO(yassine):update the database.
+        this.rooms[roomIndex].playerTwo.socket.disconnect();
+      }
+      if (client.id == this.rooms[roomIndex].playerTwo.socket.id && this.rooms[roomIndex].gameStates[0].winner != Winner.NONE)
+      {
+        //TODO(yassine):update the database.
+        this.rooms[roomIndex].playerOne.socket.disconnect();
+        return;
+      }
     }
 
   }
@@ -296,7 +355,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     {
       if (this.rooms[roomIndex].id == roomId)
       {
-        this.rooms[roomIndex].spectators.push(client.id);
+        this.rooms[roomIndex].spectators.push(client);
         client.join(this.rooms[roomIndex].id);
       }
     }
@@ -308,7 +367,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     let userIndex : number = 0;
     for (; this.users.length; userIndex++)
     {
-      if (this.users[userIndex].socketID == client.id)
+      if (this.users[userIndex].socket.id == client.id)
         break;
      }
      if (userIndex == this.users.length)
@@ -324,7 +383,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       if (!this.rooms[roomIndex].playerOne.isValidUser())
       {
         this.rooms[roomIndex].playerOne.id = this.users[userIndex].id;
-        this.rooms[roomIndex].playerOne.socketID = this.users[userIndex].socketID;
+        this.rooms[roomIndex].playerOne.socket = this.users[userIndex].socket;
         client.join(this.rooms[roomIndex].id);
         userAddedToRoom = true;
         break;
@@ -332,7 +391,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       if (!this.rooms[roomIndex].playerTwo.isValidUser())
       {
         this.rooms[roomIndex].playerTwo.id = this.users[userIndex].id;
-        this.rooms[roomIndex].playerTwo.socketID = this.users[userIndex].socketID;
+        this.rooms[roomIndex].playerTwo.socket = this.users[userIndex].socket;
         client.join(this.rooms[roomIndex].id);
         userAddedToRoom = true;
         break;
@@ -342,7 +401,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     {
       let room : Room = new Room();
       room.playerOne.id = this.users[userIndex].id;
-      room.playerOne.socketID = this.users[userIndex].socketID;
+      room.playerOne.socket = this.users[userIndex].socket;
       this.rooms.push(room);
       roomIndex = this.rooms.length - 1;
       client.join(this.rooms[roomIndex].id);
@@ -406,7 +465,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       let currentState : GameState = this.rooms[roomIndex].gameStates[this.rooms[roomIndex].gameStates.length - 1];
       if (currentState.winner == Winner.NONE)
       {
-        if (this.rooms[roomIndex].playerOne.socketID == client.id)
+        if (this.rooms[roomIndex].playerOne.socket.id == client.id)
         {
           if (keyStates[2].state == "DOWN" &&
           currentState.gameStart == false &&
@@ -444,7 +503,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             }
           }
         }
-        if (this.rooms[roomIndex].playerTwo.socketID == client.id)
+        if (this.rooms[roomIndex].playerTwo.socket.id == client.id)
         {
           if (keyStates[2].state == "DOWN" &&
           currentState.gameStart == false &&
@@ -482,7 +541,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             }
           }
         }
-        if (currentState.gameStart == true && client.id == this.rooms[roomIndex].playerOne.socketID)
+        if (currentState.gameStart == true && client.id == this.rooms[roomIndex].playerOne.socket.id)
         {
           currentState.ballPosition = addV3(mulV3f(currentState.ballDirection, ballMovementStep * TICK_UPDATE), currentState.ballPosition);
           if (currentState.ballPosition[0] < (-fieldDimensions[0] / 2.0) - (3.0 * ballRadius))
@@ -493,6 +552,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             if (currentState.score[1] >= ENDSCORE)
             {
               currentState.winner = Winner.PTWO;
+              //TODO(yassine): Send some end game events to all sockets withing the same room.
               client.disconnect();
             }
           }
@@ -504,6 +564,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             if (currentState.score[0] >= ENDSCORE)
             {
               currentState.winner = Winner.PONE;
+              //TODO(yassine): Send some end game events to all sockets withing the same room.
               client.disconnect();
             }
           }
