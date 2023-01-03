@@ -1,3 +1,4 @@
+/*
 "use strict";
 
 let sphereVertices = new Float32Array([ 0.000000, -0.707107, -0.707107, 
@@ -3674,3 +3675,4 @@ function render()
 
 main();
 render();
+*/

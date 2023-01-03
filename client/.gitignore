@@ -19,6 +19,7 @@ yarn-error.log
 *.launch
 .settings/
 *.sublime-workspace
+*.swp
 
 # Visual Studio Code
 .vscode/*
@@ -49,3 +50,9 @@ Thumbs.db
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# __pycache
+__pycache__/
+
+# notes
+notes.md

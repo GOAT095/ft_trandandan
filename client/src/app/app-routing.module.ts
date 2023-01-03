@@ -9,6 +9,7 @@ import { PlayerInfoComponent } from './player-info/player-info.component';
 import { PlayerMatchHistoryComponent } from './player-match-history/player-match-history.component';
 import { GameSpectateComponent } from './game-spectate/game-spectate.component';
 import { PongGameComponent } from './pong-game/pong-game.component';
+import { PongGameComponentV2 } from './pong-game/pong-game-v2.component';
 
 const routes: Routes = [
   { path: '2fa-step', component: TwoFactorCheckComponent},
@@ -19,7 +20,7 @@ const routes: Routes = [
   { path: 'profile', component: PlayerInfoComponent},
   { path: 'history', component: PlayerMatchHistoryComponent},
   { path: 'spectate', component: GameSpectateComponent},
-  { path: 'game', component: PongGameComponent}
+  { path: 'game', component: PongGameComponentV2}
 ];
 
 @NgModule({
@@ -27,4 +28,3 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
-

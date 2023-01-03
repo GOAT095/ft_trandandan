@@ -50,3 +50,5 @@ interface SocketData {
   name: string;
   age: number;
 }
+
+declare var mode:number;

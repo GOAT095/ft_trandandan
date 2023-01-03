@@ -14,8 +14,8 @@ services:
     volumes:
       - ./:/usr/src/client
     networks:
-      - ft_trandandan_default
+      - anassif_default
 
 networks:
-  ft_trandandan_default:
+  anassif_default:
     external: true

@@ -1,12 +1,12 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-//import * as render from './render';
+import * as render from './render';
 
 @Component({
-  selector: 'app-pong-game',
+  selector: 'app-pong-game-v2',
   templateUrl: './pong-game.component.html',
   styleUrls: ['./pong-game.component.less']
 })
-export class PongGameComponent implements OnInit {
+export class PongGameComponentV2 implements OnInit {
 
   @ViewChild("pongcanvas") canvas!: ElementRef<HTMLCanvasElement>;
   glContext!: WebGL2RenderingContext | null;
