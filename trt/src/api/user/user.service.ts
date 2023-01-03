@@ -17,6 +17,8 @@ import { createHash, randomBytes } from "crypto";
 import { Block } from "./block.entity";
 import { Response } from "express";
 import { use } from "passport";
+import { Gamehistoryclass } from "../game/game.entity";
+
 // import { hashPassword } from '../utils/bcrypt';
 
 @Injectable()
@@ -27,7 +29,8 @@ export class UserService {
   private readonly BlockRepo: Repository<Block>;
   @Inject(JwtService)
   private readonly JwtService: JwtService;
-
+  @InjectRepository(Gamehistoryclass)
+  private readonly GameHistory: Repository<Gamehistoryclass>;
   // TODO: use a better data structure, caveats: requests to /redirect will populate
   // the mapping without ever cleaning up if /check is not visited for that
   // particular token
@@ -262,5 +265,16 @@ export class UserService {
       relations: ["blocker", "blocked"],
     });
     //works now
+  }
+
+  async getUserHistory(user: User): Promise<Gamehistoryclass[]> {
+    
+    return await this.GameHistory.find({
+      where: [
+        { playerOne: {id:user.id} },
+        { playerTwo: {id:user.id} },
+      ],
+      relations: ["playerOne", "playerTwo"],
+    });
   }
 }

@@ -106,7 +106,6 @@ export class FriendsService {
       ],
       relations: ["requestSender", "requestReceiver"],
     });
-    //needs tests !
   }
 
   async getAllRequestsForDebugging(): Promise<FriendrequestEntity[]> {

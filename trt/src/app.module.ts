@@ -13,6 +13,7 @@ import { ChatController } from './api/chat/chat.controller';
 import { RoomService } from "./api/chat/room/room.service";
 import { JwtModule } from "@nestjs/jwt";
 import { GameGateway } from "./api/game/game.gateway";
+import { Gamehistoryclass } from "./api/game/game.entity";
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { GameGateway } from "./api/game/game.gateway";
       database: process.env.POSTGRES_DB,
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASS,
-      entities: [User, FriendrequestEntity, Block, chatLogs, Room, roomUser],
+      entities: [User, FriendrequestEntity, Block, chatLogs, Room, roomUser, Gamehistoryclass],
       // logger: 'file',
       // logging: true,
       synchronize: true, // never use TRUE in production
