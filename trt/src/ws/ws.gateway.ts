@@ -40,7 +40,7 @@ export class WsGateway {
   }
 
   handleDisconnect(client: any) {
-    this.clients.splice(this.clients.indexOf(client));
+    this.clients.splice(this.clients.indexOf(client), 1);
     //console.log('disconnected client', client.id);
   }
 
