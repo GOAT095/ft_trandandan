@@ -12,14 +12,15 @@
                 <!--<img *ngIf="rooms[i].type == 'protected'" src="assets/padlock.png" width="24" height="24">-->
                 <span>{{room.name}}</span>
                 <!--<button class="nes-btn is-primary">Join !</button>-->
+                <ng-template #roomMenu>
+                    <div cdkMenu>
+                        <button cdkMenuItem>disable password</button>
+                        <button cdkMenuItem>change password</button>
+                        <button cdkMenuItem (click)="leaveRoom(rooms[index].id)">leave</button>
+                    </div>
+                </ng-template>
             </div>
-            <ng-template #roomMenu>
-                <div cdkMenu>
-                    <button cdkMenuItem>disable password</button>
-                    <button cdkMenuItem>change password</button>
-                </div>
-            </ng-template>
-        </div>
+       </div>
         <div class="chat-box nes-container with-title is-dark">
             <div class="title chat-box-title">
                 <label>{{ rooms[selectedRoomId[0]] ? rooms[selectedRoomId[0]].name : null }}</label>

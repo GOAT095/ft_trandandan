@@ -97,6 +97,27 @@ export class RoomListComponent implements OnInit {
     });
   }
 
+  leaveRoom(roomId: string) {
+    this.api.leaveRoom(roomId).subscribe(
+      (data) => {
+        console.log(data);
+        // refresh rooms list
+        this.api.getPlayerActiveRooms(this.player.id).subscribe(
+          (data) => {
+            console.log(data);
+            this.rooms = data;
+            if (data.length > 0) {
+              //this.selectedRoomId = [data[0].id];
+              //this.selected = true;
+              this.roomListbox.select(data[0].id);
+              //console.log(this.roomListbox);
+              //console.log(this.ref.nativeElement.getElementById())
+            }
+          }
+        )
+      }
+    )
+  }
   ngOnInit(): void {
   }
 

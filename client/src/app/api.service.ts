@@ -148,5 +148,9 @@ export class ApiService {
     .pipe(catchError(this.handleError));
   }
 
+  leaveRoom(roomId: string) {
+    return this.http.post<any>(`${this.apiUrl}/chat/room/${roomId}/leave`, {}, {withCredentials: true})
+    .pipe(catchError(this.handleError));
+  }
 
 }
