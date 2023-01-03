@@ -1,0 +1,43 @@
+<div class="nes-container is-dark">
+    <div class="room-view">
+        <div class="nes-container is-dark room-list" 
+            id="room-listbox"
+            cdkListbox
+            [cdkListboxValue]="selectedPlayerId"
+            (cdkListboxValueChange)="selectedPlayerId = $event.value">
+            <div *ngFor="let friend of friends; index as index;"
+                class="room-element" [cdkOption]="index">
+                <!--<img *ngIf="rooms[i].type == 'protected'" src="assets/padlock.png" width="24" height="24">-->
+                <app-player-info-short [me]="player" [player]="friend" [type]="'chat'"></app-player-info-short>
+                <span class="nes-badge is-icon">
+                    <span *ngIf="friend.status == 'online'" class="is-success"> </span>
+                    <span class="">{{friend.name}}</span>
+                </span>
+                <!--<button class="nes-btn is-primary">Join !</button>-->
+            </div>
+        </div>
+        <div class="chat-box nes-container with-title is-dark">
+            <label class="title">{{ friends[selectedPlayerId[0]] ? friends[selectedPlayerId[0]].name : null }}</label>
+            <div class="chat-messages-view" #chat_messages_view>
+                <div *ngIf="selectedPlayerId.length > 0" class="messages-box">
+                    <!--<p *ngFor="let message of chatMessages">* {{ message }}</p>-->
+                    <div *ngIf="blockList.includes(friends[selectedPlayerId[0]].id); else renderMessages;">
+                        <p class="message-message">This User is blocked !</p>
+                    </div>
+                    <ng-template #renderMessages>
+                    <div class="message-layout"
+                    *ngFor="let message of ws.directMessages[friends[selectedPlayerId[0]].id]">
+                        <app-player-info-short [me]="player" [player]="message.player" [type]="'chat'"></app-player-info-short>
+                        <p class="message-message">{{ message.message }}</p>
+                    </div>
+                    </ng-template>
+                </div>
+            </div>
+            <div class="chat-message-input">
+                <input class="nes-input is-dark" type="text"
+                        placeholder="Chat ..." (keyup.enter)="sendChatMessage()"
+                        [(ngModel)]="chatMessage"/>
+            </div>
+        </div>
+    </div>
+</div>

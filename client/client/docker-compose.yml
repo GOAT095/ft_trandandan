@@ -1,0 +1,21 @@
+version: "3.1"
+
+volumes:
+  db-data:
+    driver: local
+
+services:
+  client:
+    build: .
+    container_name: client
+    restart: always
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./:/usr/src/client
+    networks:
+      - anassif_default
+
+networks:
+  anassif_default:
+    external: true

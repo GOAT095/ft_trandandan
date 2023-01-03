@@ -1,0 +1,171 @@
+<div :hidden class="nes-container is-dark viewport layout">
+    <nav>
+        <div>
+            <!--<span>Player info</span>-->
+            <!--<img class="nes-avatar is-pixelated is-large" src="https://www.gravatar.com/avatar/3bc8ceda0c2d6dcbc3b4a844c02a39c4?default=retro">
+            <h6>Rui Uyemara</h6>-->
+            <app-player-info [player]="player"></app-player-info>
+        </div>
+        <div class="nav-tab">
+            <span>Chat</span>
+        </div>
+        <div class="nav-tab">
+            <span>Leaderboard</span>
+        </div>
+        <div class="nav-tab">
+            <span>Settings</span>
+        </div>
+        <div>
+            <!--<span>X</span>-->
+            <button class="nes-btn is-warning" (click)="logout()">X</button>
+        </div>
+    </nav>
+    <!--<button class="nes-btn is-primary" (click)="openFirstLoginDialog()">SHOW POPUP</button>-->
+    <div id="display">
+        <!--<span>Display</span>-->
+        <div :hidden class="chat nes-container">
+            <section class="message-list">
+                <section class="message -left">
+                    <i class="nes-bcrikko"></i>
+                    <!-- Balloon -->
+                    <div class="nes-balloon from-left is-dark">
+                        <p>Hello NES.css</p>
+                    </div>
+                </section>
+                <section class="message -right">
+                    <!-- Ballon -->
+                    <div class="nes-balloon from-right is-dark">
+                        <p>Good morning. Thou has had a good night's sleep, I hope.</p>
+                    </div>
+                    <i class="nes-bcrikko"></i>
+                </section>
+            </section>
+        </div>
+        <!--<app-player-settings [player]="player" (playerUpdateEvent)="updatePlayer($event)"></app-player-settings>-->
+    </div>
+</div>
+
+
+<div (keydown)="keyPress($event)">
+<nav>
+    <div cdkMenuBar>
+        <button [cdkMenuTriggerFor]="menu" cdkMenuItem>Menu</button>
+        <!--<button [cdkMenuTriggerFor]="edit" cdkMenuItem>Edit</button>
+        <button [cdkMenuTriggerFor]="format" cdkMenuItem>Format</button>-->
+    </div>
+    <ng-template #menu>
+        <div cdkMenu>
+            <button (click)="openSettingsDialog()" cdkMenuItem>Settings</button>
+            <hr />
+            <button [cdkMenuTriggerFor]="friends" cdkMenuItem>Friends <span>&#10148;</span></button>
+            <!--<button cdkMenuItem>Open</button>
+            <button cdkMenuItem>Make a Copy</button>-->
+            <button [cdkMenuTriggerFor]="game" cdkMenuItem>Game <span>&#10148;</span></button>
+            <button (click)="isChatOpen = !isChatOpen" cdkMenuItem>Chat</button>
+            <button [cdkMenuTriggerFor]="rooms" cdkMenuItem>Rooms <span>&#10148;</span></button> 
+            <hr />
+            <button (click)="logout()" cdkMenuItem>Logout</button>
+        </div>
+    </ng-template>
+    
+    <ng-template #friends>
+        <div cdkMenu>
+            <button (click)="openFriendsListDialog()" cdkMenuItem>List</button>
+            <button (click)="openFriendsRequestsDialog()" cdkMenuItem>Requests ({{ friendsRequestsCount }})</button>
+            <button (click)="openFriendsSearchDialog()" cdkMenuItem>Search</button>
+        </div>
+    </ng-template>
+    <ng-template #game>
+        <div cdkMenu>
+            <button (click)="gameStart()" cdkMenuItem>Start</button>
+            <button [cdkMenuTriggerFor]="game_view" cdkMenuItem>view <span>&#10148;</span></button>
+            <button [cdkMenuTriggerFor]="game_mode" cdkMenuItem>mode <span>&#10148;</span></button>
+            <button (click)="openShortcutDialog()" 
+                    cdkMenuItem>Shortcuts</button>
+            <button (click)="openSpectateDialog()"
+                    cdkMenuItem>Spectate</button>
+        </div>
+    </ng-template>
+    <ng-template #game_view>
+        <div cdkMenu>
+            <button [disabled]="gameView == 0" 
+                    [cdkMenuItemChecked]="gameView == 0"
+                    (cdkMenuItemTriggered)="toggleView()"
+                    cdkMenuItemRadio>Horizontal</button>
+            <button [disabled]="gameView == 1" 
+                    [cdkMenuItemChecked]="gameView == 1"
+                    (cdkMenuItemTriggered)="toggleView()"
+                    cdkMenuItemRadio>Vertical</button>
+        </div>
+    </ng-template>
+    <ng-template #game_mode>
+        <div cdkMenu>
+            <button [disabled]="mode == 1" 
+                    [cdkMenuItemChecked]="mode == 1"
+                    (cdkMenuItemTriggered)="mode = 1"
+                    cdkMenuItemRadio>Custom</button>
+            <button [disabled]="mode == 0" 
+                    [cdkMenuItemChecked]="mode == 0"
+                    (cdkMenuItemTriggered)="mode = 0"
+                    cdkMenuItemRadio>Classic</button>
+        </div>
+    </ng-template>
+    <ng-template #rooms>
+        <div cdkMenu>
+            <button (click)="openRoomListDialog()" cdkMenuItem>List</button>
+            <button (click)="openRoomsSearchDialog()" cdkMenuItem>Search</button>
+            <button (click)="openNewRoomDialog()" cdkMenuItem>New</button>
+        </div>
+    </ng-template>
+</nav>
+
+<app-pong-game></app-pong-game>
+
+<div id="chatbox">
+    <div class="chatbox-header" #chatbox_header>
+        <span class="label">Chat</span>
+        <input placeholder="Type ..." type="text" [(ngModel)]="chatMessage" (keyup.enter)="sendChatMessage()"/>
+        <button class="toggle" (click)="isChatOpen = !isChatOpen"
+                cdkOverlayOrigin #trigger="cdkOverlayOrigin">{{ isChatOpen ? '-' : '+' }}</button>
+    </div>
+    <ng-template    [cdkConnectedOverlayOrigin]="chatbox_header"
+                    [cdkConnectedOverlayOpen]="isChatOpen"
+                    [cdkConnectedOverlayWidth]="500"
+                    [cdkConnectedOverlayPositions]="positions"
+                    cdkConnectedOverlay>
+        <div class="messages-box" #messages_box>
+            <!--<p *ngFor="let message of chatMessages">* {{ message }}</p>-->
+            <div class="message-layout" *ngFor="let message of ws.chatMessages">
+                <app-player-info-short [me]="player" [player]="message.player" [type]="'chat'"></app-player-info-short>
+                <p *ngIf="blockList.includes(message.player.id); else renderMessage"
+                    class="message-message">message was hidden</p>
+                <ng-template #renderMessage>
+                    <p class="message-message">{{ message.message }}</p>
+                </ng-template>
+            </div>
+        </div>
+    </ng-template>
+</div>
+
+<div id="notification-box">
+    <div class="notification-header" #notification_header>
+        <span class="label">Notifications</span>
+        <button class="toggle" (click)="isNotificationBarOpen = !isNotificationBarOpen"
+                cdkOverlayOrigin #trigger="cdkOverlayOrigin">{{ isNotificationBarOpen ? '-' : '+' }}</button>
+    </div>
+    <ng-template    [cdkConnectedOverlayOrigin]="notification_header"
+                    [cdkConnectedOverlayOpen]="isNotificationBarOpen"
+                    [cdkConnectedOverlayWidth]="700"
+                    cdkConnectedOverlay>
+        <div class="notification-message-box">
+            <!--<p *ngFor="let notification of notifications">* {{ notification.message }}</p>-->
+            <p *ngFor="let notification of ws.notifications">* {{ notification.data.message }}</p>
+        </div>
+    </ng-template>
+</div>
+
+<div id="spectate">
+    <button class="nes-btn" (click)="showSpectateDialog()">spectate</button>
+</div>
+
+</div>

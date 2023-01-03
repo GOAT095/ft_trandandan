@@ -1,0 +1,8 @@
+<div class="nes-dialog nes-container is-dark with-title is-centered">
+    <span class="title">Setup</span>
+    <div class="group">
+        <img id="qrcode" class="group-item" src="{{ data.src }}"/>
+        <input type="numeric" class="nes-input group-item" [(ngModel)]="data.code"/>
+        <button class="nes-btn is-success group-item" (click)="turnOn()">check !</button>
+    </div>
+</div>

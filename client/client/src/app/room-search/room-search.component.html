@@ -1,0 +1,15 @@
+<div class="nes-container is-dark is-centered with-title">
+    <span class="title">Rooms</span>
+    <div class="nes-container is-dark with-title">
+        <span class="title">List</span>
+        <div class="list">
+            <ng-template ngFor let-item [ngForOf]="rooms" let-i="index">
+                <div class="room-element">
+                    <img *ngIf="rooms[i].type == 'protected'" src="assets/padlock.png" width="24" height="24">
+                    <span>{{rooms[i].name}}</span>
+                    <button class="nes-btn is-primary" (click)="joinRoom(i)">Join !</button>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

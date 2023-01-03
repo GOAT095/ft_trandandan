@@ -1,0 +1,57 @@
+<!-- block -->
+<div class="nes-container with-title is-dark is-centered">
+    <span class="title">Friend requests</span>
+    <ng-template ngFor let-item [ngForOf]="friendRequests" let-i="index">
+
+        <div class="friend-request-list">
+            <div class="friend-request-item inline">
+                <app-player-info [player]="friendRequests[i].requestSender"></app-player-info>
+                <div class="button-wrapper block">
+                    <button class="nes-btn is-primary" (click)="acceptRequest(i)">accept</button>
+                    <button class="nes-btn is-warning" (click)="declineRequest(i)">dismiss</button>
+                </div>
+            </div>
+        </div>
+
+    </ng-template>
+    <!--
+    <div class="friend-request-list">
+        <div class="friend-request-item inline">
+            <app-player-info></app-player-info>
+            <div class="button-wrapper block">
+                <button class="nes-btn is-primary">accept</button>
+                <button class="nes-btn is-warning">dismiss</button>
+            </div>
+        </div>
+    </div>
+    <div class="friend-request-list">
+        <div class="friend-request-item inline">
+            <app-player-info></app-player-info>
+            <div class="button-wrapper block">
+                <button class="nes-btn is-primary">accept</button>
+                <button class="nes-btn is-warning">dismiss</button>
+            </div>
+        </div>
+    </div>
+    <div class="friend-request-list">
+        <div class="friend-request-item inline">
+            <app-player-info></app-player-info>
+            <div class="button-wrapper block">
+                <button class="nes-btn is-primary">accept</button>
+                <button class="nes-btn is-warning">dismiss</button>
+            </div>
+        </div>
+    </div>
+    -->
+    <!--
+    <div class="friend-request-list">
+        <div class="friend-request-item block">
+            <app-player-info></app-player-info>
+            <div class="button-wrapper">
+                <button class="nes-btn is-primary">accept</button>
+                <button class="nes-btn is-warning">dismiss</button>
+            </div>
+        </div>
+    </div>
+    -->
+</div>

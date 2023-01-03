@@ -1,0 +1,15 @@
+
+<!--<div class="nes-container is-centered is-dark">-->
+<div class="player-info layout nes-container is-dark">
+    <img class="nes-avatar is-pixelated is-large layout-child"
+    (error)="onAvatarSrcError($event)"
+    [src]="getAvatarSrc()">
+    <div class="player-info group layout-child">
+        <span class="player-info group-child name">{{ player.name }}</span>
+        <span class="player-info group-child win-rate nes-text is-success">Wins: <span>{{ player.wins }} </span></span>
+        <span class="player-info group-child loss-rate nes-text is-error">Losses: <span>{{ player.losses }}</span></span>
+        <span class="player-info group-child level nes-text is-warning">lvl: <span>{{ player.lvl }}</span></span>
+        <span class="player-info group-child status nes-text is-success">{{ player.status }}</span>
+    </div>
+</div>
+<!--</div>-->

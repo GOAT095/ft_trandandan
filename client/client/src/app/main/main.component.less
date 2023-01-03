@@ -1,0 +1,221 @@
+div.layout {
+    display: flex;
+    flex-direction: column;
+    //height: 100vh;
+    padding: 1.2em;
+    // debug
+    //border: 2px dashed yellow;
+}
+
+.layout > nav {
+    display: flex;
+    flex: 2;
+    margin: 1em;
+    // debug
+    //border: 2px solid darkgray;
+}
+
+.layout > nav > div {
+    flex-basis: auto;
+    flex-grow: 1;
+    // debug
+    //border: 2px dashed orange;
+}
+
+.layout > nav > div.nav-tab {
+    text-align: center;
+}
+
+#display {
+    flex: 8;
+    // debug
+    //border: 2px dashed purple;
+}
+
+.chat {
+    height: 100%;
+}
+
+// nav
+nav {
+    min-height: 10vh;
+}
+
+// ckd menu
+.cdk-menu-bar > .cdk-menu-item {
+    cursor: pointer;
+    border: none;
+
+    user-select: none;
+    min-width: 34px;
+    line-height: 26px;
+    padding: 0 16px;
+}
+
+.cdk-menu-bar > .cdk-menu-item:hover {
+    background-color: rgb(208, 208, 208);
+}
+
+.cdk-menu {
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 180px;
+    max-width: 280px;
+    background-color: rgb(255, 255, 255);
+    padding: 6px 0;
+}
+
+.cdk-menu hr {
+    width: 100%;
+    color: rgba(0, 0, 0, 0.12);
+}
+
+.cdk-menu .cdk-menu-group {
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.cdk-menu .cdk-menu-item {
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+
+    user-select: none;
+    min-width: 64px;
+    line-height: 36px;
+    padding: 0 16px;
+
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex: 1;
+}
+
+.cdk-menu-item > span {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.cdk-menu .cdk-menu-item:hover {
+    background-color: rgb(208, 208, 208);
+}
+
+.cdk-menu .cdk-menu-item[role='menuitemradio'][aria-checked='true'] {
+    background-color: rgb(208, 208, 208);
+}
+
+.cdk-menu .cdk-menu-item[role='menuitemcheckbox'][aria-checked='true'] {
+    background-color: rgb(208, 208, 208);
+}
+
+.cdk-menu .cdk-menu-item:active {
+    background-color: rgb(170, 170, 170);
+}
+
+.cdk-menu-bar > .cdk-menu-item[aria-expanded='true'],
+.cdk-menu-item[aria-expanded='true'] {
+    background-color: rgb(208, 208, 208) !important;
+}
+// end -- cdk menu
+
+
+// chatbox
+.chatbox-header {
+    width: 500px;
+    height:fit-content;
+
+    position:fixed;
+    bottom: 100px;
+    left: 50px;
+
+    // debug
+    //border: 2px dashed;
+
+    background-color: rgb(208, 208, 208) !important;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.chatbox-header > .toggle {
+    flex: 1;
+}
+
+.chatbox-header > .label {
+    flex: 10;
+    align-self: center;
+    margin-left: .5em;
+}
+
+div.messages-box {
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.messages-box::-webkit-scrollbar {
+    background: transparent;
+    width: 0px;
+}
+
+.message-layout {
+    display: flex;
+    flex-direction: row;
+    margin-top: .5em;
+
+    // debug
+    //border: 2px dashed;
+}
+
+
+.message-layout > img {
+    margin-right: .5em;
+    width: 24px !important;
+    height: 24px !important;
+}
+
+p.message-message {
+    align-self: center;
+
+    margin-top: .25em;
+    margin-left: .5em;
+
+    //border: 1px dashed;
+}
+
+// notification box
+.notification-header {
+    width: 700px;
+    height:fit-content;
+
+    position:fixed;
+    top: 100px;
+    right: 50px;
+
+    // debug
+    border: 2px dashed;
+
+    background-color: rgb(208, 208, 208) !important;
+
+    display: flex;
+    flex-direction: row;
+
+}
+
+.notification-header > .toggle {
+    flex: 1;
+}
+
+.notification-header > .label {
+    flex: 10;
+    align-self: center;
+    margin-left: .5em;
+}
+
+#spectate {
+    position:fixed;
+    bottom: 100px;
+    right: 50px;
+
+}

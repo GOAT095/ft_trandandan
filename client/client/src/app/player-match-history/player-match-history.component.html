@@ -1,0 +1,17 @@
+<div class="nes-container is-dark with-title is-centered">
+    <label class="title">{{ player.name }}'s match history</label>
+    <div class="match-history">
+        <div class="match-box" *ngFor="let game of history">
+            <!--<app-player-info-short type="history"></app-player-info-short>-->
+            <!--<i *ngIf="game.win" class="nes-icon trophy is-medium"></i>
+            <i *ngIf="!game.win" class="nes-icon coin is-medium"></i>-->
+            <label class="nes-btn is-success" *ngIf="game.win">+</label>
+            <label class="nes-btn is-warning" *ngIf="!game.win">-</label>
+            <app-player-info-short [me]="player" [player]="game.vs" [type]="'history'"></app-player-info-short>
+            <label class="vs-name">{{ game.vs.name }}</label>
+            <label class="vs-score">({{ game.score[0] }} : {{ game.score[1] }})</label>
+            <!--<i class="nes-logo vs-nes-icon"></i>-->
+            <!--<app-player-info-short type="history"></app-player-info-short>-->
+        </div>
+    </div>
+</div>
