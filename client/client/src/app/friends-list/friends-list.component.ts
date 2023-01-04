@@ -72,6 +72,37 @@ export class FriendsListComponent implements OnInit {
         })
       }
     )
+    // listen to http updates
+    api.blockEvent.subscribe(
+      (data) => {
+        console.debug('friends-list.component:blockEvent', data);
+        api.getPlayerBlockList().subscribe(
+            (blockList) => {
+              this.blockList = [];
+              blockList.forEach(element => {
+                //console.log(element.blocked);
+                this.blockList.push(element.blocked.id);
+                //console.log('blockList', this.blockList);
+              })
+            }
+          )
+      }
+    )
+    api.unBlockEvent.subscribe(
+      (data) => {
+        console.debug('friends-list.component:unBlockEvent', data);
+        api.getPlayerBlockList().subscribe(
+            (blockList) => {
+              this.blockList = [];
+              blockList.forEach(element => {
+                //console.log(element.blocked);
+                this.blockList.push(element.blocked.id);
+                //console.log('blockList', this.blockList);
+              })
+            }
+          )
+      }
+    )
   }
 
   onSelect() {

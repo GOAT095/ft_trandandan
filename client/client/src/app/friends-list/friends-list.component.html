@@ -8,7 +8,7 @@
             <div *ngFor="let friend of friends; index as index;"
                 class="room-element" [cdkOption]="index">
                 <!--<img *ngIf="rooms[i].type == 'protected'" src="assets/padlock.png" width="24" height="24">-->
-                <app-player-info-short [me]="player" [player]="friend" [type]="'chat'"></app-player-info-short>
+                <app-player-info-short [isAlreadyBlocked]="blockList.includes(friend.id)" [me]="player" [player]="friend" [type]="'chat'"></app-player-info-short>
                 <span class="nes-badge is-icon">
                     <span *ngIf="friend.status == 'online'" class="is-success"> </span>
                     <span class="">{{friend.name}}</span>
@@ -27,7 +27,7 @@
                     <ng-template #renderMessages>
                     <div class="message-layout"
                     *ngFor="let message of ws.directMessages[friends[selectedPlayerId[0]].id]">
-                        <app-player-info-short [me]="player" [player]="message.player" [type]="'chat'"></app-player-info-short>
+                        <app-player-info-short [isAlreadyBlocked]="blockList.includes(message.player.id)" [me]="player" [player]="message.player" [type]="'chat'"></app-player-info-short>
                         <p class="message-message">{{ message.message }}</p>
                     </div>
                     </ng-template>
