@@ -116,6 +116,37 @@ export class MainComponent implements OnInit {
         ws.newGameInviteEvent.subscribe((data) => {
           this.dialog.open(GameInviteComponent);
         })
+        // listen to http updates
+        api.blockEvent.subscribe(
+          (data) => {
+            console.debug('main.component:blockEvent', data);
+            api.getPlayerBlockList().subscribe(
+                (blockList) => {
+                  this.blockList = [];
+                  blockList.forEach(element => {
+                    //console.log(element.blocked);
+                    this.blockList.push(element.blocked.id);
+                    //console.log('blockList', this.blockList);
+                  })
+                }
+              )
+          }
+        )
+        api.unBlockEvent.subscribe(
+          (data) => {
+            console.debug('main.component:unBlockEvent', data);
+            api.getPlayerBlockList().subscribe(
+                (blockList) => {
+                  this.blockList = [];
+                  blockList.forEach(element => {
+                    //console.log(element.blocked);
+                    this.blockList.push(element.blocked.id);
+                    //console.log('blockList', this.blockList);
+                  })
+                }
+              )
+          }
+        )
       },
       (error) => {
         this.openOfflineDialog(error.statusText);

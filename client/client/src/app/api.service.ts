@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { catchError, retry, map} from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +13,9 @@ import { environment } from 'src/environments/environment';
 export class ApiService {
 
   apiUrl : string = environment.apiUrl;
+
+  blockEvent = new Subject<BlockObject>;
+  unBlockEvent = new Subject<any>;
 
   constructor(public http: HttpClient) { }
 
@@ -104,6 +109,7 @@ export class ApiService {
   unblockPlayer(playerId: string) {
     return this.http.post<BlockObject>(`${this.apiUrl}/user/unblock/${playerId}`, {}, {withCredentials: true})
     .pipe(catchError(this.handleError))
+    //.pipe(map(() => this.emitEvent))
   }
 
   getPlayerBlockList() {
@@ -153,4 +159,8 @@ export class ApiService {
     .pipe(catchError(this.handleError));
   }
 
+  getPlayerGameHistory(playerId: string) {
+    return this.http.get<any>(`${this.apiUrl}/user/game/userHistory/${playerId}`, {withCredentials: true})
+    .pipe(catchError(this.handleError));
+  }
 }
