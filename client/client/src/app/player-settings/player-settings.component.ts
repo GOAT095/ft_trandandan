@@ -1,5 +1,6 @@
 import { Dialog, DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Component, Inject, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { TitleStrategy } from '@angular/router';
 import { ApiService } from '../api.service';
 
 @Component({
@@ -32,9 +33,22 @@ export class PlayerSettingsComponent implements OnInit {
   @Input()
   privacy : boolean = true
 
-  constructor(private api: ApiService, public dialogRef: DialogRef<string>, @Inject(DIALOG_DATA) public data: any) {
+  blockList: any[] = [];
+
+  constructor(private api:  ApiService, public dialogRef: DialogRef<string>, @Inject(DIALOG_DATA) public data: any) {
     this.player = data.player;
     this.privacy = data.privacy
+    // get player blockList
+    api.getPlayerBlockList().subscribe(
+        (blockList) => {
+          blockList.forEach(element => {
+            //console.log(element.blocked);
+            this.blockList.push(element.blocked);
+            //console.log('blockList', this.blockList);
+          })
+        }
+      )
+ 
   }
 
   updateUsername(): void {

@@ -39,6 +39,7 @@ interface ClientToServerEvents {
   chatMessage: (data: any) => void;
   roomChatMessage: (data: any) => void;
   directMessage: (data: any) => void;
+  connectionMSG: (data: string) => void;
 }
 
 interface InterServerEvents {

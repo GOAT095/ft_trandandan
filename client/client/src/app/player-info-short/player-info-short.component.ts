@@ -1,5 +1,5 @@
-import { Dialog } from '@angular/cdk/dialog';
-import { Component, Input, OnInit } from '@angular/core';
+import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Md5 } from 'ts-md5';
 
@@ -45,8 +45,13 @@ export class PlayerInfoShortComponent implements OnInit {
     twoFactor: false
   };
 
+  @Input() isAlreadyBlocked: boolean = false;
 
-  constructor(public api: ApiService, public ws: WsService, public dialog: Dialog) {}
+  constructor(public api: ApiService, public ws: WsService, public dialog: Dialog) {
+    //if (data != null && data.type != null) {
+    //  this.type = data.type;
+    //}
+  }
 
   getGravatarSrc(): string {
     let md5 = new Md5();
@@ -88,6 +93,16 @@ export class PlayerInfoShortComponent implements OnInit {
       }
     )
   }
+
+  unblock() {
+    this.api.unblockPlayer(this.player.id).subscribe(
+      (data) => {
+        // TODO: give visual feedback back to user
+        console.debug('PlayerInfoShortComponent.unblockPlayer', data);
+      }
+    )
+  }
+
   inviteFor1vs1() {
     this.ws.notify('1vs1', {'message': `${this.me.name} has invited you to a game.`}, this.player)
   }
@@ -99,7 +114,10 @@ export class PlayerInfoShortComponent implements OnInit {
       data: {me: this.me, player: this.player}
     });
     if (dialogRef.componentInstance != null) {
+      //dialogRef.componentInstance.type = 'chat';
       dialogRef.componentInstance.player = this.player;
+      dialogRef.componentInstance.me = this.me;
+      dialogRef.componentInstance.isAlreadyBlocked = this.isAlreadyBlocked;
     }
   }
 

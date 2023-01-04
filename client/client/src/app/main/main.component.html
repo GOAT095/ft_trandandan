@@ -1,3 +1,4 @@
+<!--<mat-progress-bar mode="indeterminate"></mat-progress-bar>-->
 <div :hidden class="nes-container is-dark viewport layout">
     <nav>
         <div>
@@ -119,7 +120,7 @@
     </ng-template>
 </nav>
 
-<app-pong-game></app-pong-game>
+<app-pong-game-v2 [player]="player"></app-pong-game-v2>
 
 <div id="chatbox">
     <div class="chatbox-header" #chatbox_header>
@@ -136,7 +137,7 @@
         <div class="messages-box" #messages_box>
             <!--<p *ngFor="let message of chatMessages">* {{ message }}</p>-->
             <div class="message-layout" *ngFor="let message of ws.chatMessages">
-                <app-player-info-short [me]="player" [player]="message.player" [type]="'chat'"></app-player-info-short>
+                <app-player-info-short [isAlreadyBlocked]="blockList.includes(message.player.id)" [me]="player" [player]="message.player" [type]="'chat'"></app-player-info-short>
                 <p *ngIf="blockList.includes(message.player.id); else renderMessage"
                     class="message-message">message was hidden</p>
                 <ng-template #renderMessage>

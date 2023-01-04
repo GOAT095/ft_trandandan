@@ -206,7 +206,7 @@ export class MainComponent implements OnInit {
     const dialogRef = this.dialog.open<string>(PlayerSettingsComponent, {
       data: {
         player: this.player,
-        privacy: false
+        privacy: true
       }
     });
   }

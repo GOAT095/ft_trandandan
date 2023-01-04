@@ -5,7 +5,7 @@ import { HttpClientXsrfModule } from '@angular/common/http';
 
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from '@angular/cdk/dialog';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CdkMenuModule } from '@angular/cdk/menu';
 import {CdkListboxModule} from '@angular/cdk/listbox'; 
@@ -43,6 +43,10 @@ import { PlayerMatchHistoryComponent } from './player-match-history/player-match
 import { GameSpectateComponent } from './game-spectate/game-spectate.component';
 import { SwiperModule } from 'swiper/angular';
 import { GameInviteComponent } from './game-invite/game-invite.component';
+import { PongGameComponentV2 } from './pong-game/pong-game-v2.component';
+
+import { CommonModule } from '@angular/common';
+//import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -76,6 +80,7 @@ import { GameInviteComponent } from './game-invite/game-invite.component';
     PlayerMatchHistoryComponent,
     GameSpectateComponent,
     GameInviteComponent,
+    PongGameComponentV2
   ],
   imports: [
     BrowserModule,
@@ -90,7 +95,10 @@ import { GameInviteComponent } from './game-invite/game-invite.component';
     CdkMenuModule,
     CdkListboxModule,
     OverlayModule,
-    SwiperModule
+    SwiperModule,
+    CommonModule,
+    BrowserAnimationsModule,
+    //ToastrModule
   ],
   providers: [],
   bootstrap: [AppComponent],
