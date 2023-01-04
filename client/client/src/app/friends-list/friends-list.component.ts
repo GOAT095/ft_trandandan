@@ -110,6 +110,9 @@ export class FriendsListComponent implements OnInit {
   }
 
   sendChatMessage(): void {
+    if (this.selectedPlayerId.length == 0) {
+      return;
+    }
     console.log('friends', this.friends, 'selected', this.selectedPlayerId);
     this.ws.sendDirectMessage(this.friends[this.selectedPlayerId[0]], this.chatMessage, this.player);
     // TODO:

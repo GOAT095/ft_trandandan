@@ -85,6 +85,9 @@ export class RoomListComponent implements OnInit {
   }
 
   sendChatMessage(): void {
+    if (this.selectedRoomId.length == 0) {
+      return;
+    }
     this.ws.postToRoom(this.rooms[this.selectedRoomId[0]], this.chatMessage, this.player);
     // TODO:
     // - clean current message
