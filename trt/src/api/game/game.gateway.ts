@@ -1,10 +1,11 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
-import { Logger } from '@nestjs/common';
+import { Logger, Inject} from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/api/user/user.service';
 import { RoomDto } from '../dto/user.dto';
 import { runInThisContext } from 'vm';
+import { throwIfEmpty } from 'rxjs';
 
 
 
@@ -186,9 +187,9 @@ class User
 
   isValidUser(): boolean
   {
-    if (this.socket != null || this.id == 0)
-      return (false);
-    return (true);
+    if (this.socket != null && this.id != 0)
+      return (true);
+    return (false);
   }
 };
 
@@ -215,18 +216,19 @@ class Room
   {
     this.gameStates = new Array<GameState>();
     this.gameStates.push(new GameState());
+
   }
 };
 
-
-@WebSocketGateway({namespace: 'GAME', cors:{ origin: '*', }})
+@WebSocketGateway({namespace: "GAME", cors:{ origin: '*', }})
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  @Inject(UserService)
+  private readonly userService: UserService;
+  @Inject(JwtService)
+  private readonly jwt: JwtService;
+  
   private logger : Logger;
   private users : User[];
-  public jwt : JwtService;
-  public userService : UserService;
- 
-  //constructor(public jwt : JwtService, public user : UserService) {}
   
   private server : Server;
   private rooms : Room[];
@@ -237,115 +239,46 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.users = new Array<User>();
     this.server = server;
     this.rooms = new Array<Room>();
-    this.jwt = new JwtService();
-    this.userService = new UserService();
+
   }
 
   async handleConnection(client: Socket, ...args: any[]) {
-    //TODO(yassine) : Get The User ID Here.
-    this.logger.debug("FRONT : " + client.handshake.auth.token);
-    // let payload : any = (this.jwt.decode(client.handshake.auth.token));
-    // if (payload == null)
-    // {
-    //   client.disconnect();
-    //   return ;
-    // }
-    // if (payload.id != client.handshake.auth.id) {
-    //   client.disconnect();
-    // }
-    // else {
-    //   let user = await this.user.getUserByid(payload.id);
-    //   if (user == null) {
-    //     client.disconnect();
-    //   }
-    //   else {
-    //     let newUser : User = new User(user.id, client.id);
-    //     this.users.push(newUser);
-    //   }
-    // }
+  
+    let payload : any = (this.jwt.decode(client.handshake.auth.token));
+    if (payload == null)
+    {
+      client.disconnect();
+      return ;
+    }
+    if (payload.id != client.handshake.auth.id) {
+      client.disconnect();
+    }
+    else {
+      this.logger.debug(payload.id);
+      let user = await this.userService.getUserByid(payload.id);
+      if (user == null) {
+        client.disconnect();
+      }
+      else {
+        let newUser : User = new User(user.id, client);
+        this.users.push(newUser);
+        for (let userIndex : number = 0; userIndex < this.users.length; userIndex++)
+        {
+          this.logger.debug(this.users[userIndex].id + ", " + this.users[userIndex].socket.id);
+        }
+        return ;
+      }
+    }
+    
   }
 
   handleDisconnect(client: Socket) {
-  
-    let roomIndex : number = 0; 
-    for (; roomIndex < this.rooms.length; ++roomIndex)
-    {
-      //SPECTATOR
-      for (let specIndex : number = 0; specIndex < this.rooms[roomIndex].spectators.length; specIndex++)
-      {
-        if (client.id == this.rooms[roomIndex].spectators[specIndex].id)
-        {
-          client.leave(this.rooms[roomIndex].id);
-          this.rooms[roomIndex].spectators.splice(specIndex, 1);
-        }
-      }
-
-      //PLAYER
-      
-      //NOTE(yassine): case nobody joined the game nothing to be done
-      if ((this.rooms[roomIndex].playerOne.socket.id == client.id && !this.rooms[roomIndex].playerTwo.isValidUser()) ||
-      this.rooms[roomIndex].playerTwo.socket.id == client.id && !this.rooms[roomIndex].playerOne.isValidUser())
-      {
-        client.leave(this.rooms[roomIndex].id);
-
-        for (let specIndex : number = 0; specIndex < this.rooms[roomIndex].spectators.length; specIndex++)
-        {
-          this.rooms[roomIndex].spectators[specIndex].leave(this.rooms[roomIndex].id);
-          this.rooms[roomIndex].spectators[specIndex].disconnect();
-        }
-        this.rooms.splice(roomIndex, 1);
-        return ;
-      }
-
-      //case you quit within the game.
-      if (client.id == this.rooms[roomIndex].playerOne.socket.id && this.rooms[roomIndex].gameStates[0].winner == Winner.NONE)
-      {
-        this.rooms[roomIndex].gameStates[0].winner = Winner.PTWO;
-        //TODO(Yassine):send end Event.
-        //TODO(yassine):update the database
-        for (let specIndex : number = 0; specIndex < this.rooms[roomIndex].spectators.length; specIndex++)
-        {
-          this.rooms[roomIndex].spectators[specIndex].leave(this.rooms[roomIndex].id);
-          this.rooms[roomIndex].spectators[specIndex].disconnect();
-        }
-
-        return;
-      }
-      if (client.id == this.rooms[roomIndex].playerTwo.socket.id && this.rooms[roomIndex].gameStates[0].winner == Winner.NONE)
-      {
-        this.rooms[roomIndex].gameStates[0].winner = Winner.PONE;
-        //TODO(yassine):update the database.
-        //TODO(Yassine):send end Event.
-        for (let specIndex : number = 0; specIndex < this.rooms[roomIndex].spectators.length; specIndex++)
-        {
-          this.rooms[roomIndex].spectators[specIndex].leave(this.rooms[roomIndex].id);
-          this.rooms[roomIndex].spectators[specIndex].disconnect();
-        }
-
-        return;
-      }
-      //case you quit after the game ended.
-      if (client.id == this.rooms[roomIndex].playerOne.socket.id && this.rooms[roomIndex].gameStates[0].winner != Winner.NONE)
-      {
-        //TODO(yassine):update the database.
-        this.rooms[roomIndex].playerTwo.socket.disconnect();
-      }
-      if (client.id == this.rooms[roomIndex].playerTwo.socket.id && this.rooms[roomIndex].gameStates[0].winner != Winner.NONE)
-      {
-        //TODO(yassine):update the database.
-        this.rooms[roomIndex].playerOne.socket.disconnect();
-        return;
-      }
-    }
-
   }
 
   @SubscribeMessage('RequestGame')
-  handleRequestGame(client: Socket, userID : string) : void
+  handleRequestGame(client: Socket, userID : number) : void
   {
 
-    //check if the socket id exists in the users table first.
-   
   }
 
   @SubscribeMessage('SpectateGameRequest')
@@ -364,54 +297,72 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('connectionMSG')
   handleMessage(client: Socket, type: string): void
   {
+    //add the user the first available room.
     let userIndex : number = 0;
-    for (; this.users.length; userIndex++)
+    for (; userIndex < this.users.length; userIndex++)
     {
       if (this.users[userIndex].socket.id == client.id)
         break;
-     }
-     if (userIndex == this.users.length)
+    }
+    if (userIndex == this.users.length)
     {
       client.disconnect();
-      return ;
+      return;
     }
-
-    let userAddedToRoom : boolean = false;
+    let newUser : User = new User(this.users[userIndex].id, this.users[userIndex].socket);
+    
     let roomIndex : number = 0;
-    for ( ; roomIndex < this.rooms.length; ++roomIndex)
+    let playerAdded : boolean = false;
+    for (; roomIndex < this.rooms.length; roomIndex++)
     {
       if (!this.rooms[roomIndex].playerOne.isValidUser())
-      {
-        this.rooms[roomIndex].playerOne.id = this.users[userIndex].id;
-        this.rooms[roomIndex].playerOne.socket = this.users[userIndex].socket;
+      {    
+        this.rooms[roomIndex].playerOne = newUser;
         client.join(this.rooms[roomIndex].id);
-        userAddedToRoom = true;
+        playerAdded = true;
+        this.users.splice(userIndex, 1);
         break;
       }
       if (!this.rooms[roomIndex].playerTwo.isValidUser())
       {
-        this.rooms[roomIndex].playerTwo.id = this.users[userIndex].id;
-        this.rooms[roomIndex].playerTwo.socket = this.users[userIndex].socket;
+        this.rooms[roomIndex].playerTwo = newUser;
         client.join(this.rooms[roomIndex].id);
-        userAddedToRoom = true;
+        playerAdded = true;
+        this.users.splice(userIndex, 1);
         break;
       }
     }
-    if (!userAddedToRoom)
+    if (!playerAdded)
     {
       let room : Room = new Room();
-      room.playerOne.id = this.users[userIndex].id;
-      room.playerOne.socket = this.users[userIndex].socket;
+      room.playerOne = newUser;
       this.rooms.push(room);
       roomIndex = this.rooms.length - 1;
       client.join(this.rooms[roomIndex].id);
+      this.users.splice(userIndex, 1);
     }
-    if (this.rooms[roomIndex].playerOne.id != 0 &&
-      this.rooms[roomIndex].playerTwo.id != 0)
+    if (this.rooms[roomIndex].playerOne.isValidUser() && this.rooms[roomIndex].playerTwo.isValidUser())
+    {
+      this.rooms[roomIndex].reInitializeGameState();
+      this.server.to(this.rooms[roomIndex].id).emit('ClientMSG', this.rooms[roomIndex].gameStates[0]);
+    }
+
+    for (let rIndex : number = 0; rIndex < this.rooms.length; rIndex++)
+    {
+      this.logger.debug("ROOM ID : " + this.rooms[rIndex].id);
+      if (this.rooms[rIndex].playerOne.isValidUser())
+        this.logger.debug("P1 : " + this.rooms[rIndex].playerOne.id + ", " + this.rooms[rIndex].playerOne.socket.id);
+      if (this.rooms[rIndex].playerTwo.isValidUser())
+        this.logger.debug("P2 : " + this.rooms[rIndex].playerTwo.id + ", " + this.rooms[rIndex].playerTwo.socket.id);
+      for (let specIndex : number = 0; specIndex < this.rooms[rIndex].spectators.length; specIndex++)
+        this.logger.debug("Spec :" + this.rooms[rIndex].spectators[specIndex].id);
+      this.logger.debug("Users who didn't join a Game");
+      for (let userIndex : number = 0; userIndex < this.users.length; userIndex++)
       {
-        this.rooms[roomIndex].reInitializeGameState();
-        this.server.to(this.rooms[roomIndex].id).emit('ClientMSG', this.rooms[roomIndex].gameStates[0]);
+        this.logger.debug(this.users[userIndex].id + ", " + this.users[userIndex].socket.id);
       }
+      this.logger.debug("_____________________________________");
+    }
 
       //NOTE(Yassine) : OLD CODE.
       // if (type == "PLAYER")
@@ -459,13 +410,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   {
     let keyStates : KeyState[] = state[0];
     let inState : GameState = state[1];
-    
     for (let roomIndex : number = 0; roomIndex < this.rooms.length; roomIndex++)
     {
       let currentState : GameState = this.rooms[roomIndex].gameStates[this.rooms[roomIndex].gameStates.length - 1];
       if (currentState.winner == Winner.NONE)
       {
-        if (this.rooms[roomIndex].playerOne.socket.id == client.id)
+        if (this.rooms[roomIndex].playerOne.isValidUser() && this.rooms[roomIndex].playerOne.socket.id == client.id)
         {
           if (keyStates[2].state == "DOWN" &&
           currentState.gameStart == false &&
@@ -503,7 +453,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             }
           }
         }
-        if (this.rooms[roomIndex].playerTwo.socket.id == client.id)
+        if (this.rooms[roomIndex].playerTwo.isValidUser() && this.rooms[roomIndex].playerTwo.socket.id == client.id)
         {
           if (keyStates[2].state == "DOWN" &&
           currentState.gameStart == false &&
