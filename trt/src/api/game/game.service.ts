@@ -18,7 +18,7 @@ export class GameService{
     @InjectRepository(Gamehistoryclass)
     private readonly Gamehistory: Repository<Gamehistoryclass>;
 
-    async saveHistoty(playerOne: User, playerTwo: User, scoreOne: number, scoreTwo: number): Promise<Gamehistoryclass> {
+    async saveHistory(playerOne: User, playerTwo: User, scoreOne: number, scoreTwo: number): Promise<Gamehistoryclass> {
         const game : Gamehistoryclass = new Gamehistoryclass();
 
         game.playerOne = playerOne;
@@ -28,4 +28,14 @@ export class GameService{
         await this.Gamehistory.save(game);
         return game;
     }
+    // async getUserHistory(user: User): Promise<Gamehistoryclass[]>{
+
+    //     return await this.Gamehistory.find({
+    //         where: [
+    //           { playerOne: {id:user.id}},
+    //           { playerTwo: {id:user.id} },
+    //         ],
+    //         relations: ["playerOne", "playerTwo"],
+    //       });
+    // }
 }

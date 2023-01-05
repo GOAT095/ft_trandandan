@@ -54,7 +54,7 @@ export class UserService {
     const accesToken = this.JwtService.sign(payload, { expiresIn: "1d" });
     res.cookie("auth-cookie", accesToken, { httpOnly: false });
     //res.header("auth-token", accesToken);
-    res.redirect(`http://localhost:4200/default?auth-token=${accesToken}`);
+    res.redirect(`${process.env.APP_URL}/default?auth-token=${accesToken}`);
     res.send();
   }
 
@@ -171,18 +171,19 @@ export class UserService {
   }
 
   async updateavatar(user: User, file: any): Promise<Boolean> {
-    if(!user)throw new NotFoundException(`user not found`);
     console.log(file);
     const type = file.mimetype.split("/")[1];
     console.log(type);
+    let name: string = createHash("md5").update(randomBytes(128)).digest("hex");
     fs.rename(
       file.path,
-      file.destination + "/" + user.name + "." + type,
-      (Error) => {   //callback if error
+      file.destination + "/" + name + "." + type,
+      (Error) => {
         if (Error) throw Error;
       }
     );
-    user.avatar = process.env.UPLOAD_PATH + "/" + user.name + "." + type;
+
+    user.avatar = process.env.UPLOAD_PATH + "/" + name + "." + type;
     this.repository.save(user);
     return true;
   }

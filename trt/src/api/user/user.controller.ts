@@ -37,6 +37,8 @@ import { json } from "stream/consumers";
 import { Block } from "./block.entity";
 import { extname } from "path";
 import * as fs from "fs";
+import { Gamehistoryclass } from "../game/game.entity";
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Controller("user")
 export class UserController {
@@ -44,7 +46,6 @@ export class UserController {
   private readonly service: UserService;
   @Inject(JwtService)
   private readonly JwtService: JwtService;
-
   @UseGuards(AuthGuard())
   @Get("home")
   async hellohome(@GetUser() user: User): Promise<string> {
@@ -135,7 +136,7 @@ export class UserController {
       fs.unlink(file.path, (erro) =>{})
       throw new BadRequestException('file exthension is not supported');
     }
-    return this.service.updateavatar(user, file);
+    return this.service.updateavatar(user,file);
   }
 
   @Post()
@@ -187,7 +188,7 @@ export class UserController {
   @UseGuards(AuthGuard())
   @Post("block/:blocked")
   async BlockUser(
-    @Param("blocked") blocked: number,
+    @Param("blocked", ParseIntPipe) blocked: number,
     @GetUser() user: User
   ): Promise<Block> {
     return this.service.blockUser(blocked, user);
@@ -196,9 +197,14 @@ export class UserController {
   @UseGuards(AuthGuard())
   @Post("unblock/:blocked")
   async unBlockUser(
-    @Param("blocked") blocked: number,
+    @Param("blocked", ParseIntPipe) blocked: number,
     @GetUser() user: User
   ): Promise<Boolean> {
     return this.service.unblockUser(blocked, user);
+  }
+  @UseGuards(AuthGuard())
+  @Get("game/userHistory/:user")
+  async getuserHistory(@Param("user") user: User): Promise<Gamehistoryclass[]>{
+    return this.service.getUserHistory(user);
   }
 }
