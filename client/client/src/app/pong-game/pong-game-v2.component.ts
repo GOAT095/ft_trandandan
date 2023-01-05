@@ -128,7 +128,7 @@ export class PongGameComponentV2 implements OnInit {
   NEAR:number = 0.1;
   FAR:number = 1000.0;
 
-  SPACE_BAR = 32;
+  SPACE_BAR = 70;
   ARROW_LEFT = 37;
   ARROW_RIGHT = 39;
   ARROW_UP = 38;
@@ -297,6 +297,7 @@ export class PongGameComponentV2 implements OnInit {
           this.socket.emit("connectionMSG", "PLAYER");
 
       }
+      // Todo: if spectate mode: SpectateGameRequest , RoomId
 
       if (this.glContext == null) {
         console.warn("loadGame:main:glContext is null");
