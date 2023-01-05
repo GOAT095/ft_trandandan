@@ -22,6 +22,7 @@ import { appendFile } from "fs";
 import { createOAuthAppAuth } from "@octokit/auth-oauth-app";
 import { Octokit } from "octokit";
 import { Request, Response } from "express";
+import { UserStatus } from "../user/user.status.enum";
 
 @Controller("auth")
 export class AuthController {
@@ -88,6 +89,7 @@ export class AuthController {
     @GetUser() user: User
   ): Promise<boolean> {
     if (id == user.id) {
+      this.userservice.updateStatus(user.id, UserStatus.offline);
       //sets cookie back to 
       res.cookie("auth-cookie", null, { httponly: true, expires: new Date(1) });
       res.send();
