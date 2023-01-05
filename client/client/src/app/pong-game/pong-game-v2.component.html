@@ -1,8 +1,19 @@
 <!--<div id="game" <!--(keydown)="keyPress($event)" (keydown.c)="switchCamera($event)">-->
 <div id="game">
     <canvas #pongcanvas></canvas>
-    <p *ngIf="active" class="score">{{ gameState.score[0] }} : {{ gameState.score[1] }}</p>
-</div>
+    <!--<label>{{ playerIds }} </label>-->
+    <div class="info" *ngIf="active && player1.id != '-1' && player2.id != '-1'">
+        <div class="player player1 info-element">
+            <app-player-info-short *ngIf="active" [player]="player1" type="chat"></app-player-info-short>
+            <label>{{player1.name}}</label>
+        </div>
+        <p *ngIf="active" class="score info-element">{{ gameState.score[0] }} : {{ gameState.score[1] }}</p>
+        <div class="player player2 info-element">
+            <app-player-info-short *ngIf="active" [player]="player2" type="chat"></app-player-info-short>
+            <label>{{player2.name}}</label>
+        </div>
+    </div>
+
 <p *ngIf="!active" class="welcome">Pick game mode</p>
 <button *ngIf="!active" class="nes-btn classic is-primary" (click)="launchClassicMode()">classic</button>
 <button *ngIf="!active" class="nes-btn custom" (click)="launchCustomMode()">custom</button>

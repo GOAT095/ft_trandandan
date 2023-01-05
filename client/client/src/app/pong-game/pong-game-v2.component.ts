@@ -168,11 +168,39 @@ export class PongGameComponentV2 implements OnInit {
     twoFactor: false
   };
 
+  player1: Player = {
+    id: '-1',
+    name: 'Rui Uemara',
+    wins: 10,
+    losses: 9,
+    lvl: 9,
+    status: 'online',
+    avatar: '',
+    email: '',
+    twoFactor: false
+  };
+
+  player2: Player = {
+    id: '-1',
+    name: 'Rui Uemara',
+    wins: 10,
+    losses: 9,
+    lvl: 9,
+    status: 'online',
+    avatar: '',
+    email: '',
+    twoFactor: false
+  };
+
+
   // debug
   spectateRoom: string = '';
 
   // active
   active: boolean = false;
+
+  // playerIds, populated from game.gateway
+  playerIds: number[] = [-1, -1];
 
   constructor(public api: ApiService, public route: ActivatedRoute) {
     console.log('canvas:', this.canvas);
@@ -387,6 +415,28 @@ export class PongGameComponentV2 implements OnInit {
           {
             this.gameState = state;
           });
+          this.socket.on('PlayerIds', (playerIds) => {
+            if (playerIds[0] != this.playerIds[0] || playerIds[1] != this.playerIds[1]) {
+              // changed
+              //console.log("game:PlayerIds:", playerIds);
+              this.playerIds = playerIds;
+              if (playerIds[0] != 0) {
+                this.api.getPlayerById(String(playerIds[0])).subscribe(
+                  (data) => {
+                    this.player1 = data;
+                  }
+                )
+              }
+              if (playerIds[1] != 0) {
+                this.api.getPlayerById(String(playerIds[1])).subscribe(
+                  (data) => {
+                    this.player2 = data;
+                  }
+                )
+              }
+            }
+            //this.playerIds = playerIds;
+          })
           //console.log(this.gameState);
       }
 

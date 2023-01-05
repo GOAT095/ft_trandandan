@@ -45,6 +45,7 @@ interface ServerToClientEvents {
   roomChatMessage: (data: any, callback: (data: any) => void) => void;
   directMessage: (data: any, callback: (data: any) => void) => void;
   ClientMSG: (data: any, callback: (data: any) => void) => void;
+  PlayerIds: (data: any, callback: (data: any) => void) => void;
   Rooms: (data: any, callback: (data: any) => void) => void;
 }
 

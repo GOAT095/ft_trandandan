@@ -29,9 +29,9 @@ button.loadGame {
 }
 
 p.score {
-    position: fixed;
-    right: 50%;
-    margin-right: -40px;
+    //position: fixed;
+    //right: 50%;
+    //margin-right: -40px;
 }
 
 p.welcome {
@@ -40,4 +40,34 @@ p.welcome {
     top: 200px;
     right: 50%;
     margin-right: -300px;
+}
+
+div.info {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    /* center the div */
+    right: 0;
+    left: 0;
+    margin-right: auto;
+    margin-left: auto;
+    /* give it dimensions */
+    min-height: 10em;
+    width: 50%;
+    /* just for example presentation */
+    //top: 5em;
+    //background-color: blue;
+}
+
+.player {
+    display: flex;
+}
+
+.player > label {
+    margin-right: 1em;
+    margin-left: 1em;
+}
+
+.info-element {
+    margin: 1em;
 }
