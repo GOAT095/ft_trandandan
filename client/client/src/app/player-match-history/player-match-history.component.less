@@ -1,6 +1,8 @@
 div.match-history {
     overflow-y: scroll;
     max-height: 80vh;
+    min-height: 60vh;
+    min-width: 40vw;
     //scrollbar-width: thin;
     display: flex;
     flex-direction: column;
@@ -9,6 +11,7 @@ div.match-history {
 
 div.match-box {
     display: flex;
+    margin-top: 2em;
 }
 
 label.vs-name { 
@@ -20,6 +23,8 @@ label.vs-name {
 
 label.vs-score {
     align-self: center;
+    margin-left: 1em;
+    margin-right: 1em;
 }
 
 app-player-info-short {

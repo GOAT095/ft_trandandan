@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { DialogData } from '../action-button/action-button.component';
 import { ApiService } from '../api.service';
 
 @Component({
@@ -62,11 +64,12 @@ export class PlayerMatchHistoryComponent implements OnInit {
 
   games_history: any[] = [];
 
-  constructor(public api: ApiService) {
-    for (let i = 0; i < 20; i++) {
-      this.history.push(this._history[0]);
-      this.history.push(this._history[1]);
-    }
+  constructor(public api: ApiService, @Inject(DIALOG_DATA) public dialog_data: any) {
+    this.player = dialog_data.player;
+    //for (let i = 0; i < 20; i++) {
+    //  this.history.push(this._history[0]);
+    //  this.history.push(this._history[1]);
+    //}
     this.api.getPlayerGameHistory(this.player.id).subscribe(
       (data) => {
         this.games_history = data;

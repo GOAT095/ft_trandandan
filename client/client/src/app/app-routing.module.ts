@@ -19,8 +19,9 @@ const routes: Routes = [
   { path: 'friends/requests', component: PlayerFriendRequestsComponent},
   { path: 'profile', component: PlayerInfoComponent},
   { path: 'history', component: PlayerMatchHistoryComponent},
-  { path: 'spectate', component: GameSpectateComponent},
-  { path: 'game', component: PongGameComponentV2}
+  //{ path: 'spectate', component: GameSpectateComponent},
+  { path: 'game', component: PongGameComponentV2},
+  { path: 'spectate', component: PongGameComponentV2}
 ];
 
 @NgModule({

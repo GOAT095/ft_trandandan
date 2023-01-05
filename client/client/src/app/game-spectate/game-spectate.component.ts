@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import SwiperCore from 'swiper';
 import { ApiService } from '../api.service';
 import { WsService } from '../ws.service';
@@ -39,7 +40,7 @@ export class GameSpectateComponent implements OnInit {
   ];
 
   online_games: any[] = [];
-  constructor(public ws: WsService, public api: ApiService) {
+  constructor(public ws: WsService, public api: ApiService, public location: Location) {
     //for (let i = 0; i < 20; i++) {
     //  this.online_games.push(this._online_games[0]);
     //}
@@ -142,4 +143,9 @@ export class GameSpectateComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  startSpectateGame(game: any): void {
+    console.log('startSpectateGame:', game);
+    //this.location.go('/spectate',`roomId=${game.roomId}`)
+    window.open(`/default?spectate=${game.roomId}`, '_blank')?.focus();
+  }
 }

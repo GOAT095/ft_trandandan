@@ -42,6 +42,7 @@ interface ClientToServerEvents {
   roomChatMessage: (data: any) => void;
   directMessage: (data: any) => void;
   connectionMSG: (data: string) => void;
+  SpectateGameRequest: (data: string) => void;
   keysState: (data: any) => void;
   ListRooms: (data: any) => void;
 }

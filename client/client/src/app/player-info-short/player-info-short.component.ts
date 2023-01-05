@@ -51,9 +51,9 @@ export class PlayerInfoShortComponent implements OnInit {
     //if (data != null && data.type != null) {
     //  this.type = data.type;
     //}
-    this.api.blockEvent.subscribe(
-      (data) => {console.debug('player-info-short:blockEvent',data)}
-    )
+    //this.api.blockEvent.subscribe(
+    //  (data) => {console.debug('player-info-short:blockEvent',data)}
+    //)
   }
 
   getGravatarSrc(): string {
@@ -136,9 +136,12 @@ export class PlayerInfoShortComponent implements OnInit {
   }
 
   showPlayerMatchHistory() {
-    let dialogRef = this.dialog.open(PlayerMatchHistoryComponent);
+    let dialogRef = this.dialog.open(PlayerMatchHistoryComponent, {
+      data: {player: this.player}
+    });
     if (dialogRef.componentInstance != null) {
       dialogRef.componentInstance.player = this.player;
+      console.log('showPlayerMatchHistory:', this.player);
     }
   }
 

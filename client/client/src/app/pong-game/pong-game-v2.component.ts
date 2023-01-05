@@ -37,6 +37,7 @@ import { Socket, io } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 import { Input } from '@angular/core';
 import { ApiService } from '../api.service';
+import { ActivatedRoute } from '@angular/router';
 
 //import * as render from './render';
 
@@ -167,7 +168,10 @@ export class PongGameComponentV2 implements OnInit {
     twoFactor: false
   };
 
-  constructor(public api: ApiService) {
+  // debug
+  spectateRoom: string = '';
+
+  constructor(public api: ApiService, public route: ActivatedRoute) {
     console.log('canvas:', this.canvas);
     if (this.canvas) {
       this.glContext = this.canvas.nativeElement.getContext("webgl2");
@@ -187,6 +191,19 @@ export class PongGameComponentV2 implements OnInit {
         }));
 
         this.socket = io(`${environment.baseUrl}/GAME`, {auth: {'id': this.player.id, 'token': cookies['auth-cookie']}});
+
+        // spectate
+        this.route.queryParamMap.subscribe(
+          (params) => {
+            var param = params.get('spectate')
+            if (param != null && param != '') {
+              this.spectateRoom = param;
+              setTimeout(() => {
+                this.loadGame();
+              }, 1000);
+            }
+          }
+        )
       }
     );
   }
@@ -294,7 +311,13 @@ export class PongGameComponentV2 implements OnInit {
 
       if (this.socket)
       {
+        // debug only
+        if (this.spectateRoom) {
+          this.socket.emit("SpectateGameRequest", this.spectateRoom);
+        }
+        else {
           this.socket.emit("connectionMSG", "PLAYER");
+        }
 
       }
       // Todo: if spectate mode: SpectateGameRequest , RoomId
