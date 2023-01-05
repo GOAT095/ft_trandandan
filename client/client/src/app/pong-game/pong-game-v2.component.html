@@ -1,9 +1,10 @@
 <!--<div id="game" <!--(keydown)="keyPress($event)" (keydown.c)="switchCamera($event)">-->
 <div id="game">
     <canvas #pongcanvas></canvas>
-    <p class="score">{{ gameState.score[0] }} : {{ gameState.score[1] }}</p>
+    <p *ngIf="active" class="score">{{ gameState.score[0] }} : {{ gameState.score[1] }}</p>
 </div>
-<button class="nes-btn classic" (click)="mode = 0">classic</button>
-<button class="nes-btn custom" (click)="mode = 1">custom</button>
-<button class="nes-btn loadGame" (click)="loadGame()">loadGame</button>
-<input [(ngModel)]="spectateRoom" type="text">
+<p *ngIf="!active" class="welcome">Pick game mode</p>
+<button *ngIf="!active" class="nes-btn classic is-primary" (click)="launchClassicMode()">classic</button>
+<button *ngIf="!active" class="nes-btn custom" (click)="launchCustomMode()">custom</button>
+<!--<button class="nes-btn loadGame" (click)="loadGame()">loadGame</button>-->
+<!--<input [(ngModel)]="spectateRoom" type="text">-->

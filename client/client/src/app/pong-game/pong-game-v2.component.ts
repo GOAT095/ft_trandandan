@@ -171,6 +171,9 @@ export class PongGameComponentV2 implements OnInit {
   // debug
   spectateRoom: string = '';
 
+  // active
+  active: boolean = false;
+
   constructor(public api: ApiService, public route: ActivatedRoute) {
     console.log('canvas:', this.canvas);
     if (this.canvas) {
@@ -195,12 +198,29 @@ export class PongGameComponentV2 implements OnInit {
         // spectate
         this.route.queryParamMap.subscribe(
           (params) => {
-            var param = params.get('spectate')
-            if (param != null && param != '') {
-              this.spectateRoom = param;
+            var spectate = params.get('spectate');
+            if (spectate != null && spectate != '') {
+              this.spectateRoom = spectate;
+              this.active = true;
               setTimeout(() => {
                 this.loadGame();
               }, 1000);
+            }
+            else {
+              var play = params.get('play');
+              if (play != null && play != '') {
+                this.active = true;
+                setTimeout(() => {
+                  if (play == 'custom')
+                  {
+                    this.mode = 1;
+                  }
+                  else {
+                    this.mode = 0;
+                  }
+                  this.loadGame();
+                }, 1000);
+              }
             }
           }
         )
@@ -315,6 +335,9 @@ export class PongGameComponentV2 implements OnInit {
         if (this.spectateRoom) {
           this.socket.emit("SpectateGameRequest", this.spectateRoom);
         }
+        //else if (this.pvp) {
+        //  todo this.socket.emit("pvpConnectionMSG", "ROOMID", this.player)
+        //}
         else {
           this.socket.emit("connectionMSG", "PLAYER");
         }
@@ -561,6 +584,19 @@ export class PongGameComponentV2 implements OnInit {
     console.debug('loadGame: done');
     console.debug('loadGame:player', this.player);
   }
+
+  launchCustomMode(): void {
+    //console.log('startSpectateGame:', game);
+    //this.location.go('/spectate',`roomId=${game.roomId}`)
+    window.open(`/default?play=custom`, '_blank')?.focus();
+  }
+
+  launchClassicMode(): void {
+    //console.log('startSpectateGame:', game);
+    //this.location.go('/spectate',`roomId=${game.roomId}`)
+    window.open(`/default?play=classic`, '_blank')?.focus();
+  }
+
 
   ngOnInit(): void {
     //this.loadGame();
