@@ -78,6 +78,14 @@ enum Winner
   PTWO
 };
 
+enum Player
+{
+  NONE = 0,
+  PONE,
+  PTWO,
+  BOTH
+}
+
 const ENDSCORE : number = 5;
 
 type State = {
@@ -218,6 +226,26 @@ class Room
     this.gameStates.push(new GameState());
 
   }
+
+  playersValid() : Player
+  {
+    let result : Player = Player.NONE;
+    if (this.playerOne.isValidUser() && this.playerTwo.isValidUser())
+      result = Player.BOTH;
+    else if (this.playerOne.isValidUser() && !this.playerTwo.isValidUser())
+      result = Player.PONE;
+    else if (this.playerTwo.isValidUser() && !this.playerOne.isValidUser())
+      result = Player.PTWO;
+    return (result);
+  }
+};
+
+
+class RoomBroadcast
+{
+  id : string;
+  player1ID : number;
+  player2ID : number;
 };
 
 @WebSocketGateway({namespace: "GAME", cors:{ origin: '*', }})
@@ -226,6 +254,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   private readonly userService: UserService;
   @Inject(JwtService)
   private readonly jwt: JwtService;
+  private broadcastArray : RoomBroadcast[];
   
   private logger : Logger;
   private users : User[];
@@ -233,13 +262,25 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   private server : Server;
   private rooms : Room[];
 
+
+deleteAllSpectators(room : Room) : void
+{
+  if (room.spectators !== undefined || room.spectators !== null)
+  {
+    for (let specIndex : number = 0; specIndex < room.spectators.length; specIndex++)
+    {
+      room.spectators[specIndex].leave(room.id);
+      room.spectators[specIndex].disconnect();
+    }
+  }
+}
+
   @WebSocketServer()
   afterInit(server: Server) {
     this.logger = new Logger("GameLogger");
     this.users = new Array<User>();
     this.server = server;
     this.rooms = new Array<Room>();
-
   }
 
   async handleConnection(client: Socket, ...args: any[]) {
@@ -272,7 +313,81 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
+
+    for (let roomIndex : number = 0; roomIndex < this.rooms.length; roomIndex++)
+    {
+      if (this.rooms[roomIndex].spectators)
+      {
+        for (let specIndex : number = 0; specIndex < this.rooms[roomIndex].spectators.length; specIndex++) 
+        {
+          if (client.id == this.rooms[roomIndex].spectators[specIndex].id)
+          {
+            this.rooms[roomIndex].spectators[specIndex].leave(this.rooms[roomIndex].id);
+            this.rooms[roomIndex].spectators.splice(specIndex, 1);
+            return ;
+          }
+        }
+      }
+      if (this.rooms[roomIndex].playersValid() == Player.BOTH)
+      {
+        if (client.id == this.rooms[roomIndex].playerOne.socket.id)
+        {
+          if (this.rooms[roomIndex].gameStates[0].winner == Winner.NONE)
+          {
+            this.rooms[roomIndex].gameStates[0].winner == Winner.PTWO;
+          }
+          //TODO(yassine) : send End event to all the people in this room.
+            //TODO(yassine) : update the database.
+          client.leave(this.rooms[roomIndex].id);
+          let sock : Socket = this.rooms[roomIndex].playerTwo.socket;
+          this.rooms[roomIndex].playerOne.id = 0;
+          this.rooms[roomIndex].playerOne.socket = null;
+          sock.disconnect();
+          return ;
+        }
+        else if (client.id == this.rooms[roomIndex].playerTwo.socket.id)
+        {
+          if (this.rooms[roomIndex].gameStates[0].winner == Winner.NONE)
+          {
+            this.rooms[roomIndex].gameStates[0].winner == Winner.PONE;
+          }
+            //TODO(yassine) : send End event to all the people in this room.
+            //TODO(yassine) : update the database.
+
+          client.leave(this.rooms[roomIndex].id);
+          let sock : Socket = this.rooms[roomIndex].playerTwo.socket;
+          this.rooms[roomIndex].playerTwo.id = 0;
+          this.rooms[roomIndex].playerTwo.socket = null;
+          sock.disconnect();
+          return ;
+        }
+      }
+      else if (this.rooms[roomIndex].playersValid() == Player.PONE ||
+      this.rooms[roomIndex].playersValid() == Player.PTWO)
+      {
+        client.leave(this.rooms[roomIndex].id);
+        this.deleteAllSpectators(this.rooms[roomIndex]);
+        this.rooms.splice(roomIndex, 1);
+        if (this.broadcastArray)
+        {
+          delete this.broadcastArray;
+        }
+        this.broadcastArray = new Array<RoomBroadcast>();
+        
+        for (let roomIndex : number = 0; roomIndex < this.rooms.length; roomIndex++)
+        {
+          let elem : RoomBroadcast = new RoomBroadcast();
+          elem.id = this.rooms[roomIndex].id;
+          elem.player1ID = this.rooms[roomIndex].playerOne.id;
+          elem.player2ID = this.rooms[roomIndex].playerTwo.id;
+          this.broadcastArray.push(elem);
+        }
+  
+        this.server.emit("Rooms", this.broadcastArray);
+        return ;
+      }
+    }
   }
 
   @SubscribeMessage('RequestGame')
@@ -292,6 +407,29 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         client.join(this.rooms[roomIndex].id);
       }
     }
+  }
+
+  @SubscribeMessage('ListRooms')
+  handleListRooms(client: Socket)
+  {
+    if (this.broadcastArray)
+    {
+      delete this.broadcastArray;
+    }
+    this.broadcastArray = new Array<RoomBroadcast>();
+    //TODO(yassine) : do this in an other place
+    for (let roomIndex : number = 0; roomIndex < this.rooms.length; roomIndex++)
+    {
+      let elem : RoomBroadcast = new RoomBroadcast();
+      elem.id = this.rooms[roomIndex].id;
+      elem.player1ID = this.rooms[roomIndex].playerOne.id;
+      elem.player2ID = this.rooms[roomIndex].playerTwo.id;
+      this.broadcastArray.push(elem);
+    }
+
+    this.logger.debug("handleListRooms:Get");
+    this.server.emit("Rooms", this.broadcastArray);
+
   }
 
   @SubscribeMessage('connectionMSG')
@@ -320,6 +458,22 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.rooms[roomIndex].playerOne = newUser;
         client.join(this.rooms[roomIndex].id);
         playerAdded = true;
+        if (this.broadcastArray)
+        {
+          delete this.broadcastArray;
+        }
+        this.broadcastArray = new Array<RoomBroadcast>();
+        
+        for (let roomIndex : number = 0; roomIndex < this.rooms.length; roomIndex++)
+        {
+          let elem : RoomBroadcast = new RoomBroadcast();
+          elem.id = this.rooms[roomIndex].id;
+          elem.player1ID = this.rooms[roomIndex].playerOne.id;
+          elem.player2ID = this.rooms[roomIndex].playerTwo.id;
+          this.broadcastArray.push(elem);
+        }
+  
+        this.server.emit("Rooms", this.broadcastArray);
         this.users.splice(userIndex, 1);
         break;
       }
@@ -327,6 +481,22 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       {
         this.rooms[roomIndex].playerTwo = newUser;
         client.join(this.rooms[roomIndex].id);
+        if (this.broadcastArray)
+        {
+          delete this.broadcastArray;
+        }
+        this.broadcastArray = new Array<RoomBroadcast>();
+        
+        for (let roomIndex : number = 0; roomIndex < this.rooms.length; roomIndex++)
+        {
+          let elem : RoomBroadcast = new RoomBroadcast();
+          elem.id = this.rooms[roomIndex].id;
+          elem.player1ID = this.rooms[roomIndex].playerOne.id;
+          elem.player2ID = this.rooms[roomIndex].playerTwo.id;
+          this.broadcastArray.push(elem);
+        }
+  
+        this.server.emit("Rooms", this.broadcastArray);
         playerAdded = true;
         this.users.splice(userIndex, 1);
         break;
@@ -337,6 +507,27 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       let room : Room = new Room();
       room.playerOne = newUser;
       this.rooms.push(room);
+      
+     
+      this.logger.debug("ROOMS UPDATED");
+      if (this.broadcastArray)
+      {
+        delete this.broadcastArray;
+      }
+      this.broadcastArray = new Array<RoomBroadcast>();
+      
+      for (let roomIndex : number = 0; roomIndex < this.rooms.length; roomIndex++)
+      {
+        let elem : RoomBroadcast = new RoomBroadcast();
+        elem.id = this.rooms[roomIndex].id;
+        elem.player1ID = this.rooms[roomIndex].playerOne.id;
+        elem.player2ID = this.rooms[roomIndex].playerTwo.id;
+        this.broadcastArray.push(elem);
+      }
+
+      this.server.emit("Rooms", this.broadcastArray);
+      this.logger.debug("ROOMS UPDATED");
+      this.logger.warn("ROOMS UPDATED");
       roomIndex = this.rooms.length - 1;
       client.join(this.rooms[roomIndex].id);
       this.users.splice(userIndex, 1);
@@ -503,6 +694,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             {
               currentState.winner = Winner.PTWO;
               //TODO(yassine): Send some end game events to all sockets withing the same room.
+              this.server.to(this.rooms[roomIndex].id).emit("END", this.rooms[roomIndex].playerOne.id);
               client.disconnect();
             }
           }
@@ -514,6 +706,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             if (currentState.score[0] >= ENDSCORE)
             {
               currentState.winner = Winner.PONE;
+              this.server.to(this.rooms[roomIndex].id).emit("END", this.rooms[roomIndex].playerOne.id);
               //TODO(yassine): Send some end game events to all sockets withing the same room.
               client.disconnect();
             }
