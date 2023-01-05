@@ -204,7 +204,8 @@ export class UserController {
   }
   @UseGuards(AuthGuard())
   @Get("game/userHistory/:user")
-  async getuserHistory(@Param("user") user: User): Promise<Gamehistoryclass[]>{
-    return this.service.getUserHistory(user);
+  async getuserHistory(@Param("user",ParseIntPipe) id: number): Promise<Gamehistoryclass[]>{
+    
+    return this.service.getUserHistory(id);
   }
 }

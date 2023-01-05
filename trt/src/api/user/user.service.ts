@@ -189,31 +189,30 @@ export class UserService {
   }
 
   //game stuff
-  async addwin(user: User): Promise<User> {
-    if (user) {
-      console.log(user);
-    }
+  async addwin(id: number): Promise<boolean> {
+    const user = await this.getUserByid(id);
+    if (!user) throw new NotFoundException(`user not found`);
     user.wins += 1;
+    user.lvl += 30;
     user.streaks += 1;
     if (user.streaks > user.maxStreaks){
       user.maxStreaks = user.streaks;
     }
+
     await this.repository.save(user);
-    return await this.getUserByid(user.id);
+    return true;
   }
 
-  async addloss(user: User): Promise<User> {
+  async addloss(id: number): Promise<boolean> {
+    const user = await this.getUserByid(id);
+    if (!user) throw new NotFoundException(`user not found`);
     user.losses += 1;
+    user.lvl += 10;
     user.streaks = 0;
     await this.repository.save(user);
-    return await this.getUserByid(user.id);
+    return true;
   }
 
-  async upgradelvl(user: User): Promise<User> {
-    //some math to upgrade the lvl !
-
-    return;
-  }
 
   async updateStatus(id: number, status: UserStatus): Promise<User> {
     const user = await this.getUserByid(id);
@@ -268,8 +267,9 @@ export class UserService {
     //works now
   }
 
-  async getUserHistory(user: User): Promise<Gamehistoryclass[]> {
-    
+  async getUserHistory(id: number): Promise<Gamehistoryclass[]> {
+    const user = await this.getUserByid(id);
+    if (!user) throw new NotFoundException(`user not found`);
     return await this.GameHistory.find({
       where: [
         { playerOne: {id:user.id} },
@@ -278,4 +278,18 @@ export class UserService {
       relations: ["playerOne", "playerTwo"],
     });
   }
+  async saveHistory(id1: number, id2: number, scoreOne: number, scoreTwo: number): Promise<Gamehistoryclass> {
+    const game : Gamehistoryclass = new Gamehistoryclass();
+    const playerOne = await this.getUserByid(id1);
+    if (!playerOne) throw new NotFoundException(`user not found`);
+
+    const playerTwo = await this.getUserByid(id2);
+    if (!playerTwo) throw new NotFoundException(`user not found`);
+    game.playerOne = playerOne;
+    game.playerTwo = playerTwo;
+    game.scoreOne = scoreOne;
+    game.scoreTwo = scoreTwo;
+    await this.GameHistory.save(game);
+    return game;
+}
 }

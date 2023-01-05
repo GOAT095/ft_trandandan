@@ -6,6 +6,7 @@ import { UserService } from 'src/api/user/user.service';
 import { RoomDto } from '../dto/user.dto';
 import { runInThisContext } from 'vm';
 import { throwIfEmpty } from 'rxjs';
+import { GameService } from './game.service';
 
 
 
@@ -86,7 +87,7 @@ enum Player
   BOTH
 }
 
-const ENDSCORE : number = 5;
+const ENDSCORE : number = 3;
 
 type State = {
   _keyStates : KeyState[];
@@ -254,6 +255,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   private readonly userService: UserService;
   @Inject(JwtService)
   private readonly jwt: JwtService;
+
   private broadcastArray : RoomBroadcast[];
   
   private logger : Logger;
@@ -288,16 +290,19 @@ deleteAllSpectators(room : Room) : void
     let payload : any = (this.jwt.decode(client.handshake.auth.token));
     if (payload == null)
     {
+
       client.disconnect();
       return ;
     }
     if (payload.id != client.handshake.auth.id) {
+
       client.disconnect();
     }
     else {
       this.logger.debug(payload.id);
       let user = await this.userService.getUserByid(payload.id);
       if (user == null) {
+
         client.disconnect();
       }
       else {
@@ -310,11 +315,16 @@ deleteAllSpectators(room : Room) : void
         return ;
       }
     }
-    
+  
   }
 
   async handleDisconnect(client: Socket) {
+    // for (let userIndex : number = 0; userIndex < this.users.length; userIndex)
+    // {
+    //   if (client.id == this.users[userIndex].socket.id)
+    //     this.users.splice(userIndex, 1);
 
+    // }
     for (let roomIndex : number = 0; roomIndex < this.rooms.length; roomIndex++)
     {
       if (this.rooms[roomIndex].spectators)
@@ -335,31 +345,61 @@ deleteAllSpectators(room : Room) : void
         {
           if (this.rooms[roomIndex].gameStates[0].winner == Winner.NONE)
           {
+            this.server.to(this.rooms[roomIndex].id).emit("END", this.rooms[roomIndex].playerTwo.id);
             this.rooms[roomIndex].gameStates[0].winner == Winner.PTWO;
           }
-          //TODO(yassine) : send End event to all the people in this room.
-            //TODO(yassine) : update the database.
+
+          
+            if (this.rooms[roomIndex].gameStates[0].winner == Winner.PTWO)
+            {
+              this.userService.addwin(this.rooms[roomIndex].playerTwo.id);
+              this.userService.addloss(this.rooms[roomIndex].playerOne.id);
+            }
+            else
+            {
+              this.userService.addwin(this.rooms[roomIndex].playerOne.id);
+              this.userService.addloss(this.rooms[roomIndex].playerTwo.id);
+            }
+
+            this.userService.saveHistory(this.rooms[roomIndex].playerOne.id, this.rooms[roomIndex].playerTwo.id, this.rooms[roomIndex].gameStates[0].score[0], this.rooms[roomIndex].gameStates[0].score[1]);
+  
+
           client.leave(this.rooms[roomIndex].id);
           let sock : Socket = this.rooms[roomIndex].playerTwo.socket;
           this.rooms[roomIndex].playerOne.id = 0;
           this.rooms[roomIndex].playerOne.socket = null;
-          sock.disconnect();
+          if (sock)
+            sock.disconnect();
           return ;
         }
         else if (client.id == this.rooms[roomIndex].playerTwo.socket.id)
         {
           if (this.rooms[roomIndex].gameStates[0].winner == Winner.NONE)
           {
+            this.server.to(this.rooms[roomIndex].id).emit("END", this.rooms[roomIndex].playerOne.id);
             this.rooms[roomIndex].gameStates[0].winner == Winner.PONE;
           }
-            //TODO(yassine) : send End event to all the people in this room.
-            //TODO(yassine) : update the database.
+           
+            if (this.rooms[roomIndex].gameStates[0].winner == Winner.PTWO)
+            {
+              this.userService.addwin(this.rooms[roomIndex].playerTwo.id);
+              this.userService.addloss(this.rooms[roomIndex].playerOne.id);
+            }
+            else
+            {
+              this.userService.addwin(this.rooms[roomIndex].playerOne.id);
+              this.userService.addloss(this.rooms[roomIndex].playerTwo.id);
+            }
+
+            this.userService.saveHistory(this.rooms[roomIndex].playerOne.id, this.rooms[roomIndex].playerTwo.id, this.rooms[roomIndex].gameStates[0].score[0], this.rooms[roomIndex].gameStates[0].score[1]);
+
 
           client.leave(this.rooms[roomIndex].id);
           let sock : Socket = this.rooms[roomIndex].playerTwo.socket;
           this.rooms[roomIndex].playerTwo.id = 0;
           this.rooms[roomIndex].playerTwo.socket = null;
-          sock.disconnect();
+          if (sock)
+            sock.disconnect();
           return ;
         }
       }
@@ -536,6 +576,7 @@ deleteAllSpectators(room : Room) : void
     {
       this.rooms[roomIndex].reInitializeGameState();
       this.server.to(this.rooms[roomIndex].id).emit('ClientMSG', this.rooms[roomIndex].gameStates[0]);
+      this.server.to(this.rooms[roomIndex].id).emit('PlayerIds', [this.rooms[roomIndex].playerOne.id, this.rooms[roomIndex].playerTwo.id]);
     }
 
     for (let rIndex : number = 0; rIndex < this.rooms.length; rIndex++)
@@ -693,9 +734,8 @@ deleteAllSpectators(room : Room) : void
             if (currentState.score[1] >= ENDSCORE)
             {
               currentState.winner = Winner.PTWO;
-              //TODO(yassine): Send some end game events to all sockets withing the same room.
               this.server.to(this.rooms[roomIndex].id).emit("END", this.rooms[roomIndex].playerOne.id);
-              client.disconnect();
+
             }
           }
           if (currentState.ballPosition[0] > (fieldDimensions[0] / 2.0) + (3.0 * ballRadius))
@@ -707,8 +747,6 @@ deleteAllSpectators(room : Room) : void
             {
               currentState.winner = Winner.PONE;
               this.server.to(this.rooms[roomIndex].id).emit("END", this.rooms[roomIndex].playerOne.id);
-              //TODO(yassine): Send some end game events to all sockets withing the same room.
-              client.disconnect();
             }
           }
           if (currentState.ballPosition[2] + ballRadius > fieldDimensions[2] / 2.0)
@@ -765,6 +803,11 @@ deleteAllSpectators(room : Room) : void
           this.rooms[roomIndex].gameStates.splice(0, 1);
         }
         this.server.to(this.rooms[roomIndex].id).emit('ClientMSG', this.rooms[roomIndex].gameStates[0]);
+        this.server.to(this.rooms[roomIndex].id).emit('PlayerIds', [this.rooms[roomIndex].playerOne.id, this.rooms[roomIndex].playerTwo.id]);
+        if (currentState.winner != Winner.NONE)
+        {
+          client.disconnect();
+        }
         }
     }    
   }

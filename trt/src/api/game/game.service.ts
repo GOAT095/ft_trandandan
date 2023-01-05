@@ -18,16 +18,20 @@ export class GameService{
     @InjectRepository(Gamehistoryclass)
     private readonly Gamehistory: Repository<Gamehistoryclass>;
 
-    async saveHistory(playerOne: User, playerTwo: User, scoreOne: number, scoreTwo: number): Promise<Gamehistoryclass> {
-        const game : Gamehistoryclass = new Gamehistoryclass();
+    // async saveHistory(id1: number, id2: number, scoreOne: number, scoreTwo: number): Promise<Gamehistoryclass> {
+    //     const game : Gamehistoryclass = new Gamehistoryclass();
+    //     const playerOne = await this.user.getUserByid(id1);
+    //     if (!playerOne) throw new NotFoundException(`user not found`);
 
-        game.playerOne = playerOne;
-        game.playerTwo = playerTwo;
-        game.scoreOne = scoreOne;
-        game.scoreTwo = scoreTwo;
-        await this.Gamehistory.save(game);
-        return game;
-    }
+    //     const playerTwo = await this.user.getUserByid(id2);
+    //     if (!playerTwo) throw new NotFoundException(`user not found`);
+    //     game.playerOne = playerOne;
+    //     game.playerTwo = playerTwo;
+    //     game.scoreOne = scoreOne;
+    //     game.scoreTwo = scoreTwo;
+    //     await this.Gamehistory.save(game);
+    //     return game;
+    // }
     // async getUserHistory(user: User): Promise<Gamehistoryclass[]>{
 
     //     return await this.Gamehistory.find({
