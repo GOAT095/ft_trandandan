@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Md5 } from 'ts-md5';
+import { ApiService } from '../api.service';
 
 @Component({
   selector: 'app-player-info',
@@ -35,9 +36,13 @@ export class PlayerInfoComponent implements OnInit {
     IamDeath: false
   }
 
-  constructor() {
+  constructor(public api: ApiService) {
     this.loadAchievements();
     console.log('player-info:achievements',this.achievements);
+    // refresh status
+    setTimeout(() => {
+      this.api.getPlayerById(this.player.id).subscribe((data) => {this.player = data});
+    }, 500)
   }
 
   loadAchievements(): void {
