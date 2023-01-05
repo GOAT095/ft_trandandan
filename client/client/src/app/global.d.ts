@@ -10,6 +10,19 @@ interface Player {
   twoFactor: boolean
 }
 
+interface PlayerInfo {
+  id: string,
+  name: string,
+  wins: number,
+  losses: number,
+  lvl: number,
+  status: string,
+  avatar: string,
+  email: string,
+  twoFactor: boolean,
+  maxStreaks: number
+}
+
 interface FriendRequest {
   id: string,
   FriendStatus: string,

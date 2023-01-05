@@ -8,8 +8,54 @@
         <span class="player-info group-child name">{{ player.name }}</span>
         <span class="player-info group-child win-rate nes-text is-success">Wins: <span>{{ player.wins }} </span></span>
         <span class="player-info group-child loss-rate nes-text is-error">Losses: <span>{{ player.losses }}</span></span>
-        <span class="player-info group-child level nes-text is-warning">lvl: <span>{{ player.lvl }}</span></span>
+        <span class="player-info group-child level nes-text is-warning">Xp: <span>{{ player.lvl }}</span></span>
+        <span class="player-info group-child level nes-text is-warning">lvl: <span>{{ lvl }}</span></span>
         <span class="player-info group-child status nes-text is-success">{{ player.status }}</span>
+    </div>
+</div>
+<div class="nes-container is-dark is-centered with-title">
+    <label class="title">Achievements</label>
+    <div class="achivements-box">
+        <label class="nes-badge achievement" [class.grayscale]="!achievements.newbie">
+            <span class="is-dark">Newbie</span>
+        </label>
+
+        <label class="nes-badge achievement" [class.grayscale]="!achievements.firstBlood">
+            <span class="is-warning">First Blood</span>
+        </label>
+
+        <label class="nes-badge achievement" [class.grayscale]="!achievements.amateur">
+            <span class="is-primary">Amateur</span>
+        </label>
+
+        <label class="nes-badge achievement" [class.grayscale]="!achievements.master">
+            <span class="is-success">Master</span>
+        </label>
+
+    <!--
+        <a href="#" class="nes-badge">
+            <span class="is-error">framework!</span>
+        </a>
+
+        <a href="#" class="nes-badge is-splited">
+          <span class="is-dark">npm</span>
+          <span class="is-primary">1.1.0</span>
+        </a>
+    
+        <a href="#" class="nes-badge is-splited">
+          <span class="is-dark">test</span>
+          <span class="is-success">100%</span>
+        </a>
+    
+        <a href="#" class="nes-badge is-icon">
+          <span class="is-warning"><i class="nes-icon star is-small"></i></span>
+          <span class="is-primary">Icons</span>
+        </a>
+    
+        <a href="#" class="nes-badge is-icon">
+          <span class="is-dark">hi</span>
+          <span class="is-warning">Text</span>
+        </a> -->
     </div>
 </div>
 <!--</div>-->

@@ -132,6 +132,7 @@ export class PlayerInfoShortComponent implements OnInit {
     });
     if (dialogRef.componentInstance != null) {
       dialogRef.componentInstance.player = this.player;
+      dialogRef.componentInstance.loadAchievements();
     }
   }
 
