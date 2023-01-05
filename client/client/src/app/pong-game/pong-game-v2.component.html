@@ -2,6 +2,7 @@
 <div id="game">
     <canvas #pongcanvas></canvas>
     <!--<label>{{ playerIds }} </label>-->
+    <p class="game-ended" *ngIf="active && gameEnded">Game Over</p>
     <div class="info" *ngIf="active && player1.id != '-1' && player2.id != '-1'">
         <div class="player player1 info-element">
             <app-player-info-short *ngIf="active" [player]="player1" type="chat"></app-player-info-short>

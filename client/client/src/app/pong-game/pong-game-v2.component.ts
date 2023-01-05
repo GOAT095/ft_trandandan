@@ -202,6 +202,10 @@ export class PongGameComponentV2 implements OnInit {
   // playerIds, populated from game.gateway
   playerIds: number[] = [-1, -1];
 
+  // game ended ?
+  gameEnded: boolean = false;
+  winnerId: string = '-1';
+
   constructor(public api: ApiService, public route: ActivatedRoute) {
     console.log('canvas:', this.canvas);
     if (this.canvas) {
@@ -436,6 +440,9 @@ export class PongGameComponentV2 implements OnInit {
               }
             }
             //this.playerIds = playerIds;
+          })
+          this.socket.on('END', (winnerId) => {
+            this.gameEnded = true;
           })
           //console.log(this.gameState);
       }
