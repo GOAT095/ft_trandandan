@@ -40,6 +40,7 @@ export class TwoFactorAuthenticationController {
     let id : number;
     if (token in this.usersService.tokens) {
       id = this.usersService.tokens[token];
+      
     }
     else {
       throw new BadRequestException('Invalid token');
@@ -58,7 +59,7 @@ export class TwoFactorAuthenticationController {
       const payload: JwtPayload = { id: user.id };
       const accesToken = this.JwtService.sign(payload);
       // console.log(accesToken);
-      res.cookie('auth-cookie', accesToken, { httpOnly: true });
+      res.cookie('auth-cookie', accesToken, { httpOnly: false });
       res.send();
       // return accesToken;
     }
