@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../api.service';
 
 @Component({
   selector: 'app-player-match-history',
@@ -59,11 +60,19 @@ export class PlayerMatchHistoryComponent implements OnInit {
     twoFactor: false
   };
 
-  constructor() {
+  games_history: any[] = [];
+
+  constructor(public api: ApiService) {
     for (let i = 0; i < 20; i++) {
       this.history.push(this._history[0]);
       this.history.push(this._history[1]);
     }
+    this.api.getPlayerGameHistory(this.player.id).subscribe(
+      (data) => {
+        this.games_history = data;
+        console.debug('player-match-history:games_history', data);
+      }
+    )
   }
 
   ngOnInit(): void {

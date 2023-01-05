@@ -36,6 +36,7 @@ import {
 import { Socket, io } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 import { Input } from '@angular/core';
+import { ApiService } from '../api.service';
 
 //import * as render from './render';
 
@@ -149,6 +150,8 @@ export class PongGameComponentV2 implements OnInit {
   cubeBufferObject?: WebGLBuffer | null;
   sphereBufferObject?: WebGLBuffer | null;
 
+  // spectate
+  // room
 
   socket?: Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -164,7 +167,7 @@ export class PongGameComponentV2 implements OnInit {
     twoFactor: false
   };
 
-  constructor() {
+  constructor(public api: ApiService) {
     console.log('canvas:', this.canvas);
     if (this.canvas) {
       this.glContext = this.canvas.nativeElement.getContext("webgl2");
@@ -175,14 +178,19 @@ export class PongGameComponentV2 implements OnInit {
     //render.main();
     //render.render();
 
-    let cookies = Object.fromEntries(document.cookie.split(/; */).map(c => {
-      const [ key, ...v ] = c.split('=');
-      return [ key, decodeURIComponent(v.join('=')) ];
-    }));
+    api.getPlayer().subscribe(
+      (data) => {
+        this.player = data;
+        let cookies = Object.fromEntries(document.cookie.split(/; */).map(c => {
+          const [ key, ...v ] = c.split('=');
+          return [ key, decodeURIComponent(v.join('=')) ];
+        }));
 
-    this.socket = io(environment.baseUrl, {auth: {'id': this.player.id, 'token': cookies['auth-cookie']}});
- 
- }
+        this.socket = io(`${environment.baseUrl}/GAME`, {auth: {'id': this.player.id, 'token': cookies['auth-cookie']}});
+      }
+    );
+  }
+
   adjustCanvas()
   {
       this.canvas.nativeElement.width = this.canvas.nativeElement.offsetWidth;
@@ -191,6 +199,8 @@ export class PongGameComponentV2 implements OnInit {
 
   keyPress(event: KeyboardEvent)
   {
+      //console.debug('pong-game-v2:keyPress', event);
+
       switch(event.keyCode)
       {
           case this.ARROW_UP:
@@ -226,8 +236,16 @@ export class PongGameComponentV2 implements OnInit {
       }
   }
 
+  switchCamera(event: Event) {
+    console.log(Event);
+    this.camChosen++;
+    this.camChosen %= 3;
+  }
+
   keyUp(event: KeyboardEvent)
   {
+      //console.debug('pong-game-v2:keyUp', event);
+
       switch(event.keyCode)
       {
           case this.ARROW_UP:
@@ -258,10 +276,10 @@ export class PongGameComponentV2 implements OnInit {
       }
   }
 
-  handleConnectionWithServer(state: GameState)
-  {
-      this.gameState = state;
-  }
+//   handleConnectionWithServer(state: GameState)
+//   {
+//     this.gameState = state;
+//   }
 
   clearCanvas(canvas: HTMLCanvasElement, glContext: WebGL2RenderingContext)
   {
@@ -317,8 +335,12 @@ export class PongGameComponentV2 implements OnInit {
   {
       if (this.socket)
       { 
-          //this.socket.emit('keysState', [this.KeyStates, this.gameState]);
-          //this.socket.on('ClientMSG', this.handleConnectionWithServer);
+          this.socket.emit('keysState', [this.KeyStates, this.gameState]);
+          this.socket.on('ClientMSG', (state)=>
+          {
+            this.gameState = state;
+          });
+          //console.log(this.gameState);
       }
 
       if (this.glContext == null) {
@@ -510,9 +532,10 @@ export class PongGameComponentV2 implements OnInit {
     this.main();
     this.render();
     window.addEventListener('resize', () => this.adjustCanvas, true);
-    window.addEventListener('keydown', () => this.keyPress, false);
-    window.addEventListener('keyup', () => this.keyUp, false);
+    window.addEventListener('keydown', (event) => this.keyPress(event), false);
+    window.addEventListener('keyup', (event) => this.keyUp(event), false);
     console.debug('loadGame: done');
+    console.debug('loadGame:player', this.player);
   }
 
   ngOnInit(): void {

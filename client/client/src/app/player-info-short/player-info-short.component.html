@@ -77,7 +77,7 @@
       <button (click)="openProfile()" cdkMenuItem>profile</button>
       <button (click)="showPlayerMatchHistory()" cdkMenuItem>match history</button>
       <hr/>
-      <ng-template *ngIf="me.id != player.id">
+      <!--<ng-template *ngIf="me.id != player.id">-->
       <button (click)="sendFriendRequest()" cdkMenuItem>add friend</button>
       <button cdkMenuItem>send message</button>
       <button (click)="inviteFor1vs1()" cdkMenuItem>invite for 1vs1</button>
@@ -88,7 +88,7 @@
       <button (click)="kickPlayer()" cdkMenuItem>kick</button>
       <button (click)="mutePlayer()" cdkMenuItem>mute</button>
       <button (click)="banPlayer()" cdkMenuItem>ban</button>
-      </ng-template>
+      <!--</ng-template>-->
     </div>
   </ng-template>
 </div>

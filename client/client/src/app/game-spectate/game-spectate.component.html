@@ -2,7 +2,7 @@
     <label class="title">Current games</label>
     <div *ngIf="type == 'flex'" class="game-spectate-box">
         <div class="game-spectate-element" *ngFor="let game of online_games; let i = index">
-            <div class="game-spectate-element-header">
+            <!--<div class="game-spectate-element-header">
                 <div class="game-spectate-element-player-1">
                     <app-player-info-short type="history"></app-player-info-short>
                     <label>{{ game.players[0].name }}</label>
@@ -12,10 +12,13 @@
                     <app-player-info-short type="history"></app-player-info-short>
                     <label>{{ game.players[1].name }}</label>
                 </div>
-            </div>
+            </div>-->
             <img src="assets/game-0{{i % 5}}.png">
+            <span>{{ game.id }}</span>
+            <span>{{ game.player2ID }}</span>
+            <span>{{ game.player2ID }}</span>
         </div>
-    </div>
+   </div>
     <swiper
         *ngIf="type == 'swiper'"
         [slidesPerView]="'auto'"
@@ -25,7 +28,7 @@
         [scrollbar]="{ draggable: true }"
     >
         <ng-template swiperSlide class="game-spectate-element" *ngFor="let game of online_games; let i = index">
-            <div class="game-spectate-element-header">
+            <!--<div class="game-spectate-element-header">
                 <div class="game-spectate-element-player-1">
                     <app-player-info-short type="history"></app-player-info-short>
                     <label>{{ game.players[0].name }}</label>
@@ -36,7 +39,10 @@
                     <label>{{ game.players[1].name }}</label>
                 </div>
             </div>
-            <img src="assets/game-0{{i % 5}}.png">
+            <img src="assets/game-0{{i % 5}}.png">-->
+            <span>{{ game.id }}</span>
+            <span>{{ game.player2ID }}</span>
+            <span>{{ game.player2ID }}</span>
         </ng-template>
     </swiper>
 </div>

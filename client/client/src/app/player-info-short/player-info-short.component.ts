@@ -51,6 +51,9 @@ export class PlayerInfoShortComponent implements OnInit {
     //if (data != null && data.type != null) {
     //  this.type = data.type;
     //}
+    this.api.blockEvent.subscribe(
+      (data) => {console.debug('player-info-short:blockEvent',data)}
+    )
   }
 
   getGravatarSrc(): string {
@@ -90,6 +93,7 @@ export class PlayerInfoShortComponent implements OnInit {
       (data) => {
         // TODO: give visual feedback back to user
         console.debug('PlayerInfoShortComponent.blockPlayer', data);
+        this.api.blockEvent.next(data);
       }
     )
   }
@@ -99,6 +103,7 @@ export class PlayerInfoShortComponent implements OnInit {
       (data) => {
         // TODO: give visual feedback back to user
         console.debug('PlayerInfoShortComponent.unblockPlayer', data);
+        this.api.unBlockEvent.next(data);
       }
     )
   }
@@ -131,7 +136,10 @@ export class PlayerInfoShortComponent implements OnInit {
   }
 
   showPlayerMatchHistory() {
-    this.dialog.open(PlayerMatchHistoryComponent);
+    let dialogRef = this.dialog.open(PlayerMatchHistoryComponent);
+    if (dialogRef.componentInstance != null) {
+      dialogRef.componentInstance.player = this.player;
+    }
   }
 
   addAsAdmin() {

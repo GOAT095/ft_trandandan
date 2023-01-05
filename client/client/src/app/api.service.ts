@@ -46,6 +46,11 @@ export class ApiService {
     .pipe(catchError(this.handleError))
   }
 
+  getPlayerById(playerId: string): Observable<Player> {
+    return this.http.get<Player>(`${this.apiUrl}/user/${playerId}`, {withCredentials: true})
+    .pipe(catchError(this.handleError))
+  }
+
   updatePlayerUsername(username: string, id: string) {
     return this.http.patch<Player>(
       `${this.apiUrl}/user/${id}/updatename`, { name: username }, {withCredentials: true}

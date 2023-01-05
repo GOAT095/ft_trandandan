@@ -9,16 +9,19 @@ import { Subject } from 'rxjs';
 export class WsService {
 
   socket?: Socket<ServerToClientEvents, ClientToServerEvents>;
+  gameSocket?: Socket<ServerToClientEvents, ClientToServerEvents>;
 
   notifications : any[] = [];
   chatMessages : any[] = [];
   roomChatMessages: any = {};
   directMessages: any = {};
+  activeGames: any[] = [];
 
   newMessageEvent = new Subject<any[]>;
   newDirectMessageEvent = new Subject<any[]>;
   newRoomMessageEvent = new Subject<any[]>;
   newGameInviteEvent = new Subject<any[]>;
+  activeGamesUpdate = new Subject<any[]>;
 
   constructor() {
 
@@ -31,6 +34,8 @@ export class WsService {
     }));
 
     this.socket = io(environment.baseUrl, {auth: {'id': player.id, 'token': cookies['auth-cookie']}});
+    this.gameSocket = io(`${environment.baseUrl}/GAME`, {auth: {'id': player.id, 'token': cookies['auth-cookie']}});
+
     this.socket.on("connect", () => {
         const engine = this.socket?.io.engine;
         console.log(engine?.transport.name); // in most cases, prints "polling"
@@ -111,6 +116,23 @@ export class WsService {
       this.directMessages[player.id].push(message);
       console.log(this.directMessages);
       this.newDirectMessageEvent.next(data);
+    })
+  }
+
+  fetchRooms() {
+    this.gameSocket?.emit("ListRooms", {});
+    //this.gameSocket?.on("Rooms", (data) => {
+    //  this.activeGames = data;
+    //  this.activeGamesUpdate.next(data);
+    //  console.log('ws.service:fetchRooms:', data);
+    //})
+  }
+
+  handleListRooms() {
+    this.gameSocket?.on("Rooms", (data) => {
+      this.activeGames = data;
+      this.activeGamesUpdate.next(data);
+      console.log('ws.service:handleListRooms:', data);
     })
   }
 }

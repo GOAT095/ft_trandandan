@@ -104,18 +104,23 @@ export class MainComponent implements OnInit {
         ws.handleChatMessage();
         ws.handleRoomChatMessage();
         ws.handleDirectMessage();
+        ws.handleListRooms();
         // listen to ws.events
         ws.newMessageEvent.subscribe((data) => {
           if (this.messages_box != null) {
             this.messages_box.nativeElement.scrollTop = this.messages_box.nativeElement.scrollHeight;
             setTimeout(() => {
-              this.messages_box.nativeElement.scrollTop = this.messages_box.nativeElement.scrollHeight;
+              if (this.messages_box != null) {
+                this.messages_box.nativeElement.scrollTop = this.messages_box.nativeElement.scrollHeight;
+              }
             }, environment.chatRefreshTime)
           }
         })
         ws.newGameInviteEvent.subscribe((data) => {
           this.dialog.open(GameInviteComponent);
         })
+        // ask the game server to send us the current list of online games
+        ws.fetchRooms();
         // listen to http updates
         api.blockEvent.subscribe(
           (data) => {
