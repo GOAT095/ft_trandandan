@@ -14,6 +14,7 @@ import { RoomService } from "./api/chat/room/room.service";
 import { JwtModule } from "@nestjs/jwt";
 import { GameGateway } from "./api/game/game.gateway";
 import { Gamehistoryclass } from "./api/game/game.entity";
+import { GameService } from "./api/game/game.service";
 
 @Module({
   imports: [
