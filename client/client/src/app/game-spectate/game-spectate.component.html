@@ -2,21 +2,21 @@
     <label class="title">Current games</label>
     <div *ngIf="type == 'flex'" class="game-spectate-box">
         <div class="game-spectate-element" *ngFor="let game of online_games; let i = index">
-            <!--<div class="game-spectate-element-header">
+            <div class="game-spectate-element-header">
                 <div class="game-spectate-element-player-1">
-                    <app-player-info-short type="history"></app-player-info-short>
-                    <label>{{ game.players[0].name }}</label>
+                    <app-player-info-short [player]="game.player1" type="history"></app-player-info-short>
+                    <label>{{ game.player1.name }}</label>
                 </div>
                 <label>Vs</label>
                 <div class="game-spectate-element-player-2">
-                    <app-player-info-short type="history"></app-player-info-short>
-                    <label>{{ game.players[1].name }}</label>
+                    <app-player-info-short [player]="game.player2" type="history"></app-player-info-short>
+                    <label>{{ game.player2.name }}</label>
                 </div>
-            </div>-->
+            </div>
             <img src="assets/game-0{{i % 5}}.png">
-            <span>{{ game.id }}</span>
+            <!--<span>{{ game.id }}</span>
             <span>{{ game.player2ID }}</span>
-            <span>{{ game.player2ID }}</span>
+            <span>{{ game.player2ID }}</span>-->
         </div>
    </div>
     <swiper
@@ -40,9 +40,9 @@
                 </div>
             </div>
             <img src="assets/game-0{{i % 5}}.png">-->
-            <span>{{ game.id }}</span>
+            <!--<span>{{ game.id }}</span>
             <span>{{ game.player2ID }}</span>
-            <span>{{ game.player2ID }}</span>
+            <span>{{ game.player2ID }}</span>-->
         </ng-template>
     </swiper>
 </div>

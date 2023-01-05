@@ -43,7 +43,50 @@ export class GameSpectateComponent implements OnInit {
     //for (let i = 0; i < 20; i++) {
     //  this.online_games.push(this._online_games[0]);
     //}
-    this.online_games = ws.activeGames;
+    this.online_games = [];
+    this.api.getPlayers().subscribe(
+      (players) => {
+        // fetch players info (convert Id's to player objects)
+        ws.activeGames.forEach(
+          (elem) => {
+            if (elem.player1ID != 0 && elem.player2ID != 0) {
+              let player1: Player = {
+                id: '-1',
+                name: 'Player 1',
+                wins: 0, lvl: 0, losses: 0,
+                status: 'online',
+                avatar: '',
+                email: '',
+                twoFactor: false
+              };
+              let player2: Player = {
+                id: '-1',
+                name: 'Player 1',
+                wins: 0, lvl: 0, losses: 0,
+                status: 'online',
+                avatar: '',
+                email: '',
+                twoFactor: false
+              };
+              for (let i = 0; i < players.length; i++) {
+                if (players[i].id == elem.player1ID) {
+                  player1 = players[i];
+                }
+                if (players[i].id == elem.player2ID) {
+                  player2 = players[i];
+                }
+              }
+              this.online_games.push({
+                'roomId': elem.id,
+                'player1': player1,
+                'player2': player2
+              })
+            }
+         }
+        )
+        console.debug('game-spectate.component', this.online_games)
+      }
+    )
     ws.activeGamesUpdate.subscribe(
       (active_games) => {
         console.log('game-spectate.component', active_games);
