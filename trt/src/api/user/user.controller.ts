@@ -39,6 +39,8 @@ import { extname } from "path";
 import * as fs from "fs";
 import { Gamehistoryclass } from "../game/game.entity";
 import { InjectRepository } from "@nestjs/typeorm";
+import { use } from "passport";
+import { UserStatus } from "./user.status.enum";
 
 @Controller("user")
 export class UserController {
@@ -56,6 +58,8 @@ export class UserController {
   @UseGuards(AuthGuard())
   @Get("me")
   async current(@GetUser() user: User): Promise<User> {
+    this.service.updateStatus(user.id, UserStatus.online);
+    console.log("set online", user.name);
     return user;
   }
 
