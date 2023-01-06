@@ -19,6 +19,8 @@ export class ChatController {
     @Post('room')
     createRoom(@Body() body: CreateRoomDto, @GetUser() user: User) {
         // ~TODO: validate that a password is present if type is protected
+        console.log(body);
+        if(!body.type) throw new BadRequestException({'error': 'Channel password property is null'});
         if (body.type == Access_type.protected) {
             if (body.password == null) {
                 throw new BadRequestException({'error': 'Creating a protected channel requires setting a password.'});
@@ -157,6 +159,7 @@ export class ChatController {
     @Post('room/:roomId/join')
     joinRoom(@Param('roomId') roomId: number, @Body() body: any, @GetUser() user: User) {
         this.room.checkRoomIsPublic(roomId);
+        this.room.checkIsNotBanned(roomId, user.id);
         return this.room.update(Number(roomId), 'members', user.id);
     }
 
@@ -166,6 +169,7 @@ export class ChatController {
     joinProtectedRoom(@Param('roomId') roomId: number, @Body() body: any, @GetUser() user: User) {
         this.room.checkRoomIsProtected(roomId);
         this.room.checkRoomPassword(Number(roomId), body.password);
+        this.room.checkIsNotBanned(roomId, user.id);
         return this.room.update(Number(roomId), 'members', user.id);
     }
 

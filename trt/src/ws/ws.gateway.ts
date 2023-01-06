@@ -40,7 +40,7 @@ export class WsGateway {
   }
 
   handleDisconnect(client: any) {
-    this.clients.splice(this.clients.indexOf(client), 1);
+    this.clients.splice(this.clients.indexOf(client),  1);
     //console.log('disconnected client', client.id);
   }
 
@@ -89,10 +89,27 @@ export class WsGateway {
   @SubscribeMessage('roomChatMessage')
   handleRoomChatMessage(client: any, payload: any) {
     console.log(payload);
+    // payload.player.id
     let room = this.room.findById(payload.room.id);
     // TODO:
     //  ~ check if is a member 
     // Broadcast to connected clients which are members
+    let isMuted: boolean = false;
+    for (let i = 0; i < room.muteList.length; i++) {
+      let now = new Date();
+      //console.log(client_id, room.muteList);
+      if (
+        room.muteList[i].id == payload.player.id &&
+        ( (now.getTime() - room.muteList[i].start.getTime() ) < 60*1000 )
+      )
+      {
+        console.log('isMuted', isMuted);
+        isMuted = true;
+      }
+    }
+    if (isMuted) {
+      return; // skip
+    }
     for (let client of this.clients) {
       //client.emit('', data);
       //console.log("sent to : ", client.id)

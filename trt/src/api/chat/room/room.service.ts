@@ -44,7 +44,8 @@ export class RoomService {
             banList: [],
             muteList: [],
         });
-
+        console.log(newRoom);
+        if(!newRoom.type) throw new BadRequestException({'error': 'Channel password property is null'});
         // TODO: set the password if type is protected
         if (newRoom.type == Access_type.protected) {
             // password should be set
@@ -94,6 +95,13 @@ export class RoomService {
         let room = this.findById(roomId);
         if (!(room.admins.includes(user.id))) {
             throw new UnauthorizedException({'error': 'This action requires admin privilege'})
+        }
+    }
+
+    checkIsNotBanned(roomId: number, userId: number) {
+        let room = this.findById(roomId);
+        if (room.banList.includes(userId)) {
+            throw new UnauthorizedException({'error': 'This user is permanetly banned from the room'})
         }
     }
 
