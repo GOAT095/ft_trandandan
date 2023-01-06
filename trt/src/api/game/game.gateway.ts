@@ -486,11 +486,8 @@ deleteAllSpectators(room : Room) : void
         }
       }
     }
-
     if (roomIndex != this.privateRooms.length && this.privateRooms[roomIndex].playersValid() == Player.BOTH)
     {
-      this.logger.debug("CONNECTED");
-
       let newRoom : Room = new Room();
       newRoom.id = this.privateRooms[roomIndex].id;
       newRoom.playerOne.id = this.privateRooms[roomIndex].playerOne.id;
@@ -503,44 +500,58 @@ deleteAllSpectators(room : Room) : void
       this.rooms.push(newRoom);
 
       this.rooms[this.rooms.length - 1].reInitializeGameState();
-      // this.userService.updateStatus(this.rooms[this.rooms.length - 1].playerOne.id, UserStatus.ingame);
-      // this.userService.updateStatus(this.rooms[this.rooms.length - 1].playerTwo.id, UserStatus.ingame);
+      this.userService.updateStatus(this.rooms[this.rooms.length - 1].playerOne.id, UserStatus.ingame);
+      this.userService.updateStatus(this.rooms[this.rooms.length - 1].playerTwo.id, UserStatus.ingame);
       this.server.to(this.rooms[this.rooms.length - 1].id).emit('ClientMSG', this.rooms[this.rooms.length - 1].gameStates[0]);
       this.server.to(this.rooms[this.rooms.length - 1].id).emit('PlayerIds', [this.rooms[this.rooms.length - 1].playerOne.id, this.rooms[roomIndex].playerTwo.id]);
+
+      if (this.broadcastArray)
+      {
+      delete this.broadcastArray;
+      }
+      this.broadcastArray = new Array<RoomBroadcast>();
+      //TODO(yassine) : do this in an other place
+      for (let roomIndex : number = 0; roomIndex < this.rooms.length; roomIndex++)
+      {
+        let elem : RoomBroadcast = new RoomBroadcast();
+        elem.id = this.rooms[roomIndex].id;
+        elem.player1ID = this.rooms[roomIndex].playerOne.id;
+        elem.player2ID = this.rooms[roomIndex].playerTwo.id;
+        this.broadcastArray.push(elem);
+      }
+
+      // this.logger.debug("handleListRooms:Get");
+      this.server.emit("Rooms", this.broadcastArray);
     }
   }
 
-  // @SubscribeMessage('RequestPlayerStatus')
-  // handleStates(client: Socket, userID : number) : void
-  // {
-  //   for (let roomIndex : number = 0; roomIndex < this.rooms.length; roomIndex++)
-  //   {
-  //     if (this.rooms[roomIndex].playersValid() == Player.BOTH &&
-  //     this.rooms[roomIndex].playerOne.id == userID ||
-  //     this.rooms[roomIndex].playerTwo.id == userID)
-  //     {
-  //       this.server.emit("PlayerStatus", "INGAME");
-  //       return ;
-  //     }
-  //     else if ((this.rooms[roomIndex].playersValid() == Player.PONE &&
-  //     this.rooms[roomIndex].playerOne.id == userID) ||
-  //     (this.rooms[roomIndex].playersValid() == Player.PTWO && this.rooms[roomIndex].playerTwo.id == userID))
-  //     {
-  //       this.server.emit("PlayerStatus", "ONLINE");
-  //       return ;
-  //     }
-  //   }
-  //   for (let userIndex : number = 0; userIndex < this.users.length; userIndex++)
-  //   {
-  //     if (this.users[userIndex].isValidUser() && userID == this.users[userIndex].id)
-  //     {
-  //       this.server.emit("PlayerStatus", "ONLINE");
-  //       return ;
-  //     }
-  //   }
+  @SubscribeMessage('pvpDeclineRequest')
+  handlePvPDecline(client: Socket, entry : [string, number]) : void
+  {
+    let roomIndex : number = 0;
+    
+    for (; roomIndex < this.privateRooms.length; roomIndex++)
+    {
+      if (this.privateRooms[roomIndex].id == entry[0])
+        break;
+    }
 
-  //   this.server.emit("PlayerStatus", "OFFLINE");
-  // }
+    if (roomIndex != this.privateRooms.length)
+    {
+      if (this.privateRooms[roomIndex].playerOne.isValidUser() && this.privateRooms[roomIndex].playerOne.id == entry[1])
+      {
+        this.privateRooms[roomIndex].playerOne.socket.leave(this.privateRooms[roomIndex].id);
+        this.privateRooms[roomIndex].playerOne.socket.disconnect();
+      }
+      if (this.privateRooms[roomIndex].playerTwo.isValidUser() && this.privateRooms[roomIndex].playerTwo.id == entry[1])
+      {
+        this.privateRooms[roomIndex].playerTwo.socket.leave(this.privateRooms[roomIndex].id);
+        this.privateRooms[roomIndex].playerTwo.socket.disconnect();
+      }
+      this.privateRooms.splice(roomIndex, 1);
+    }
+    this.logger.debug(this.privateRooms.length);
+  }
 
   @SubscribeMessage('SpectateGameRequest')
   handleSpectateGame(client: Socket, roomId: string) : void
