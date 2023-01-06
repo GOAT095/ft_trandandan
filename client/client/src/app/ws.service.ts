@@ -98,6 +98,12 @@ export class WsService {
         this.roomChatMessages[room.id] = [];
       }
       this.roomChatMessages[room.id].push(message);
+     /*
+      let added: boolean = false;
+      for (let i = 0; i < this.roomChatMessages.length; i++) {
+        if (this.roomChatMessages[i].id )
+      }
+      */
       console.log(this.roomChatMessages);
       this.newRoomMessageEvent.next(data);
     })
@@ -128,11 +134,23 @@ export class WsService {
     //})
   }
 
+  requestGame(userId: number): string{
+    var array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    let roomId = "ROOM"+String(array);
+    this.gameSocket?.emit("RequestGame", [roomId, userId]);
+    return roomId;
+  }
+
   handleListRooms() {
     this.gameSocket?.on("Rooms", (data) => {
       this.activeGames = data;
       this.activeGamesUpdate.next(data);
       console.log('ws.service:handleListRooms:', data);
     })
+  }
+
+  sendPvpDeclineRequest(roomId: string, userId: number) {
+    this.gameSocket?.emit("pvpDeclineRequest", [roomId, userId]);
   }
 }

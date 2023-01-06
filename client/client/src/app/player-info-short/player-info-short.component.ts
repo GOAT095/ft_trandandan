@@ -47,6 +47,8 @@ export class PlayerInfoShortComponent implements OnInit {
 
   @Input() isAlreadyBlocked: boolean = false;
 
+  @Input() roomId: number = -1;
+
   constructor(public api: ApiService, public ws: WsService, public dialog: Dialog) {
     //if (data != null && data.type != null) {
     //  this.type = data.type;
@@ -109,7 +111,11 @@ export class PlayerInfoShortComponent implements OnInit {
   }
 
   inviteFor1vs1() {
-    this.ws.notify('1vs1', {'message': `${this.me.name} has invited you to a game.`}, this.player)
+    let roomId = this.ws.requestGame(Number(this.me.id));
+    this.ws.notify('1vs1', {'message': `${this.me.name} has invited you to a game.`, 'fromPlayer': this.me, 'roomId': roomId}, this.player)
+    setTimeout(() => {
+      window.open(`/default?pvp=${roomId}`, '_blank')?.focus();
+    }, 1000)
   }
 
   showProfile() {
@@ -147,19 +153,40 @@ export class PlayerInfoShortComponent implements OnInit {
   }
 
   addAsAdmin() {
-
+    console.debug('addAsAdmin:', this.roomId, this.player.id);
+    this.api.setPlayerAsAdmin(String(this.roomId), this.player.id).subscribe(
+      (data) => {
+        console.log('setAsAdmin:data', data);
+      }
+    )
   }
 
   kickPlayer() {
-
+    console.debug('kickPlayer', this.roomId);
+    this.api.kickPlayerFromRoom(String(this.roomId), this.player.id).subscribe(
+      (data) => {
+        console.log('kickPlayer:data', data);
+      }
+    )
   }
 
   banPlayer() {
-
+    console.debug('banPlayer', this.roomId);
+    this.api.banPlayerFromRoom(String(this.roomId), this.player.id).subscribe(
+      (data) => {
+        console.log('banPlayer:data', data);
+        this.kickPlayer();
+      }
+    )
   }
 
   mutePlayer() {
-
+    console.debug('mutePlayer', this.roomId)
+    this.api.mutePlayerFromRoom(String(this.roomId), this.player.id).subscribe(
+      (data) => {
+        console.log('mutePlayer:data', data);
+      }
+    )
   }
 
   isChat(): boolean {

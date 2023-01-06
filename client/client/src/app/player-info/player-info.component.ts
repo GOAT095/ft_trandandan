@@ -41,6 +41,7 @@ export class PlayerInfoComponent implements OnInit {
     console.log('player-info:achievements',this.achievements);
     // refresh status
     setTimeout(() => {
+      this.loadAchievements();
       this.api.getPlayerById(this.player.id).subscribe((data) => {this.player = data});
     }, 500)
   }

@@ -206,6 +206,9 @@ export class PongGameComponentV2 implements OnInit {
   gameEnded: boolean = false;
   winnerId: string = '-1';
 
+  // pvp
+  pvpRoomId: string = '';
+
   constructor(public api: ApiService, public route: ActivatedRoute) {
     console.log('canvas:', this.canvas);
     if (this.canvas) {
@@ -252,6 +255,17 @@ export class PongGameComponentV2 implements OnInit {
                   }
                   this.loadGame();
                 }, 1000);
+              }
+              else {
+                var pvp = params.get('pvp');
+                if (pvp != null && pvp != '') {
+                  this.active = true;
+                  this.pvpRoomId = pvp;
+                  setTimeout(() => {
+                    this.mode = 1;
+                    this.loadGame();
+                  }, 1000)
+                }
               }
             }
           }
@@ -367,9 +381,10 @@ export class PongGameComponentV2 implements OnInit {
         if (this.spectateRoom) {
           this.socket.emit("SpectateGameRequest", this.spectateRoom);
         }
-        //else if (this.pvp) {
-        //  todo this.socket.emit("pvpConnectionMSG", "ROOMID", this.player)
-        //}
+        else if (this.pvpRoomId) {
+          this.socket.emit("pvpConnectionRequest", [this.pvpRoomId, Number(this.player.id)])
+          console.log('pong-game:emit:pvpConnectionMSG', [this.pvpRoomId, Number(this.player.id)])
+        }
         else {
           this.socket.emit("connectionMSG", "PLAYER");
         }

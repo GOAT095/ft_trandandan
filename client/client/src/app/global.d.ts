@@ -58,8 +58,11 @@ interface ClientToServerEvents {
   directMessage: (data: any) => void;
   connectionMSG: (data: string) => void;
   SpectateGameRequest: (data: string) => void;
+  pvpConnectionRequest: (data: any) => void;
   keysState: (data: any) => void;
   ListRooms: (data: any) => void;
+  pvpDeclineRequest: (data: any) => void;
+  RequestGame: (data: any) => void;
 }
 
 interface InterServerEvents {

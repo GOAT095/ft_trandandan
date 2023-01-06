@@ -2,7 +2,7 @@
     <span class="title">1vs1 game invite</span>
     <div class="friend-request-list">
         <div class="friend-request-item inline">
-            <app-player-info></app-player-info>
+            <app-player-info [player]="fromPlayer"></app-player-info>
             <div class="button-wrapper block">
                 <button class="nes-btn is-primary" (click)="accept()">accept</button>
                 <button class="nes-btn is-warning" (click)="decline()">dismiss</button>

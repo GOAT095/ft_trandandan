@@ -117,7 +117,9 @@ export class MainComponent implements OnInit {
           }
         })
         ws.newGameInviteEvent.subscribe((data) => {
-          this.dialog.open(GameInviteComponent);
+          this.dialog.open(GameInviteComponent, {
+            data: data,
+          });
         })
         // ask the game server to send us the current list of online games
         ws.fetchRooms();

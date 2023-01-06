@@ -168,4 +168,24 @@ export class ApiService {
     return this.http.get<any>(`${this.apiUrl}/user/game/userHistory/${playerId}`, {withCredentials: true})
     .pipe(catchError(this.handleError));
   }
+
+  kickPlayerFromRoom(roomId: string, playerId: string) {
+    return this.http.post<any>(`${this.apiUrl}/chat/room/${roomId}/kick/${playerId}`, {}, {withCredentials: true})
+    .pipe(catchError(this.handleError))
+  }
+
+  banPlayerFromRoom(roomId: string, playerId: string) {
+    return this.http.post<any>(`${this.apiUrl}/chat/room/${roomId}/ban/${playerId}`, {}, {withCredentials: true})
+    .pipe(catchError(this.handleError))
+  }
+
+  mutePlayerFromRoom(roomId: string, playerId: string) {
+    return this.http.post<any>(`${this.apiUrl}/chat/room/${roomId}/mute/${playerId}`, {}, {withCredentials: true})
+    .pipe(catchError(this.handleError))
+  }
+
+  setPlayerAsAdmin(roomId: string, playerId: string) {
+    return this.http.post<any>(`${this.apiUrl}/chat/room/${roomId}/set-as-admin/${playerId}`, {}, {withCredentials: true})
+    .pipe(catchError(this.handleError))
+  }
 }
