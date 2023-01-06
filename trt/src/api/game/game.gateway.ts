@@ -6,7 +6,8 @@ import { UserService } from 'src/api/user/user.service';
 import { RoomDto } from '../dto/user.dto';
 import { runInThisContext } from 'vm';
 import { throwIfEmpty } from 'rxjs';
-import { GameService } from './game.service';
+import { UserStatus } from '../user/user.status.enum';
+import { roomUser } from '../chat/roomUser.entity';
 
 
 
@@ -264,6 +265,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   private server : Server;
   private rooms : Room[];
 
+  private privateRooms : Room[];
+
 
 deleteAllSpectators(room : Room) : void
 {
@@ -283,6 +286,7 @@ deleteAllSpectators(room : Room) : void
     this.users = new Array<User>();
     this.server = server;
     this.rooms = new Array<Room>();
+    this.privateRooms = new Array<Room>();
   }
 
   async handleConnection(client: Socket, ...args: any[]) {
@@ -299,7 +303,7 @@ deleteAllSpectators(room : Room) : void
       client.disconnect();
     }
     else {
-      this.logger.debug(payload.id);
+      // this.logger.debug(payload.id);
       let user = await this.userService.getUserByid(payload.id);
       if (user == null) {
 
@@ -308,10 +312,10 @@ deleteAllSpectators(room : Room) : void
       else {
         let newUser : User = new User(user.id, client);
         this.users.push(newUser);
-        for (let userIndex : number = 0; userIndex < this.users.length; userIndex++)
-        {
-          this.logger.debug(this.users[userIndex].id + ", " + this.users[userIndex].socket.id);
-        }
+        // for (let userIndex : number = 0; userIndex < this.users.length; userIndex++)
+        // {
+        //   this.logger.debug(this.users[userIndex].id + ", " + this.users[userIndex].socket.id);
+        // }
         return ;
       }
     }
@@ -319,12 +323,6 @@ deleteAllSpectators(room : Room) : void
   }
 
   async handleDisconnect(client: Socket) {
-    // for (let userIndex : number = 0; userIndex < this.users.length; userIndex)
-    // {
-    //   if (client.id == this.users[userIndex].socket.id)
-    //     this.users.splice(userIndex, 1);
-
-    // }
     for (let roomIndex : number = 0; roomIndex < this.rooms.length; roomIndex++)
     {
       if (this.rooms[roomIndex].spectators)
@@ -362,7 +360,8 @@ deleteAllSpectators(room : Room) : void
             }
 
             this.userService.saveHistory(this.rooms[roomIndex].playerOne.id, this.rooms[roomIndex].playerTwo.id, this.rooms[roomIndex].gameStates[0].score[0], this.rooms[roomIndex].gameStates[0].score[1]);
-  
+            this.userService.updateStatus(this.rooms[roomIndex].playerOne.id, UserStatus.online);
+            this.userService.updateStatus(this.rooms[roomIndex].playerTwo.id, UserStatus.online);
 
           client.leave(this.rooms[roomIndex].id);
           let sock : Socket = this.rooms[roomIndex].playerTwo.socket;
@@ -392,6 +391,8 @@ deleteAllSpectators(room : Room) : void
             }
 
             this.userService.saveHistory(this.rooms[roomIndex].playerOne.id, this.rooms[roomIndex].playerTwo.id, this.rooms[roomIndex].gameStates[0].score[0], this.rooms[roomIndex].gameStates[0].score[1]);
+            this.userService.updateStatus(this.rooms[roomIndex].playerOne.id, UserStatus.online);
+            this.userService.updateStatus(this.rooms[roomIndex].playerTwo.id, UserStatus.online);
 
 
           client.leave(this.rooms[roomIndex].id);
@@ -428,13 +429,118 @@ deleteAllSpectators(room : Room) : void
         return ;
       }
     }
+    //NOTE(yassine) : because I also get the chat sockets here.
+    // for (let userIndex : number = 0; userIndex < this.users.length; userIndex)
+    // {
+    //   if (client.id == this.users[userIndex].socket.id)
+    //     this.users.splice(userIndex, 1);
+    // }
   }
 
   @SubscribeMessage('RequestGame')
-  handleRequestGame(client: Socket, userID : number) : void
+  handleRequestGame(client: Socket, entry : [string, number]) : void
   {
-
+    let roomIndex : number = 0;
+    for (; roomIndex < this.privateRooms.length; roomIndex++)
+    {
+      if (this.privateRooms[roomIndex].id == entry[0])
+        break;
+    }
+    let room : Room;
+    if (roomIndex == this.privateRooms.length)
+    {
+      room = new Room();
+      room.id = entry[0];
+      this.privateRooms.push(room);
+    }
+    else
+    {
+      room.playerTwo.id = entry[1];
+    }
+    this.server.emit("pvpRoomID", room.id);
   }
+
+  @SubscribeMessage('pvpConnectionRequest')
+  handlePvPGame(client: Socket, entry : [string, number]) : void
+  {
+    let roomIndex : number = 0;
+    for (; roomIndex < this.privateRooms.length; roomIndex++)
+    {
+      if (this.privateRooms[roomIndex].id = entry[0])
+      {
+        if (!this.privateRooms[roomIndex].playerOne.isValidUser())
+        {
+          this.logger.debug("p1");
+          this.privateRooms[roomIndex].playerOne.id = entry[1];
+          this.privateRooms[roomIndex].playerOne.socket = client;
+          client.join(this.privateRooms[roomIndex].id);
+          break;
+        }
+        if (!this.privateRooms[roomIndex].playerTwo.isValidUser())
+        {
+          this.logger.debug("p2");
+          this.privateRooms[roomIndex].playerTwo.id = entry[1];
+          this.privateRooms[roomIndex].playerTwo.socket = client;
+          client.join(this.privateRooms[roomIndex].id);
+          break;
+        }
+      }
+    }
+
+    if (roomIndex != this.privateRooms.length && this.privateRooms[roomIndex].playersValid() == Player.BOTH)
+    {
+      this.logger.debug("CONNECTED");
+
+      let newRoom : Room = new Room();
+      newRoom.id = this.privateRooms[roomIndex].id;
+      newRoom.playerOne.id = this.privateRooms[roomIndex].playerOne.id;
+      newRoom.playerOne.socket = this.privateRooms[roomIndex].playerOne.socket;
+      newRoom.playerTwo.id = this.privateRooms[roomIndex].playerTwo.id;
+      newRoom.playerTwo.socket = this.privateRooms[roomIndex].playerTwo.socket;
+      
+      
+      this.privateRooms.splice(roomIndex, 1);
+      this.rooms.push(newRoom);
+
+      this.rooms[this.rooms.length - 1].reInitializeGameState();
+      // this.userService.updateStatus(this.rooms[this.rooms.length - 1].playerOne.id, UserStatus.ingame);
+      // this.userService.updateStatus(this.rooms[this.rooms.length - 1].playerTwo.id, UserStatus.ingame);
+      this.server.to(this.rooms[this.rooms.length - 1].id).emit('ClientMSG', this.rooms[this.rooms.length - 1].gameStates[0]);
+      this.server.to(this.rooms[this.rooms.length - 1].id).emit('PlayerIds', [this.rooms[this.rooms.length - 1].playerOne.id, this.rooms[roomIndex].playerTwo.id]);
+    }
+  }
+
+  // @SubscribeMessage('RequestPlayerStatus')
+  // handleStates(client: Socket, userID : number) : void
+  // {
+  //   for (let roomIndex : number = 0; roomIndex < this.rooms.length; roomIndex++)
+  //   {
+  //     if (this.rooms[roomIndex].playersValid() == Player.BOTH &&
+  //     this.rooms[roomIndex].playerOne.id == userID ||
+  //     this.rooms[roomIndex].playerTwo.id == userID)
+  //     {
+  //       this.server.emit("PlayerStatus", "INGAME");
+  //       return ;
+  //     }
+  //     else if ((this.rooms[roomIndex].playersValid() == Player.PONE &&
+  //     this.rooms[roomIndex].playerOne.id == userID) ||
+  //     (this.rooms[roomIndex].playersValid() == Player.PTWO && this.rooms[roomIndex].playerTwo.id == userID))
+  //     {
+  //       this.server.emit("PlayerStatus", "ONLINE");
+  //       return ;
+  //     }
+  //   }
+  //   for (let userIndex : number = 0; userIndex < this.users.length; userIndex++)
+  //   {
+  //     if (this.users[userIndex].isValidUser() && userID == this.users[userIndex].id)
+  //     {
+  //       this.server.emit("PlayerStatus", "ONLINE");
+  //       return ;
+  //     }
+  //   }
+
+  //   this.server.emit("PlayerStatus", "OFFLINE");
+  // }
 
   @SubscribeMessage('SpectateGameRequest')
   handleSpectateGame(client: Socket, roomId: string) : void
@@ -467,7 +573,7 @@ deleteAllSpectators(room : Room) : void
       this.broadcastArray.push(elem);
     }
 
-    this.logger.debug("handleListRooms:Get");
+    // this.logger.debug("handleListRooms:Get");
     this.server.emit("Rooms", this.broadcastArray);
 
   }
@@ -547,7 +653,8 @@ deleteAllSpectators(room : Room) : void
       let room : Room = new Room();
       room.playerOne = newUser;
       this.rooms.push(room);
-      
+
+
      
       this.logger.debug("ROOMS UPDATED");
       if (this.broadcastArray)
@@ -575,26 +682,29 @@ deleteAllSpectators(room : Room) : void
     if (this.rooms[roomIndex].playerOne.isValidUser() && this.rooms[roomIndex].playerTwo.isValidUser())
     {
       this.rooms[roomIndex].reInitializeGameState();
+      this.userService.updateStatus(this.rooms[roomIndex].playerOne.id, UserStatus.ingame);
+      this.userService.updateStatus(this.rooms[roomIndex].playerTwo.id, UserStatus.ingame);
       this.server.to(this.rooms[roomIndex].id).emit('ClientMSG', this.rooms[roomIndex].gameStates[0]);
       this.server.to(this.rooms[roomIndex].id).emit('PlayerIds', [this.rooms[roomIndex].playerOne.id, this.rooms[roomIndex].playerTwo.id]);
+      this.logger.warn("PlayerIds UPDATED");
     }
 
-    for (let rIndex : number = 0; rIndex < this.rooms.length; rIndex++)
-    {
-      this.logger.debug("ROOM ID : " + this.rooms[rIndex].id);
-      if (this.rooms[rIndex].playerOne.isValidUser())
-        this.logger.debug("P1 : " + this.rooms[rIndex].playerOne.id + ", " + this.rooms[rIndex].playerOne.socket.id);
-      if (this.rooms[rIndex].playerTwo.isValidUser())
-        this.logger.debug("P2 : " + this.rooms[rIndex].playerTwo.id + ", " + this.rooms[rIndex].playerTwo.socket.id);
-      for (let specIndex : number = 0; specIndex < this.rooms[rIndex].spectators.length; specIndex++)
-        this.logger.debug("Spec :" + this.rooms[rIndex].spectators[specIndex].id);
-      this.logger.debug("Users who didn't join a Game");
-      for (let userIndex : number = 0; userIndex < this.users.length; userIndex++)
-      {
-        this.logger.debug(this.users[userIndex].id + ", " + this.users[userIndex].socket.id);
-      }
-      this.logger.debug("_____________________________________");
-    }
+    // for (let rIndex : number = 0; rIndex < this.rooms.length; rIndex++)
+    // {
+    //   this.logger.debug("ROOM ID : " + this.rooms[rIndex].id);
+    //   if (this.rooms[rIndex].playerOne.isValidUser())
+    //     this.logger.debug("P1 : " + this.rooms[rIndex].playerOne.id + ", " + this.rooms[rIndex].playerOne.socket.id);
+    //   if (this.rooms[rIndex].playerTwo.isValidUser())
+    //     this.logger.debug("P2 : " + this.rooms[rIndex].playerTwo.id + ", " + this.rooms[rIndex].playerTwo.socket.id);
+    //   for (let specIndex : number = 0; specIndex < this.rooms[rIndex].spectators.length; specIndex++)
+    //     this.logger.debug("Spec :" + this.rooms[rIndex].spectators[specIndex].id);
+    //   this.logger.debug("Users who didn't join a Game");
+    //   for (let userIndex : number = 0; userIndex < this.users.length; userIndex++)
+    //   {
+    //     this.logger.debug(this.users[userIndex].id + ", " + this.users[userIndex].socket.id);
+    //   }
+    //   this.logger.debug("_____________________________________");
+    // }
 
       //NOTE(Yassine) : OLD CODE.
       // if (type == "PLAYER")
@@ -734,7 +844,7 @@ deleteAllSpectators(room : Room) : void
             if (currentState.score[1] >= ENDSCORE)
             {
               currentState.winner = Winner.PTWO;
-              this.server.to(this.rooms[roomIndex].id).emit("END", this.rooms[roomIndex].playerOne.id);
+              this.server.to(this.rooms[roomIndex].id).emit("END", this.rooms[roomIndex].playerTwo.id);
 
             }
           }
