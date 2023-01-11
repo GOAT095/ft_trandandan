@@ -660,13 +660,13 @@ export class PongGameComponentV2 implements OnInit {
   launchCustomMode(): void {
     //console.log('startSpectateGame:', game);
     //this.location.go('/spectate',`roomId=${game.roomId}`)
-    window.open(`/default?play=custom`, '_blank')?.focus();
+    window.open(`/default?play=custom`, '_self')?.focus();
   }
 
   launchClassicMode(): void {
     //console.log('startSpectateGame:', game);
     //this.location.go('/spectate',`roomId=${game.roomId}`)
-    window.open(`/default?play=classic`, '_blank')?.focus();
+    window.open(`/default?play=classic`, '_self')?.focus();
   }
 
 

@@ -40,7 +40,7 @@ export class GameInviteComponent implements OnInit {
   }
 
   accept(): void {
-    window.open(`/default?pvp=${this.roomId}`, '_blank')?.focus();
+    window.open(`/default?pvp=${this.roomId}`, '_self')?.focus();
     this.dialogRef.close();
   }
 

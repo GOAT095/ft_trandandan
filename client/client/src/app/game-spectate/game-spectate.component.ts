@@ -146,6 +146,6 @@ export class GameSpectateComponent implements OnInit {
   startSpectateGame(game: any): void {
     console.log('startSpectateGame:', game);
     //this.location.go('/spectate',`roomId=${game.roomId}`)
-    window.open(`/default?spectate=${game.roomId}`, '_blank')?.focus();
+    window.open(`/default?spectate=${game.roomId}`, '_self')?.focus();
   }
 }

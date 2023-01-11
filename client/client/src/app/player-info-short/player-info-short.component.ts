@@ -114,7 +114,7 @@ export class PlayerInfoShortComponent implements OnInit {
     let roomId = this.ws.requestGame(Number(this.me.id));
     this.ws.notify('1vs1', {'message': `${this.me.name} has invited you to a game.`, 'fromPlayer': this.me, 'roomId': roomId}, this.player)
     setTimeout(() => {
-      window.open(`/default?pvp=${roomId}`, '_blank')?.focus();
+      window.open(`/default?pvp=${roomId}`, '_self')?.focus();
     }, 1000)
   }
 
